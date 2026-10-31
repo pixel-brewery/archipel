@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-mapping",
-    "version": "0.1.27",
+    "version": "0.1.28",
     "description": "Type-safe object mapping infrastructure for NestJS with keyed and type-based mapping registries, profiles, and compile-time safety.",
     "type": "module",
     "main": "./src/index.js",

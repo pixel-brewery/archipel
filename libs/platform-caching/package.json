@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-caching",
-    "version": "0.1.27",
+    "version": "0.1.28",
     "description": "Layered caching infrastructure for NestJS with in-memory LRU+TTL+SWR and Redis-backed implementations.",
     "type": "module",
     "main": "./src/index.js",
@@ -68,8 +68,8 @@
     "peerDependencies": {
         "@nestjs/common": "^12.0.0",
         "@nestjs/terminus": "^12.0.0",
-        "@pixel-brewery/archipel-platform-configuration": "0.1.27",
-        "@pixel-brewery/archipel-platform-health": "0.1.27",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.28",
+        "@pixel-brewery/archipel-platform-health": "0.1.28",
         "ioredis": ">=5.0.0"
     },
     "peerDependenciesMeta": {
