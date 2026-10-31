@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-esigning",
-    "version": "0.1.28",
+    "version": "0.1.29",
     "description": "Provider-agnostic e-signing infrastructure for NestJS with support for DocuSign, Adobe Sign, Dropbox Sign, and a built-in internal provider.",
     "type": "module",
     "main": "./src/index.js",
@@ -83,14 +83,14 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-configuration": "0.1.28",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.29",
         "tslib": "2.8.1"
     },
     "peerDependencies": {
         "@dropbox/sign": ">=1.0.0",
         "@nestjs/common": "^12.0.0",
         "@nestjs/terminus": "^12.0.0",
-        "@pixel-brewery/archipel-platform-health": "0.1.28",
+        "@pixel-brewery/archipel-platform-health": "0.1.29",
         "docusign-esign": ">=8.0.0"
     },
     "peerDependenciesMeta": {

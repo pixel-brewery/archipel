@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-configuration",
-    "version": "0.1.28",
+    "version": "0.1.29",
     "description": "Type-safe configuration management with strategy-based resolution for NestJS applications.",
     "type": "module",
     "main": "./src/index.js",

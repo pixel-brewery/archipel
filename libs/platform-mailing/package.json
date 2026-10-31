@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-mailing",
-    "version": "0.1.28",
+    "version": "0.1.29",
     "description": "Email delivery with strategy-based transport and template engines for NestJS applications.",
     "type": "module",
     "main": "./src/index.js",
@@ -126,16 +126,16 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-blob-storage": "0.1.28",
-        "@pixel-brewery/archipel-platform-configuration": "0.1.28",
-        "@pixel-brewery/archipel-platform-core": "0.1.28",
-        "@pixel-brewery/archipel-platform-resources": "0.1.28",
+        "@pixel-brewery/archipel-platform-blob-storage": "0.1.29",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.29",
+        "@pixel-brewery/archipel-platform-core": "0.1.29",
+        "@pixel-brewery/archipel-platform-resources": "0.1.29",
         "tslib": "2.8.1"
     },
     "peerDependencies": {
         "@nestjs/common": "^12.0.0",
         "@nestjs/terminus": "^12.0.0",
-        "@pixel-brewery/archipel-platform-health": "0.1.28",
+        "@pixel-brewery/archipel-platform-health": "0.1.29",
         "@sendgrid/mail": ">=8.0.0",
         "form-data": ">=4.0.0",
         "mailgun.js": ">=10.0.0",
