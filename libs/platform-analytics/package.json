@@ -105,7 +105,7 @@
     "devDependencies": {
         "@nestjs/common": "12.3.2",
         "@nestjs/core": "12.3.2",
-        "@sentry/node": "11.8.0",
+        "@sentry/node": "11.10.0",
         "applicationinsights": "3.17.0",
         "dd-trace": "6.21.0",
         "reflect-metadata": "0.2.2",
