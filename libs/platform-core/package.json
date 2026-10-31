@@ -97,7 +97,7 @@
         "@nestjs/terminus": "12.1.0",
         "@pixel-brewery/archipel-platform-caching": "0.1.26",
         "@types/mime-types": "3.0.1",
-        "axios": "1.20.0",
+        "axios": "1.21.0",
         "class-transformer": "0.5.1",
         "class-validator": "0.15.1",
         "express": "5.3.0",
