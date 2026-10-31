@@ -1,3 +1,7 @@
+## 0.1.25 (2026-10-31)
+
+This was a version bump only for platform-queue to align it with other projects, there were no code changes.
+
 # @pixel-brewery/archipel-platform-queue changelog
 
 ## 0.1.24 (2026-10-31)

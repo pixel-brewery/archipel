@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-cryptography",
-    "version": "0.1.24",
+    "version": "0.1.25",
     "description": "Cryptographic utilities for NestJS – bcrypt hashing, GUID generation, and TOTP OTP support.",
     "type": "module",
     "main": "./src/index.js",
