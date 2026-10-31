@@ -71,7 +71,7 @@
     },
     "devDependencies": {
         "@ai-sdk/anthropic": "4.0.85",
-        "@ai-sdk/gateway": "4.0.121",
+        "@ai-sdk/gateway": "4.0.129",
         "@ai-sdk/google": "4.0.102",
         "@ai-sdk/openai": "4.0.99",
         "@ai-sdk/openai-compatible": "3.0.80",
