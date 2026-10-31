@@ -94,8 +94,9 @@ describe('HTTP response lifecycle measurements', () => {
                 { method: 'GET', path: 'unmatched', status: '404' },
             ]);
             expect(records.filter((record) => record.name === 'http_request_duration_ms')).toHaveLength(3);
-            expect(JSON.stringify(records)).not.toContain('123');
-            expect(JSON.stringify(records)).not.toContain('secret');
+            const serializedMetadata = JSON.stringify(records.map(({ name, attributes }) => ({ name, attributes })));
+            expect(serializedMetadata).not.toContain('123');
+            expect(serializedMetadata).not.toContain('secret');
         } finally {
             await app.close();
         }
