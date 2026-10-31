@@ -1,0 +1,88 @@
+{
+    "name": "mcp-server",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "tools/mcp/src",
+    "projectType": "application",
+    "tags": ["tool"],
+    "implicitDependencies": [
+        "platform-analytics",
+        "platform-authentication",
+        "platform-blob-storage",
+        "platform-bootstrap",
+        "platform-caching",
+        "platform-configuration",
+        "platform-core",
+        "platform-cryptography",
+        "platform-database",
+        "platform-documents",
+        "platform-esigning",
+        "platform-feature-flags",
+        "platform-health",
+        "platform-intelligence",
+        "platform-intelligence-agents",
+        "platform-logging",
+        "platform-mailing",
+        "platform-mapping",
+        "platform-mcp",
+        "platform-openapi",
+        "platform-payments",
+        "platform-queue",
+        "platform-reporting",
+        "platform-resources",
+        "platform-telemetry"
+    ],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "dependsOn": ["^docs"],
+            "inputs": [
+                "production",
+                "^production",
+                "{workspaceRoot}/.docs/packages/**/*",
+                "{workspaceRoot}/.docs/guides/**/*",
+                "{workspaceRoot}/.docs/patterns/**/*"
+            ],
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/tools/mcp",
+                "tsConfig": "tools/mcp/tsconfig.lib.json",
+                "packageJson": "tools/mcp/package.json",
+                "main": "tools/mcp/src/main.ts",
+                "assets": [
+                    "tools/mcp/*.md",
+                    {
+                        "input": ".docs/packages",
+                        "glob": "**/*.md",
+                        "output": "data/packages",
+                        "includeIgnoredFiles": true
+                    },
+                    {
+                        "input": ".docs/guides",
+                        "glob": "**/*.md",
+                        "output": "data/guides",
+                        "includeIgnoredFiles": true
+                    },
+                    {
+                        "input": ".docs/patterns",
+                        "glob": "**/*.md",
+                        "output": "data/patterns",
+                        "includeIgnoredFiles": true
+                    },
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ]
+            }
+        },
+        "test": {
+            "dependsOn": ["build"],
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/tools/mcp"
+            }
+        }
+    }
+}

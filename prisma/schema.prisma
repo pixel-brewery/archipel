@@ -1,0 +1,11 @@
+// Minimal stub schema for @prisma/client type generation
+// This schema is required for Prisma 7+ to export types from @prisma/client
+// Consumer applications will use their own schema - this is only for library builds
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+}

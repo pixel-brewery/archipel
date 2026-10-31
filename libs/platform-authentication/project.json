@@ -1,0 +1,46 @@
+{
+    "name": "platform-authentication",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-authentication/src",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-authentication",
+                "tsConfig": "libs/platform-authentication/tsconfig.lib.json",
+                "packageJson": "libs/platform-authentication/package.json",
+                "main": "libs/platform-authentication/src/index.ts",
+                "assets": [
+                    "libs/platform-authentication/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-authentication/src/connectors/apple/index.ts",
+                    "libs/platform-authentication/src/connectors/github/index.ts",
+                    "libs/platform-authentication/src/connectors/google/index.ts",
+                    "libs/platform-authentication/src/connectors/microsoft/index.ts",
+                    "libs/platform-authentication/src/mfa/totp/index.ts",
+                    "libs/platform-authentication/src/health/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-authentication"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

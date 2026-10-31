@@ -1,0 +1,47 @@
+{
+    "name": "platform-bootstrap",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-bootstrap/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-bootstrap",
+                "tsConfig": "libs/platform-bootstrap/tsconfig.lib.json",
+                "packageJson": "libs/platform-bootstrap/package.json",
+                "main": "libs/platform-bootstrap/src/index.ts",
+                "assets": [
+                    "libs/platform-bootstrap/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-bootstrap/src/composition/index.ts",
+                    "libs/platform-bootstrap/src/server/express/index.ts",
+                    "libs/platform-bootstrap/src/security/index.ts",
+                    "libs/platform-bootstrap/src/session/index.ts",
+                    "libs/platform-bootstrap/src/openapi/index.ts",
+                    "libs/platform-bootstrap/src/testing/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/libs/platform-bootstrap"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-bootstrap"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

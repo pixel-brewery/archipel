@@ -1,0 +1,71 @@
+{
+    "name": "@pixel-brewery/archipel-platform-openapi",
+    "version": "0.1.24",
+    "description": "Multi-tenant Swagger and OpenAPI documentation with feature-scoped discovery for NestJS.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-openapi"
+    },
+    "keywords": [
+        "nestjs",
+        "openapi",
+        "swagger",
+        "documentation",
+        "api",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "assets/**/*",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "@pixel-brewery/archipel-platform-core": "0.1.24",
+        "@pixel-brewery/archipel-platform-resources": "0.1.24",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/swagger": "^12.0.0",
+        "class-validator": ">=0.14.0"
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@nestjs/swagger": "12.0.5",
+        "class-validator": "0.15.1",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5",
+        "zod": "4.6.7"
+    },
+    "archipel": {
+        "category": "Operations"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

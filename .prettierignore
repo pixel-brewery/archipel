@@ -1,0 +1,9 @@
+# Add files here to ignore them from prettier formatting
+/dist
+/coverage
+/.nx/cache
+/.nx/workspace-data
+.angular
+
+# Preserve the exact content hash of the installed Architecture dependency.
+/.agents/skills/architecture/

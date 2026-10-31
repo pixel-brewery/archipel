@@ -1,0 +1,10 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "allowJs": false,
+        "jsx": "preserve",
+        "noEmit": true,
+        "types": ["node", "vite/client"]
+    },
+    "include": [".vitepress/**/*.d.ts", ".vitepress/**/*.ts", ".vitepress/**/*.vue"]
+}

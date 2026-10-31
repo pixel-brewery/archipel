@@ -1,0 +1,105 @@
+{
+    "name": "@pixel-brewery/archipel-platform-database",
+    "version": "0.1.24",
+    "description": "Prisma ORM integration with PostgreSQL, repository base classes, query patterns, and pagination for NestJS.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "health": [
+                "./src/health/index.d.ts"
+            ],
+            "postgres": [
+                "./src/postgres/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./health": {
+            "types": "./src/health/index.d.ts",
+            "import": "./src/health/index.js",
+            "default": "./src/health/index.js"
+        },
+        "./postgres": {
+            "types": "./src/postgres/index.d.ts",
+            "import": "./src/postgres/index.js",
+            "default": "./src/postgres/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-database"
+    },
+    "keywords": [
+        "nestjs",
+        "prisma",
+        "postgresql",
+        "database",
+        "repository",
+        "orm",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "@prisma/driver-adapter-utils": "7.10.1",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "@pixel-brewery/archipel-platform-health": "0.1.24",
+        "@prisma/client": ">=7.0.0",
+        "express": ">=5.0.0",
+        "pg": ">=8.16.3"
+    },
+    "peerDependenciesMeta": {
+        "@nestjs/terminus": {
+            "optional": true
+        },
+        "@pixel-brewery/archipel-platform-health": {
+            "optional": true
+        },
+        "pg": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@nestjs/terminus": "12.1.0",
+        "@prisma/client": "7.10.1",
+        "@types/pg": "^8.23.1",
+        "express": "5.3.0",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Foundation"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

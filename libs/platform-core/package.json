@@ -1,0 +1,124 @@
+{
+    "name": "@pixel-brewery/archipel-platform-core",
+    "version": "0.1.24",
+    "description": "Core templates, events, identifiers, and shared backend utilities for NestJS applications.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-core"
+    },
+    "keywords": [
+        "nestjs",
+        "core",
+        "templates",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "typesVersions": {
+        "*": {
+            "avatar": [
+                "./src/avatar/index.d.ts"
+            ],
+            "device": [
+                "./src/device/index.d.ts"
+            ],
+            "mime-utils": [
+                "./src/mime-utils/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./avatar": {
+            "types": "./src/avatar/index.d.ts",
+            "import": "./src/avatar/index.js",
+            "default": "./src/avatar/index.js"
+        },
+        "./device": {
+            "types": "./src/device/index.d.ts",
+            "import": "./src/device/index.js",
+            "default": "./src/device/index.js"
+        },
+        "./mime-utils": {
+            "types": "./src/mime-utils/index.d.ts",
+            "import": "./src/mime-utils/index.js",
+            "default": "./src/mime-utils/index.js"
+        }
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "@pixel-brewery/archipel-platform-health": "0.1.24",
+        "@pixel-brewery/archipel-platform-resources": "0.1.24",
+        "@standard-schema/spec": "1.1.0",
+        "tslib": "2.8.1",
+        "type-fest": "5.10.0"
+    },
+    "peerDependencies": {
+        "@nestjs/axios": "^12.0.0",
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/swagger": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "class-transformer": ">=0.5.0",
+        "class-validator": ">=0.14.0",
+        "express": ">=5.0.0",
+        "mime-types": ">=3.0.0",
+        "rxjs": ">=7.0.0",
+        "ua-parser-js": ">=2.0.0"
+    },
+    "peerDependenciesMeta": {
+        "mime-types": {
+            "optional": true
+        },
+        "ua-parser-js": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/axios": "12.0.1",
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@nestjs/swagger": "12.0.5",
+        "@nestjs/terminus": "12.1.0",
+        "@pixel-brewery/archipel-platform-caching": "0.1.24",
+        "@types/mime-types": "3.0.1",
+        "axios": "1.20.0",
+        "class-transformer": "0.5.1",
+        "class-validator": "0.15.1",
+        "express": "5.3.0",
+        "glob": "13.0.6",
+        "mime-types": "3.0.2",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "ua-parser-js": "2.0.10",
+        "vitest": "5.0.5",
+        "zod": "4.6.7"
+    },
+    "archipel": {
+        "category": "Foundation",
+        "featured": true
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

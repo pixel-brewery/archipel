@@ -1,0 +1,17 @@
+{
+    "name": "nx-plugins",
+    "version": "0.0.1",
+    "private": true,
+    "executors": "./executors.json",
+    "dependencies": {
+        "@nx/devkit": "^24.0.2",
+        "gray-matter": "4.0.3",
+        "prettier": "3.9.10",
+        "typedoc": "0.28.20",
+        "typedoc-plugin-markdown": "4.14.1"
+    },
+    "devDependencies": {
+        "nx": "24.0.2",
+        "typescript": "6.0.3"
+    }
+}

@@ -1,0 +1,15 @@
+---
+title: 'Variable: DROPBOX\_SIGN\_WEBHOOK\_SECRET'
+generated: true
+editUrl: false
+---
+
+# Variable: DROPBOX\_SIGN\_WEBHOOK\_SECRET
+
+```ts
+const DROPBOX_SIGN_WEBHOOK_SECRET: IConfigKey<string>;
+```
+
+Defined in: [libs/platform-esigning/src/dropbox-sign/env.ts:18](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-esigning/src/dropbox-sign/env.ts#L18)
+
+Dropbox Sign webhook secret.

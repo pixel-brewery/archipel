@@ -1,0 +1,47 @@
+{
+    "name": "platform-mcp",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-mcp/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-mcp",
+                "tsConfig": "libs/platform-mcp/tsconfig.lib.json",
+                "packageJson": "libs/platform-mcp/package.json",
+                "main": "libs/platform-mcp/src/index.ts",
+                "assets": [
+                    "libs/platform-mcp/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": ["libs/platform-mcp/src/health/index.ts", "libs/platform-mcp/src/client/index.ts"]
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "cache": true,
+            "inputs": ["default", "^production"],
+            "outputs": ["{workspaceRoot}/coverage/libs/platform-mcp"],
+            "options": {
+                "command": "vitest run --config libs/platform-mcp/vitest.config.mjs"
+            }
+        },
+        "typecheck-client-tests": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project libs/platform-mcp/tsconfig.client-test.json"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

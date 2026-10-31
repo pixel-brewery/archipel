@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/schema",
+    "title": "Build LLM Artifacts",
+    "description": "Generates LLM/MCP-compatible artifacts (llms.txt, llms-full.txt, docs-index.json) from documentation content.",
+    "type": "object",
+    "properties": {
+        "docsDir": {
+            "type": "string",
+            "description": "Source docs directory (relative to workspace root). Defaults to `.docs`.",
+            "default": ".docs"
+        },
+        "outputDir": {
+            "type": "string",
+            "description": "Output directory for LLM artifacts (relative to workspace root). Defaults to `.generated/llm`.",
+            "default": ".generated/llm"
+        },
+        "projectTitle": {
+            "type": "string",
+            "description": "Project title used as heading in generated LLM documents."
+        },
+        "projectDescription": {
+            "type": "string",
+            "description": "One-line project description used in the LLM index header.",
+            "default": ""
+        }
+    },
+    "required": ["projectTitle"],
+    "additionalProperties": false
+}

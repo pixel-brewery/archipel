@@ -1,0 +1,46 @@
+{
+    "name": "platform-esigning",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-esigning/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-esigning",
+                "tsConfig": "libs/platform-esigning/tsconfig.lib.json",
+                "packageJson": "libs/platform-esigning/package.json",
+                "main": "libs/platform-esigning/src/index.ts",
+                "assets": [
+                    "libs/platform-esigning/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-esigning/src/docusign/index.ts",
+                    "libs/platform-esigning/src/adobe-sign/index.ts",
+                    "libs/platform-esigning/src/dropbox-sign/index.ts",
+                    "libs/platform-esigning/src/internal/index.ts",
+                    "libs/platform-esigning/src/health/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-esigning"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

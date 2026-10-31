@@ -1,0 +1,46 @@
+{
+    "name": "platform-blob-storage",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-blob-storage/src",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-blob-storage",
+                "tsConfig": "libs/platform-blob-storage/tsconfig.lib.json",
+                "packageJson": "libs/platform-blob-storage/package.json",
+                "main": "libs/platform-blob-storage/src/index.ts",
+                "assets": [
+                    "libs/platform-blob-storage/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-blob-storage/src/strategies/vercel/index.ts",
+                    "libs/platform-blob-storage/src/strategies/azure/index.ts",
+                    "libs/platform-blob-storage/src/strategies/aws-s3/index.ts",
+                    "libs/platform-blob-storage/src/strategies/empty/index.ts",
+                    "libs/platform-blob-storage/src/strategies/local/index.ts",
+                    "libs/platform-blob-storage/src/health/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-blob-storage"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

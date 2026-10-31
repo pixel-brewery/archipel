@@ -1,0 +1,8 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "framework": "vitepress",
+    "installCommand": "COREPACK_HOME=/tmp/corepack corepack yarn install --immutable",
+    "buildCommand": "npx vitepress build apps/frontend/docs",
+    "outputDirectory": "apps/frontend/docs/.vitepress/dist",
+    "ignoreCommand": "git diff HEAD^ HEAD --quiet -- .docs/ apps/frontend/docs/ vercel.json"
+}

@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json-schema.org/schema",
+    "title": "Generate API Overview",
+    "description": "Generates an API symbol index (api-index.json) from generated package docs.",
+    "type": "object",
+    "properties": {
+        "docsDir": {
+            "type": "string",
+            "description": "Root docs directory (relative to workspace root). Defaults to `.docs`.",
+            "default": ".docs"
+        },
+        "outputDir": {
+            "type": "string",
+            "description": "Output directory for api-index.json (relative to workspace root). Defaults to `.docs/public/api`.",
+            "default": ".docs/public/api"
+        },
+        "packagePrefix": {
+            "type": "string",
+            "description": "Prefix to filter package directories (e.g. `platform-`). If empty, all package directories are included.",
+            "default": ""
+        }
+    },
+    "required": [],
+    "additionalProperties": false
+}

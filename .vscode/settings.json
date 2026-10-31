@@ -1,0 +1,4 @@
+{
+    "snyk.advanced.autoSelectOrganization": true,
+    "vitest.rootConfig": "./vitest.config.mjs"
+}

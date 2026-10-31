@@ -1,0 +1,33 @@
+{
+    "name": "prisma-generator-json-schema",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "tools/prisma-generator-json-schema/src",
+    "projectType": "library",
+    "tags": ["tool"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/tools/prisma-generator-json-schema",
+                "tsConfig": "tools/prisma-generator-json-schema/tsconfig.lib.json",
+                "packageJson": "tools/prisma-generator-json-schema/package.json",
+                "main": "tools/prisma-generator-json-schema/src/index.ts",
+                "assets": [
+                    "tools/prisma-generator-json-schema/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ]
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "coverage.reportsDirectory": "../../coverage/tools/prisma-generator-json-schema"
+            }
+        }
+    }
+}

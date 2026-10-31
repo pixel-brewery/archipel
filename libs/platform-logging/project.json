@@ -1,0 +1,38 @@
+{
+    "name": "platform-logging",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-logging/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-logging",
+                "tsConfig": "libs/platform-logging/tsconfig.lib.json",
+                "packageJson": "libs/platform-logging/package.json",
+                "main": "libs/platform-logging/src/index.ts",
+                "assets": [
+                    "libs/platform-logging/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ]
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-logging"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

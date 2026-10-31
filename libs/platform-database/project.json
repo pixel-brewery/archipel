@@ -1,0 +1,39 @@
+{
+    "name": "platform-database",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-database/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-database",
+                "tsConfig": "libs/platform-database/tsconfig.lib.json",
+                "packageJson": "libs/platform-database/package.json",
+                "main": "libs/platform-database/src/index.ts",
+                "assets": [
+                    "libs/platform-database/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": ["libs/platform-database/src/health/index.ts", "libs/platform-database/src/postgres/index.ts"]
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-database"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

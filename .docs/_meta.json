@@ -1,0 +1,30 @@
+{
+    "index": {
+        "title": "Home",
+        "order": 0
+    },
+    "packages": {
+        "title": "Packages",
+        "order": 1
+    },
+    "guides": {
+        "title": "Guides",
+        "order": 2
+    },
+    "patterns": {
+        "title": "Patterns",
+        "order": 3
+    },
+    "architecture": {
+        "title": "Architecture",
+        "order": 4
+    },
+    "api": {
+        "title": "API",
+        "order": 5
+    },
+    "tools": {
+        "title": "Tools",
+        "order": 6
+    }
+}

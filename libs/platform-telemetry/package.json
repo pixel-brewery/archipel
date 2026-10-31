@@ -1,0 +1,245 @@
+{
+    "name": "@pixel-brewery/archipel-platform-telemetry",
+    "version": "0.1.24",
+    "description": "OpenTelemetry tracing and metrics with optional direct numeric measurements for NestJS.",
+    "type": "module",
+    "sideEffects": false,
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "health": [
+                "./src/health/index.d.ts"
+            ],
+            "otel": [
+                "./src/otel/index.d.ts"
+            ],
+            "otel/bootstrap": [
+                "./src/otel/bootstrap/index.d.ts"
+            ],
+            "otel/providers/otlp-http": [
+                "./src/otel/providers/otlp-http/index.d.ts"
+            ],
+            "otel/providers/otlp-grpc": [
+                "./src/otel/providers/otlp-grpc/index.d.ts"
+            ],
+            "otel/providers/prometheus": [
+                "./src/otel/providers/prometheus/index.d.ts"
+            ],
+            "otel/providers/console": [
+                "./src/otel/providers/console/index.d.ts"
+            ],
+            "measurements": [
+                "./src/measurements/index.d.ts"
+            ],
+            "measurements/providers/empty": [
+                "./src/measurements/providers/empty/index.d.ts"
+            ],
+            "measurements/providers/vercel": [
+                "./src/measurements/providers/vercel/index.d.ts"
+            ],
+            "measurements/providers/new-relic": [
+                "./src/measurements/providers/new-relic/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./health": {
+            "types": "./src/health/index.d.ts",
+            "import": "./src/health/index.js",
+            "default": "./src/health/index.js"
+        },
+        "./otel": {
+            "types": "./src/otel/index.d.ts",
+            "import": "./src/otel/index.js",
+            "default": "./src/otel/index.js"
+        },
+        "./otel/bootstrap": {
+            "types": "./src/otel/bootstrap/index.d.ts",
+            "import": "./src/otel/bootstrap/index.js",
+            "default": "./src/otel/bootstrap/index.js"
+        },
+        "./otel/providers/otlp-http": {
+            "types": "./src/otel/providers/otlp-http/index.d.ts",
+            "import": "./src/otel/providers/otlp-http/index.js",
+            "default": "./src/otel/providers/otlp-http/index.js"
+        },
+        "./otel/providers/otlp-grpc": {
+            "types": "./src/otel/providers/otlp-grpc/index.d.ts",
+            "import": "./src/otel/providers/otlp-grpc/index.js",
+            "default": "./src/otel/providers/otlp-grpc/index.js"
+        },
+        "./otel/providers/prometheus": {
+            "types": "./src/otel/providers/prometheus/index.d.ts",
+            "import": "./src/otel/providers/prometheus/index.js",
+            "default": "./src/otel/providers/prometheus/index.js"
+        },
+        "./otel/providers/console": {
+            "types": "./src/otel/providers/console/index.d.ts",
+            "import": "./src/otel/providers/console/index.js",
+            "default": "./src/otel/providers/console/index.js"
+        },
+        "./measurements": {
+            "types": "./src/measurements/index.d.ts",
+            "import": "./src/measurements/index.js",
+            "default": "./src/measurements/index.js"
+        },
+        "./measurements/providers/empty": {
+            "types": "./src/measurements/providers/empty/index.d.ts",
+            "import": "./src/measurements/providers/empty/index.js",
+            "default": "./src/measurements/providers/empty/index.js"
+        },
+        "./measurements/providers/vercel": {
+            "types": "./src/measurements/providers/vercel/index.d.ts",
+            "import": "./src/measurements/providers/vercel/index.js",
+            "default": "./src/measurements/providers/vercel/index.js"
+        },
+        "./measurements/providers/new-relic": {
+            "types": "./src/measurements/providers/new-relic/index.d.ts",
+            "import": "./src/measurements/providers/new-relic/index.js",
+            "default": "./src/measurements/providers/new-relic/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-telemetry"
+    },
+    "keywords": [
+        "nestjs",
+        "opentelemetry",
+        "tracing",
+        "metrics",
+        "observability",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-caching": "0.1.24",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "@pixel-brewery/archipel-platform-core": "0.1.24",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/core": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "@opentelemetry/api": ">=1.10.0 <1.11.0",
+        "@opentelemetry/context-async-hooks": ">=3.0.0",
+        "@opentelemetry/core": ">=3.0.0",
+        "@opentelemetry/exporter-metrics-otlp-grpc": ">=0.300.0",
+        "@opentelemetry/exporter-metrics-otlp-http": ">=0.300.0",
+        "@opentelemetry/exporter-prometheus": ">=0.300.0",
+        "@opentelemetry/exporter-trace-otlp-http": ">=0.300.0",
+        "@opentelemetry/instrumentation": ">=0.300.0",
+        "@opentelemetry/instrumentation-express": ">=0.72.0",
+        "@opentelemetry/instrumentation-http": ">=0.300.0",
+        "@opentelemetry/resources": ">=3.0.0",
+        "@opentelemetry/sdk-metrics": ">=3.0.0",
+        "@opentelemetry/sdk-trace": ">=3.0.0",
+        "@opentelemetry/semantic-conventions": ">=1.30.0",
+        "@pixel-brewery/archipel-platform-health": "0.1.24",
+        "@vercel/functions": ">=3.9.5",
+        "rxjs": ">=7.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@nestjs/terminus": {
+            "optional": true
+        },
+        "@opentelemetry/api": {
+            "optional": true
+        },
+        "@opentelemetry/context-async-hooks": {
+            "optional": true
+        },
+        "@opentelemetry/core": {
+            "optional": true
+        },
+        "@opentelemetry/exporter-metrics-otlp-grpc": {
+            "optional": true
+        },
+        "@opentelemetry/exporter-metrics-otlp-http": {
+            "optional": true
+        },
+        "@opentelemetry/exporter-prometheus": {
+            "optional": true
+        },
+        "@opentelemetry/exporter-trace-otlp-http": {
+            "optional": true
+        },
+        "@opentelemetry/instrumentation": {
+            "optional": true
+        },
+        "@opentelemetry/instrumentation-express": {
+            "optional": true
+        },
+        "@opentelemetry/instrumentation-http": {
+            "optional": true
+        },
+        "@opentelemetry/resources": {
+            "optional": true
+        },
+        "@opentelemetry/sdk-metrics": {
+            "optional": true
+        },
+        "@opentelemetry/sdk-trace": {
+            "optional": true
+        },
+        "@opentelemetry/semantic-conventions": {
+            "optional": true
+        },
+        "@pixel-brewery/archipel-platform-health": {
+            "optional": true
+        },
+        "@vercel/functions": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@opentelemetry/api": "1.10.0",
+        "@opentelemetry/context-async-hooks": "3.0.0",
+        "@opentelemetry/core": "3.0.0",
+        "@opentelemetry/exporter-metrics-otlp-grpc": "0.300.0",
+        "@opentelemetry/exporter-metrics-otlp-http": "0.300.0",
+        "@opentelemetry/exporter-prometheus": "0.300.0",
+        "@opentelemetry/exporter-trace-otlp-http": "0.300.0",
+        "@opentelemetry/instrumentation": "0.300.0",
+        "@opentelemetry/instrumentation-express": "0.72.0",
+        "@opentelemetry/instrumentation-http": "0.300.0",
+        "@opentelemetry/resources": "3.0.0",
+        "@opentelemetry/sdk-metrics": "3.0.0",
+        "@opentelemetry/sdk-trace": "3.0.0",
+        "@opentelemetry/semantic-conventions": "1.43.0",
+        "@vercel/functions": "3.10.3",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Operations"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

@@ -1,0 +1,85 @@
+{
+    "name": "@pixel-brewery/archipel-platform-intelligence-agents",
+    "version": "0.1.24",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-intelligence": "^0.1.24",
+        "tslib": "2.8.1"
+    },
+    "description": "Provider-neutral multi-agent runtime, semantic events, situations, memory, and interceptable agent loops for NestJS.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-intelligence-agents"
+    },
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "keywords": [
+        "nestjs",
+        "intelligence",
+        "agents",
+        "multi-agent",
+        "events",
+        "archipel"
+    ],
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "THIRD_PARTY_NOTICES.md",
+        "ARCHITECTURE.md",
+        "LICENSE"
+    ],
+    "archipel": {
+        "category": "AI & Extensibility"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@pixel-brewery/archipel-platform-mcp": "^0.1.24"
+    },
+    "peerDependenciesMeta": {
+        "@pixel-brewery/archipel-platform-mcp": {
+            "optional": true
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "mcp": [
+                "./src/mcp/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./mcp": {
+            "types": "./src/mcp/index.d.ts",
+            "import": "./src/mcp/index.js",
+            "default": "./src/mcp/index.js"
+        }
+    },
+    "devDependencies": {
+        "@ai-sdk/provider": "4.0.31",
+        "@nestjs/common": "12.3.2",
+        "@nestjs/testing": "12.3.2",
+        "@pixel-brewery/archipel-platform-configuration": "^0.1.24",
+        "@pixel-brewery/archipel-platform-mcp": "^0.1.24",
+        "vitest": "5.0.5",
+        "zod": "4.6.7"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

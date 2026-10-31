@@ -1,0 +1,126 @@
+{
+    "name": "@pixel-brewery/archipel-platform-analytics",
+    "version": "0.1.24",
+    "description": "Provider-agnostic analytics and error tracking for NestJS with support for Sentry, Application Insights, and Datadog.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "application-insights": [
+                "./src/application-insights/index.d.ts"
+            ],
+            "datadog": [
+                "./src/datadog/index.d.ts"
+            ],
+            "sentry": [
+                "./src/sentry/index.d.ts"
+            ],
+            "health": [
+                "./src/health/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./application-insights": {
+            "types": "./src/application-insights/index.d.ts",
+            "import": "./src/application-insights/index.js",
+            "default": "./src/application-insights/index.js"
+        },
+        "./datadog": {
+            "types": "./src/datadog/index.d.ts",
+            "import": "./src/datadog/index.js",
+            "default": "./src/datadog/index.js"
+        },
+        "./sentry": {
+            "types": "./src/sentry/index.d.ts",
+            "import": "./src/sentry/index.js",
+            "default": "./src/sentry/index.js"
+        },
+        "./health": {
+            "types": "./src/health/index.d.ts",
+            "import": "./src/health/index.js",
+            "default": "./src/health/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-analytics"
+    },
+    "keywords": [
+        "nestjs",
+        "analytics",
+        "error-tracking",
+        "sentry",
+        "application-insights",
+        "datadog",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/core": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "@pixel-brewery/archipel-platform-health": "0.1.24",
+        "@sentry/node": ">=9.0.0",
+        "applicationinsights": ">=3.0.0",
+        "dd-trace": ">=5.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@nestjs/terminus": {
+            "optional": true
+        },
+        "@pixel-brewery/archipel-platform-health": {
+            "optional": true
+        },
+        "@sentry/node": {
+            "optional": true
+        },
+        "applicationinsights": {
+            "optional": true
+        },
+        "dd-trace": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@sentry/node": "11.8.0",
+        "applicationinsights": "3.17.0",
+        "dd-trace": "6.21.0",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Operations"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

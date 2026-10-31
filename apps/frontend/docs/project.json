@@ -1,0 +1,90 @@
+{
+    "name": "docs",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/frontend/docs",
+    "projectType": "application",
+    "tags": ["docs", "app"],
+    "targets": {
+        "generate-api-overview": {
+            "executor": "nx-plugins:generate-api-overview",
+            "dependsOn": ["^docs"],
+            "inputs": [
+                "^production",
+                "{workspaceRoot}/.docs/packages/*/api/**/*",
+                "{workspaceRoot}/infra/nx-plugins/src/**/*",
+                "{workspaceRoot}/infra/nx-plugins/package.json",
+                "{workspaceRoot}/.prettierrc",
+                "{workspaceRoot}/.prettierignore",
+                "{workspaceRoot}/package.json"
+            ],
+            "outputs": ["{workspaceRoot}/.docs/public/api/api-index.json"],
+            "options": {
+                "packagePrefix": "platform-"
+            },
+            "cache": true
+        },
+        "dev": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["generate-api-overview", "^docs"],
+            "options": {
+                "command": "yarn workspace @pixel-brewery/archipel-docs dev",
+                "cwd": "{workspaceRoot}"
+            }
+        },
+        "build": {
+            "executor": "nx:run-commands",
+            "inputs": ["default", "^production", "{workspaceRoot}/.docs/**/*"],
+            "dependsOn": ["generate-api-overview", "^docs"],
+            "options": {
+                "command": "yarn workspace @pixel-brewery/archipel-docs build",
+                "cwd": "{workspaceRoot}"
+            },
+            "outputs": ["{workspaceRoot}/apps/frontend/docs/.vitepress/dist"]
+        },
+        "preview": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "yarn workspace @pixel-brewery/archipel-docs preview",
+                "cwd": "{workspaceRoot}"
+            }
+        },
+        "docs-build-llm": {
+            "executor": "nx-plugins:build-llm-artifacts",
+            "dependsOn": ["^docs"],
+            "inputs": ["{workspaceRoot}/.docs/**/*"],
+            "outputs": ["{workspaceRoot}/.generated/llm"],
+            "options": {
+                "projectTitle": "Archipel Platform",
+                "projectDescription": "Documentation index for the Archipel NestJS platform libraries monorepo."
+            },
+            "cache": true
+        }
+    },
+    "implicitDependencies": [
+        "platform-analytics",
+        "platform-authentication",
+        "platform-blob-storage",
+        "platform-bootstrap",
+        "platform-caching",
+        "platform-configuration",
+        "platform-core",
+        "platform-cryptography",
+        "platform-database",
+        "platform-documents",
+        "platform-esigning",
+        "platform-feature-flags",
+        "platform-health",
+        "platform-intelligence",
+        "platform-intelligence-agents",
+        "platform-logging",
+        "platform-mailing",
+        "platform-mapping",
+        "platform-mcp",
+        "platform-openapi",
+        "platform-payments",
+        "platform-queue",
+        "platform-reporting",
+        "platform-resources",
+        "platform-telemetry"
+    ]
+}

@@ -1,0 +1,89 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compileOnSave": false,
+    "files": [],
+    "references": [
+        {
+            "path": "./libs/platform-authentication"
+        },
+        {
+            "path": "./libs/platform-blob-storage"
+        },
+        {
+            "path": "./libs/platform-documents"
+        },
+        {
+            "path": "./libs/platform-reporting"
+        },
+        {
+            "path": "./libs/platform-telemetry"
+        },
+        {
+            "path": "./libs/platform-database"
+        },
+        {
+            "path": "./libs/platform-payments"
+        },
+        {
+            "path": "./libs/platform-logging"
+        },
+        {
+            "path": "./libs/platform-mailing"
+        },
+        {
+            "path": "./libs/platform-openapi"
+        },
+        {
+            "path": "./libs/platform-core"
+        },
+        {
+            "path": "./libs/platform-mcp"
+        },
+        {
+            "path": "./libs/platform-analytics"
+        },
+        {
+            "path": "./libs/platform-esigning"
+        },
+        {
+            "path": "./libs/platform-intelligence"
+        },
+        {
+            "path": "./libs/platform-cryptography"
+        },
+        {
+            "path": "./libs/platform-caching"
+        },
+        {
+            "path": "./tools/prisma-generator-json-schema"
+        },
+        {
+            "path": "./tools/prisma-generator-entities"
+        },
+        {
+            "path": "./libs/platform-configuration"
+        },
+        {
+            "path": "./libs/platform-resources"
+        },
+        {
+            "path": "./libs/platform-mapping"
+        },
+        {
+            "path": "./libs/platform-health"
+        },
+        {
+            "path": "./libs/platform-queue"
+        },
+        {
+            "path": "./libs/platform-feature-flags"
+        },
+        {
+            "path": "./libs/platform-bootstrap"
+        },
+        {
+            "path": "./libs/platform-intelligence-agents"
+        }
+    ],
+    "exclude": ["node_modules", "tmp"]
+}

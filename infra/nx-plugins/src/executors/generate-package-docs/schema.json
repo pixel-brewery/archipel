@@ -1,0 +1,14 @@
+{
+    "$schema": "https://json-schema.org/schema",
+    "title": "Generate Package Docs",
+    "description": "Generates API documentation for a single NX library package using TypeDoc.",
+    "type": "object",
+    "properties": {
+        "outputDir": {
+            "type": "string",
+            "description": "Output directory for generated docs (relative to workspace root). Defaults to `.docs/packages/{projectName}/api`."
+        }
+    },
+    "required": [],
+    "additionalProperties": false
+}

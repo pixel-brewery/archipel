@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" />
+        <base href="/" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <title>{{title}}</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            :root {
+              --color-primary: {{style.primary}};
+              --color-secondary: {{style.secondary}};
+            }
+
+            @keyframes shimmer {
+              0%,
+              100% {
+                background-position: 0% 50%;
+              }
+              50% {
+                background-position: 100% 50%;
+              }
+            }
+
+            @keyframes slow-rotate {
+              from {
+                transform: rotate(0deg);
+              }
+              to {
+                transform: rotate(360deg);
+              }
+            }
+
+            .gradient-text {
+              background: linear-gradient(155deg, #fff 45%, var(--color-primary) 100%);
+              -webkit-background-clip: text;
+              background-clip: text;
+              -webkit-text-fill-color: transparent;
+              animation: shimmer 3s ease-in-out infinite;
+            }
+
+            .bg-orb {
+              background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-primary) 8%, transparent) 0%, transparent 50%);
+              animation: slow-rotate 30s linear infinite;
+            }
+        </style>
+    </head>
+    <body class="min-h-screen overflow-x-hidden bg-[#0d0d0d] text-[#e5e5e5] font-sans relative">
+        <div class="fixed -inset-[50%] pointer-events-none -z-10 bg-orb"></div>
+        <script>
+            async function copyToClipboard(event, jsonPath) {
+                event.preventDefault();
+                const button = event.currentTarget;
+                const originalText = button.textContent;
+
+                try {
+                    const path = location.origin + jsonPath;
+                    await navigator.clipboard.writeText(path);
+                    button.textContent = 'Copied!';
+                    button.classList.add('ring-1', 'ring-emerald-400/50', 'bg-emerald-500/10', 'text-emerald-300');
+
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('ring-1', 'ring-emerald-400/50', 'bg-emerald-500/10', 'text-emerald-300');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                    button.textContent = 'Error';
+                    button.classList.add('ring-1', 'ring-red-400/50', 'bg-red-500/10', 'text-red-300');
+
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('ring-1', 'ring-red-400/50', 'bg-red-500/10', 'text-red-300');
+                    }, 2000);
+                }
+            }
+        </script>
+        <div class="relative z-10 mx-auto max-w-5xl px-6 py-16 lg:px-8">
+            <div class="text-center space-y-4 mb-12">
+                <h1 class="text-4xl lg:text-5xl font-semibold leading-tight">
+                    <span class="gradient-text">{{header.title}}</span>
+                </h1>
+                <p class="text-lg text-white/70 max-w-3xl mx-auto">{{header.description}}</p>
+            </div>
+
+            <div id="searchContainer" class="sticky top-0 z-20 -mt-4 mb-8 bg-[#0d0d0d]/90 backdrop-blur border-b border-white/10 transition-shadow">
+                <div class="max-w-3xl mx-auto px-6 py-4">
+                    <div class="relative">
+                        <input
+                            type="search"
+                            id="searchInput"
+                            class="w-full rounded-full border-2 border-white/10 bg-white/5 px-5 py-3 text-base text-white placeholder:text-white/50 shadow-lg focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                            placeholder="Search API endpoints..."
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
+                        <svg
+                            class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                    <div id="searchResultsInfo" class="text-center text-sm text-white/60 mt-2 opacity-0 transition-opacity"></div>
+                </div>
+            </div>
+
+            <div id="noResults" class="hidden text-center rounded-2xl border border-white/10 bg-white/5 px-8 py-10 text-white/70">
+                <div class="text-2xl font-semibold text-white mb-2">No results found</div>
+                <p class="text-base">Try adjusting your search terms</p>
+            </div>
+
+            <div id="featuresGrid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {{#each features}}
+                <div
+                    class="feature-card rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:-translate-y-1 hover:border-[var(--color-primary)] hover:bg-white/10"
+                >
+                    <span class="feature-tag inline-block rounded-lg bg-black/40 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white/80"
+                        >{{tag}}</span
+                    >
+                    <h3 class="mt-3 text-xl font-semibold text-white">{{title}}</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-white/70">{{description}}</p>
+                    <div class="mt-6 flex flex-col gap-3">
+                        <a
+                            href="/{{path}}"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+                            target="_self"
+                            rel="noreferrer"
+                            >View Documentation →</a
+                        >
+                        <div class="flex flex-wrap gap-2">
+                            <a
+                                href="{{jsonPath}}"
+                                class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/30"
+                                download="{{tag}}-openapi.json"
+                                rel="noreferrer"
+                                >Download ↓</a
+                            >
+                            <a
+                                href="#"
+                                class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/30"
+                                onclick="copyToClipboard(event, '{{jsonPath}}')"
+                                >Copy</a
+                            >
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <footer class="border-t border-white/10 bg-black/30 backdrop-blur">
+            <div class="mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-6 text-center text-sm text-white/60">
+                <p class="text-white/80">{{footer.copyright}}</p>
+                <p>{{footer.stage}} • {{footer.version}}</p>
+            </div>
+        </footer>
+
+        <script>
+            (function () {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initSearch);
+                } else {
+                    initSearch();
+                }
+
+                function initSearch() {
+                    const searchInput = document.getElementById('searchInput');
+                    const searchContainer = document.getElementById('searchContainer');
+                    const searchResultsInfo = document.getElementById('searchResultsInfo');
+                    const featuresGrid = document.getElementById('featuresGrid');
+                    const noResults = document.getElementById('noResults');
+
+                    if (!searchInput || !featuresGrid || !searchContainer) return;
+
+                    const featureCards = Array.from(featuresGrid.querySelectorAll('.feature-card'));
+                    let searchTimeout;
+
+                    window.addEventListener('scroll', function () {
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        if (scrollTop > 10) {
+                            searchContainer.classList.add('shadow-2xl');
+                        } else {
+                            searchContainer.classList.remove('shadow-2xl');
+                        }
+                    });
+
+                    searchInput.addEventListener('input', function (e) {
+                        clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(() => {
+                            performSearch(e.target.value.trim());
+                        }, 150);
+                    });
+
+                    searchInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape') {
+                            searchInput.value = '';
+                            performSearch('');
+                            searchInput.blur();
+                        }
+                    });
+
+                    function performSearch(query) {
+                        const lowerQuery = query.toLowerCase();
+                        let visibleCount = 0;
+                        const totalCount = featureCards.length;
+
+                        if (!query) {
+                            featureCards.forEach((card) => {
+                                card.classList.remove('hidden');
+                                removeHighlights(card);
+                            });
+                            noResults.classList.add('hidden');
+                            featuresGrid.classList.remove('hidden');
+                            searchResultsInfo.classList.remove('opacity-100');
+                            searchResultsInfo.classList.add('opacity-0');
+                            return;
+                        }
+
+                        featureCards.forEach((card) => {
+                            const tag = card.querySelector('.feature-tag')?.textContent.toLowerCase() || '';
+                            const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                            const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+
+                            const matches = tag.includes(lowerQuery) || title.includes(lowerQuery) || description.includes(lowerQuery);
+
+                            if (matches) {
+                                card.classList.remove('hidden');
+                                visibleCount++;
+                                highlightMatches(card, query);
+                            } else {
+                                card.classList.add('hidden');
+                                removeHighlights(card);
+                            }
+                        });
+
+                        if (visibleCount === 0) {
+                            noResults.classList.remove('hidden');
+                            featuresGrid.classList.add('hidden');
+                            searchResultsInfo.textContent = `No results for "${query}"`;
+                        } else {
+                            noResults.classList.add('hidden');
+                            featuresGrid.classList.remove('hidden');
+                            searchResultsInfo.textContent = `Showing ${visibleCount} of ${totalCount} endpoint${totalCount !== 1 ? 's' : ''}`;
+                        }
+
+                        searchResultsInfo.classList.remove('opacity-0');
+                        searchResultsInfo.classList.add('opacity-100');
+                    }
+
+                    function highlightMatches(card, query) {
+                        const elements = [card.querySelector('.feature-tag'), card.querySelector('h3'), card.querySelector('p')];
+
+                        elements.forEach((element) => {
+                            if (!element) return;
+
+                            const originalText = element.getAttribute('data-original-text') || element.textContent;
+                            if (!element.hasAttribute('data-original-text')) {
+                                element.setAttribute('data-original-text', originalText);
+                            }
+
+                            const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+                            const highlightedText = originalText.replace(regex, '<span style="color: var(--color-primary); font-weight: 700;">$1</span>');
+                            element.innerHTML = highlightedText;
+                        });
+                    }
+
+                    function removeHighlights(card) {
+                        const elements = [card.querySelector('.feature-tag'), card.querySelector('h3'), card.querySelector('p')];
+
+                        elements.forEach((element) => {
+                            if (!element) return;
+
+                            const originalText = element.getAttribute('data-original-text');
+                            if (originalText) {
+                                element.textContent = originalText;
+                            }
+                        });
+                    }
+
+                    function escapeRegex(string) {
+                        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    }
+
+                    document.addEventListener('keydown', function (e) {
+                        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                            e.preventDefault();
+                            searchInput.focus();
+                        }
+                    });
+                }
+
+                window.copyToClipboard = function (event, url) {
+                    event.preventDefault();
+                    const fullUrl = window.location.origin + url;
+                    navigator.clipboard
+                        .writeText(fullUrl)
+                        .then(() => {
+                            const btn = event.target;
+                            const originalText = btn.textContent;
+                            btn.textContent = 'Copied!';
+                            setTimeout(() => {
+                                btn.textContent = originalText;
+                            }, 2000);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy:', err);
+                        });
+                };
+            })();
+        </script>
+    </body>
+</html>

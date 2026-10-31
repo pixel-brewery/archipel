@@ -1,0 +1,11 @@
+export { FeatureFlagReaderBase } from './abstracts/FeatureFlagReaderBase.js';
+export { FeatureFlagWriterBase } from './abstracts/FeatureFlagWriterBase.js';
+export { FEATURE_FLAG_KEY_METADATA, FeatureFlag } from './decorators/FeatureFlag.js';
+export { PLATFORM_FEATURE_FLAGS_CONFIG_ENTRIES } from './env.js';
+export { FeatureFlagError } from './errors/FeatureFlagError.js';
+export { FeatureFlagModule } from './FeatureFlagModule.js';
+export { FeatureFlagGuard } from './guards/FeatureFlagGuard.js';
+export type { IFeatureFlagContext } from './models/IFeatureFlagContext.js';
+export type { IFeatureFlagDefinition } from './models/IFeatureFlagDefinition.js';
+export type { IFeatureFlagEvaluation } from './models/IFeatureFlagEvaluation.js';
+export type { IFeatureFlagModuleOptions } from './models/IFeatureFlagModuleOptions.js';

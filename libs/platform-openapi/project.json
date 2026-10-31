@@ -1,0 +1,43 @@
+{
+    "name": "platform-openapi",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-openapi/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-openapi",
+                "tsConfig": "libs/platform-openapi/tsconfig.lib.json",
+                "packageJson": "libs/platform-openapi/package.json",
+                "main": "libs/platform-openapi/src/index.ts",
+                "assets": [
+                    "libs/platform-openapi/*.md",
+                    {
+                        "input": "libs/platform-openapi/assets",
+                        "glob": "**/*",
+                        "output": "assets"
+                    },
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ]
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-openapi"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

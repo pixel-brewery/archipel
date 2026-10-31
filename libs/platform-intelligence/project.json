@@ -1,0 +1,54 @@
+{
+    "name": "platform-intelligence",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-intelligence/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-intelligence",
+                "tsConfig": "libs/platform-intelligence/tsconfig.lib.json",
+                "packageJson": "libs/platform-intelligence/package.json",
+                "main": "libs/platform-intelligence/src/index.ts",
+                "assets": [
+                    "libs/platform-intelligence/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-intelligence/src/providers/openai/index.ts",
+                    "libs/platform-intelligence/src/providers/openai/tools/index.ts",
+                    "libs/platform-intelligence/src/providers/anthropic/index.ts",
+                    "libs/platform-intelligence/src/providers/anthropic/tools/index.ts",
+                    "libs/platform-intelligence/src/providers/google/index.ts",
+                    "libs/platform-intelligence/src/providers/google/tools/index.ts",
+                    "libs/platform-intelligence/src/providers/grok/index.ts",
+                    "libs/platform-intelligence/src/providers/grok/tools/index.ts",
+                    "libs/platform-intelligence/src/providers/mimo/index.ts",
+                    "libs/platform-intelligence/src/providers/mimo/tools/index.ts",
+                    "libs/platform-intelligence/src/providers/gateway/index.ts",
+                    "libs/platform-intelligence/src/realtime/index.ts",
+                    "libs/platform-intelligence/src/health/index.ts"
+                ]
+            }
+        },
+        "test": {
+            "dependsOn": ["build"],
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-intelligence"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

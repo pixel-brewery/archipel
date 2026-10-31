@@ -1,0 +1,51 @@
+{
+    "name": "platform-mailing",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-mailing/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-mailing",
+                "tsConfig": "libs/platform-mailing/tsconfig.lib.json",
+                "packageJson": "libs/platform-mailing/package.json",
+                "main": "libs/platform-mailing/src/index.ts",
+                "assets": [
+                    "libs/platform-mailing/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-mailing/src/delivering/strategies/empty/index.ts",
+                    "libs/platform-mailing/src/delivering/strategies/smtp/index.ts",
+                    "libs/platform-mailing/src/delivering/strategies/postmark/index.ts",
+                    "libs/platform-mailing/src/delivering/strategies/resend/index.ts",
+                    "libs/platform-mailing/src/delivering/strategies/sendgrid/index.ts",
+                    "libs/platform-mailing/src/delivering/strategies/mailgun/index.ts",
+                    "libs/platform-mailing/src/templating/strategies/blob/index.ts",
+                    "libs/platform-mailing/src/templating/strategies/file/index.ts",
+                    "libs/platform-mailing/src/templating/strategies/database/index.ts",
+                    "libs/platform-mailing/src/health/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-mailing"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

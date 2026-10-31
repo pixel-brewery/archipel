@@ -1,0 +1,152 @@
+{
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "tui": {
+        "enabled": false
+    },
+    "neverConnectToCloud": true,
+    "namedInputs": {
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "production": [
+            "default",
+            "!{projectRoot}/eslint.config.mjs",
+            "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+            "!{projectRoot}/tsconfig.spec.json",
+            "!{projectRoot}/vitest.config.mjs",
+            "!{projectRoot}/src/test-setup.[jt]s"
+        ],
+        "sharedGlobals": ["{workspaceRoot}/LICENSE"]
+    },
+    "plugins": [
+        {
+            "plugin": "@nx/js/typescript",
+            "options": {
+                "typecheck": {
+                    "targetName": "typecheck"
+                },
+                "build": {
+                    "targetName": "build",
+                    "configName": "tsconfig.lib.json",
+                    "buildDepsName": "build-deps",
+                    "watchDepsName": "watch-deps"
+                }
+            }
+        },
+        {
+            "plugin": "@nx/eslint/plugin",
+            "options": {
+                "targetName": "lint"
+            }
+        },
+        {
+            "plugin": "@nx/vitest",
+            "options": {
+                "testMode": "run",
+                "testTargetName": "test"
+            },
+            "include": [
+                "libs/platform-analytics/**/*",
+                "libs/platform-authentication/**/*",
+                "libs/platform-blob-storage/**/*",
+                "libs/platform-bootstrap/**/*",
+                "libs/platform-caching/**/*",
+                "libs/platform-configuration/**/*",
+                "libs/platform-core/**/*",
+                "libs/platform-cryptography/**/*",
+                "libs/platform-database/**/*",
+                "libs/platform-documents/**/*",
+                "libs/platform-esigning/**/*",
+                "libs/platform-feature-flags/**/*",
+                "libs/platform-health/**/*",
+                "libs/platform-intelligence/**/*",
+                "libs/platform-logging/**/*",
+                "libs/platform-mailing/**/*",
+                "libs/platform-mapping/**/*",
+                "libs/platform-openapi/**/*",
+                "libs/platform-payments/**/*",
+                "libs/platform-queue/**/*",
+                "libs/platform-reporting/**/*",
+                "libs/platform-resources/**/*",
+                "libs/platform-telemetry/**/*",
+                "tools/mcp/**/*",
+                "tools/prisma-generator-entities/**/*",
+                "tools/prisma-generator-json-schema/**/*",
+                "libs/platform-intelligence-agents/**/*",
+                "libs/platform-mcp/**/*"
+            ]
+        }
+    ],
+    "targetDefaults": {
+        "@nx/js:tsc": {
+            "cache": true,
+            "dependsOn": ["^build"],
+            "inputs": ["production", "^production"]
+        },
+        "nx-plugins:generate-package-docs": {
+            "cache": true,
+            "inputs": [
+                "production",
+                "^production",
+                "{workspaceRoot}/infra/nx-plugins/src/**/*",
+                "{workspaceRoot}/.prettierrc",
+                "{workspaceRoot}/.prettierignore",
+                "{workspaceRoot}/package.json",
+                "{workspaceRoot}/infra/nx-plugins/package.json"
+            ],
+            "outputs": ["{workspaceRoot}/.docs/packages/{projectName}/api"]
+        },
+        "nx-release-publish": {
+            "executor": "@nx/js:release-publish",
+            "dependsOn": ["build"],
+            "options": {
+                "packageRoot": "dist/{projectRoot}",
+                "registry": "https://npm.pkg.github.com"
+            }
+        }
+    },
+    "release": {
+        "groups": {
+            "platform": {
+                "projects": ["libs/*", "tools/mcp"],
+                "projectsRelationship": "fixed",
+                "releaseTag": {
+                    "pattern": "v{version}"
+                }
+            },
+            "prisma-generators": {
+                "projects": ["tools/prisma-generator-*"],
+                "projectsRelationship": "fixed",
+                "releaseTag": {
+                    "pattern": "prisma-generators-v{version}"
+                }
+            }
+        },
+        "version": {
+            "preVersionCommand": "yarn build && yarn verify:esm",
+            "currentVersionResolver": "git-tag",
+            "manifestRootsToUpdate": ["{projectRoot}", "dist/{projectRoot}"],
+            "preserveLocalDependencyProtocols": false,
+            "fallbackCurrentVersionResolver": "disk",
+            "versionActionsOptions": {
+                "installIgnoreScripts": true
+            },
+            "preserveMatchingDependencyRanges": false,
+            "adjustSemverBumpsForZeroMajorVersion": false,
+            "updateDependents": "never"
+        },
+        "changelog": {
+            "projectChangelogs": true
+        },
+        "git": {
+            "commit": true,
+            "commitMessage": "chore(release): publish platform and prisma generators [skip ci]",
+            "tag": true,
+            "push": false
+        }
+    },
+    "analytics": false,
+    "affected": {
+        "legacy": true
+    },
+    "defaultBase": "main",
+    "parallel": 1
+}

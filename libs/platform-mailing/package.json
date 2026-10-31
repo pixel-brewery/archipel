@@ -1,0 +1,195 @@
+{
+    "name": "@pixel-brewery/archipel-platform-mailing",
+    "version": "0.1.24",
+    "description": "Email delivery with strategy-based transport and template engines for NestJS applications.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "sideEffects": false,
+    "typesVersions": {
+        "*": {
+            "delivering/empty": [
+                "./src/delivering/strategies/empty/index.d.ts"
+            ],
+            "delivering/smtp": [
+                "./src/delivering/strategies/smtp/index.d.ts"
+            ],
+            "delivering/mailgun": [
+                "./src/delivering/strategies/mailgun/index.d.ts"
+            ],
+            "delivering/postmark": [
+                "./src/delivering/strategies/postmark/index.d.ts"
+            ],
+            "delivering/resend": [
+                "./src/delivering/strategies/resend/index.d.ts"
+            ],
+            "delivering/sendgrid": [
+                "./src/delivering/strategies/sendgrid/index.d.ts"
+            ],
+            "templating/blob": [
+                "./src/templating/strategies/blob/index.d.ts"
+            ],
+            "templating/file": [
+                "./src/templating/strategies/file/index.d.ts"
+            ],
+            "templating/database": [
+                "./src/templating/strategies/database/index.d.ts"
+            ],
+            "health": [
+                "./src/health/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./delivering/empty": {
+            "types": "./src/delivering/strategies/empty/index.d.ts",
+            "import": "./src/delivering/strategies/empty/index.js",
+            "default": "./src/delivering/strategies/empty/index.js"
+        },
+        "./delivering/smtp": {
+            "types": "./src/delivering/strategies/smtp/index.d.ts",
+            "import": "./src/delivering/strategies/smtp/index.js",
+            "default": "./src/delivering/strategies/smtp/index.js"
+        },
+        "./delivering/mailgun": {
+            "types": "./src/delivering/strategies/mailgun/index.d.ts",
+            "import": "./src/delivering/strategies/mailgun/index.js",
+            "default": "./src/delivering/strategies/mailgun/index.js"
+        },
+        "./delivering/postmark": {
+            "types": "./src/delivering/strategies/postmark/index.d.ts",
+            "import": "./src/delivering/strategies/postmark/index.js",
+            "default": "./src/delivering/strategies/postmark/index.js"
+        },
+        "./delivering/resend": {
+            "types": "./src/delivering/strategies/resend/index.d.ts",
+            "import": "./src/delivering/strategies/resend/index.js",
+            "default": "./src/delivering/strategies/resend/index.js"
+        },
+        "./delivering/sendgrid": {
+            "types": "./src/delivering/strategies/sendgrid/index.d.ts",
+            "import": "./src/delivering/strategies/sendgrid/index.js",
+            "default": "./src/delivering/strategies/sendgrid/index.js"
+        },
+        "./templating/blob": {
+            "types": "./src/templating/strategies/blob/index.d.ts",
+            "import": "./src/templating/strategies/blob/index.js",
+            "default": "./src/templating/strategies/blob/index.js"
+        },
+        "./templating/file": {
+            "types": "./src/templating/strategies/file/index.d.ts",
+            "import": "./src/templating/strategies/file/index.js",
+            "default": "./src/templating/strategies/file/index.js"
+        },
+        "./templating/database": {
+            "types": "./src/templating/strategies/database/index.d.ts",
+            "import": "./src/templating/strategies/database/index.js",
+            "default": "./src/templating/strategies/database/index.js"
+        },
+        "./health": {
+            "types": "./src/health/index.d.ts",
+            "import": "./src/health/index.js",
+            "default": "./src/health/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-mailing"
+    },
+    "keywords": [
+        "nestjs",
+        "email",
+        "mailing",
+        "log",
+        "smtp",
+        "postmark",
+        "resend",
+        "sendgrid",
+        "mailgun",
+        "templates",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-blob-storage": "0.1.24",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "@pixel-brewery/archipel-platform-core": "0.1.24",
+        "@pixel-brewery/archipel-platform-resources": "0.1.24",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "@pixel-brewery/archipel-platform-health": "0.1.24",
+        "@sendgrid/mail": ">=8.0.0",
+        "form-data": ">=4.0.0",
+        "mailgun.js": ">=10.0.0",
+        "nodemailer": ">=8.0.0",
+        "postmark": ">=4.0.0",
+        "resend": ">=4.0.0",
+        "rxjs": ">=7.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@nestjs/terminus": {
+            "optional": true
+        },
+        "@pixel-brewery/archipel-platform-health": {
+            "optional": true
+        },
+        "@sendgrid/mail": {
+            "optional": true
+        },
+        "form-data": {
+            "optional": true
+        },
+        "mailgun.js": {
+            "optional": true
+        },
+        "postmark": {
+            "optional": true
+        },
+        "resend": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@nestjs/terminus": "12.1.0",
+        "@sendgrid/mail": "8.1.6",
+        "form-data": "4.0.6",
+        "mailgun.js": "14.1.0",
+        "nodemailer": "10.2.1",
+        "postmark": "5.1.0",
+        "reflect-metadata": "0.2.2",
+        "resend": "6.34.1",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Infrastructure"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

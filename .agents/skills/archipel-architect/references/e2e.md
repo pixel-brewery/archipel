@@ -1,0 +1,13 @@
+# Browser integration
+
+Read with common Browser E2E, [test integration](testing.md) and the actual production domain. The legacy [Playwright writing guide](../../../../.github/instructions/testing-e2e-writing-guidelines.instructions.md) contains generic examples, not an installed runner, live application or release gate.
+
+- Apply [Environment](environment.md): attach to the user's existing Chrome instance/profile/session, open one new task tab and reuse it. Do not launch another browser, headless process, automation profile or isolated context. Legacy runner/fixture examples never override this limit; adapt an incompatible owner or report the exact execution prerequisite.
+- Reuse the actual configured documentation or consumer application server and main database. A busy port does not authorize an additional preview/API server, and browser setup never authorizes a test database/schema or reset of existing data. The leading thread coordinates any required replacement and the single heavy check/worker.
+
+- The documentation website is owned by `apps/frontend/docs` (VitePress/Vue). Establish the actual route, resolved Nx server/test target, browser dependencies and meaningful user outcome before creating or running a browser journey. The current manifests and workspace do not establish a configured Playwright suite; do not claim one exists or silently add it for unrelated work.
+- For requested application UI automation, define stable domain-specific `test-id` attributes, configure Playwright's `testIdAttribute: 'test-id'` and use `getByTestId()`. Legacy role/text/CSS locator examples are not a substitute for that interaction contract. Semantic accessibility assertions may still test the accessibility behavior itself.
+- Keep new browser specs in the owning application's `e2e/` directory, named after their real production owner with `.spec` inserted. Reuse its existing fixtures and Page/Component Objects when present; do not manufacture an owner or introduce a parallel test architecture.
+- Use actual configured server/data setup, auto-waiting and web-first assertions. Verify material navigation, validation, generated content or public results; avoid static copy/style assertions, sleeps and weakened retries.
+- Claim browser verification only after a real run following the final relevant change, reporting route, context/fixture, viewport, actions and observed result. A docs build or unit test proves a different boundary.
+- Browser work grants no deployment, release, new-branch or additional-worktree authority. A focused result does not establish a full release-candidate gate or Definition of Done.

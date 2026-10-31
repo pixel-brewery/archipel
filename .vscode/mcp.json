@@ -1,0 +1,42 @@
+{
+    "servers": {
+        "nx": {
+            "type": "stdio",
+            "command": "npx",
+            "args": ["nx", "mcp"]
+        },
+        "filesystem": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"],
+            "type": "stdio"
+        },
+        "vercel": {
+            "type": "http",
+            "url": "https://mcp.vercel.com"
+        },
+        "playwright": {
+            "command": "npx",
+            "args": ["@playwright/mcp@latest"],
+            "type": "stdio"
+        },
+        "archipel": {
+            "type": "stdio",
+            "command": "npx",
+            "args": ["-y", "@pixel-brewery/archipel-mcp@latest"]
+        },
+        "mosaik": {
+            "url": "https://beta.api.mosaik.pixelbrewery.de/api/mcp",
+            "type": "http"
+        },
+        "prisma": {
+            "command": "npx",
+            "args": ["-y", "prisma", "mcp"],
+            "type": "stdio"
+        },
+        "github": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp/"
+        }
+    },
+    "inputs": []
+}

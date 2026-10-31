@@ -1,0 +1,100 @@
+{
+    "name": "@pixel-brewery/archipel-platform-resources",
+    "version": "0.1.24",
+    "description": "Strategy-based resource loading infrastructure for NestJS with file system, blob storage, and embedded resource support plus optional caching.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "file": [
+                "./src/file/index.d.ts"
+            ],
+            "blob": [
+                "./src/blob/index.d.ts"
+            ],
+            "embedded": [
+                "./src/embedded/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./file": {
+            "types": "./src/file/index.d.ts",
+            "import": "./src/file/index.js",
+            "default": "./src/file/index.js"
+        },
+        "./blob": {
+            "types": "./src/blob/index.d.ts",
+            "import": "./src/blob/index.js",
+            "default": "./src/blob/index.js"
+        },
+        "./embedded": {
+            "types": "./src/embedded/index.d.ts",
+            "import": "./src/embedded/index.js",
+            "default": "./src/embedded/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-resources"
+    },
+    "keywords": [
+        "nestjs",
+        "resources",
+        "file-loading",
+        "blob-storage",
+        "strategy-pattern",
+        "caching",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "glob": "13.0.6",
+        "mime-types": "3.0.2",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@pixel-brewery/archipel-platform-caching": "0.1.24"
+    },
+    "peerDependenciesMeta": {
+        "@pixel-brewery/archipel-platform-caching": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@pixel-brewery/archipel-platform-caching": "0.1.24",
+        "@types/mime-types": "3.0.1",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Infrastructure"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

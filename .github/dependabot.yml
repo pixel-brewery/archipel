@@ -1,0 +1,36 @@
+version: 2
+updates:
+    - package-ecosystem: npm
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+      open-pull-requests-limit: 5
+      labels: [dependencies]
+      ignore:
+          # TypeScript upgrades are chosen explicitly by maintainers.
+          - dependency-name: typescript
+          # These packages are versioned together by the release workflow.
+          - dependency-name: '@pixel-brewery/*'
+      groups:
+          nestjs-updates:
+              patterns: ['@nestjs/*']
+          nx-updates:
+              patterns: ['@nx/*', nx]
+          prisma-updates:
+              patterns: ['@prisma/*', prisma]
+          testing-updates:
+              patterns: [vitest, '@vitest/*', playwright, '@playwright/*']
+          linting-updates:
+              patterns: [eslint*, '@eslint/*', typescript-eslint, '@typescript-eslint/*', prettier]
+
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+      open-pull-requests-limit: 5
+      labels: [dependencies, ci]
+      groups:
+          github-actions-updates:
+              patterns: ['*']

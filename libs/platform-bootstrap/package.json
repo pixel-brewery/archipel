@@ -1,0 +1,161 @@
+{
+    "name": "@pixel-brewery/archipel-platform-bootstrap",
+    "version": "0.1.24",
+    "description": "Application composition layer for NestJS bootstrapping, server steps, security, sessions, OpenAPI, and testing.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "composition": [
+                "./src/composition/index.d.ts"
+            ],
+            "server/express": [
+                "./src/server/express/index.d.ts"
+            ],
+            "security": [
+                "./src/security/index.d.ts"
+            ],
+            "session": [
+                "./src/session/index.d.ts"
+            ],
+            "openapi": [
+                "./src/openapi/index.d.ts"
+            ],
+            "testing": [
+                "./src/testing/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./composition": {
+            "types": "./src/composition/index.d.ts",
+            "import": "./src/composition/index.js",
+            "default": "./src/composition/index.js"
+        },
+        "./server/express": {
+            "types": "./src/server/express/index.d.ts",
+            "import": "./src/server/express/index.js",
+            "default": "./src/server/express/index.js"
+        },
+        "./security": {
+            "types": "./src/security/index.d.ts",
+            "import": "./src/security/index.js",
+            "default": "./src/security/index.js"
+        },
+        "./session": {
+            "types": "./src/session/index.d.ts",
+            "import": "./src/session/index.js",
+            "default": "./src/session/index.js"
+        },
+        "./openapi": {
+            "types": "./src/openapi/index.d.ts",
+            "import": "./src/openapi/index.js",
+            "default": "./src/openapi/index.js"
+        },
+        "./testing": {
+            "types": "./src/testing/index.d.ts",
+            "import": "./src/testing/index.js",
+            "default": "./src/testing/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-bootstrap"
+    },
+    "keywords": [
+        "nestjs",
+        "bootstrap",
+        "application",
+        "composition",
+        "server",
+        "security",
+        "openapi",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "@pixel-brewery/archipel-platform-core": "0.1.24",
+        "@pixel-brewery/archipel-platform-database": "0.1.24",
+        "@pixel-brewery/archipel-platform-openapi": "0.1.24",
+        "@pixel-brewery/archipel-platform-resources": "0.1.24",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/core": "^12.0.0",
+        "body-parser": ">=2.0.0",
+        "class-transformer": ">=0.5.0",
+        "class-validator": ">=0.14.0",
+        "compression": ">=1.8.0",
+        "express": ">=5.0.0",
+        "express-rate-limit": ">=8.0.0",
+        "express-session": ">=1.18.0",
+        "helmet": ">=8.0.0",
+        "reflect-metadata": ">=0.2.0",
+        "rxjs": ">=7.0.0",
+        "vitest": ">=4.0.0"
+    },
+    "peerDependenciesMeta": {
+        "compression": {
+            "optional": true
+        },
+        "express-rate-limit": {
+            "optional": true
+        },
+        "express-session": {
+            "optional": true
+        },
+        "helmet": {
+            "optional": true
+        },
+        "vitest": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@types/compression": "1.8.1",
+        "@types/express": "5.0.6",
+        "@types/express-session": "1.19.0",
+        "class-transformer": "0.5.1",
+        "class-validator": "0.15.1",
+        "compression": "1.8.2",
+        "express": "5.3.0",
+        "express-rate-limit": "8.7.1",
+        "express-session": "1.19.0",
+        "helmet": "8.3.0",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Foundation",
+        "featured": true
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

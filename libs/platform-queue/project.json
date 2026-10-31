@@ -1,0 +1,45 @@
+{
+    "name": "platform-queue",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-queue/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-queue",
+                "tsConfig": "libs/platform-queue/tsconfig.lib.json",
+                "packageJson": "libs/platform-queue/package.json",
+                "main": "libs/platform-queue/src/index.ts",
+                "assets": [
+                    "libs/platform-queue/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-queue/src/bullmq/index.ts",
+                    "libs/platform-queue/src/azure/index.ts",
+                    "libs/platform-queue/src/health/index.ts",
+                    "libs/platform-queue/src/vercel/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-queue"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

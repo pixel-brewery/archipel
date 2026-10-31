@@ -1,0 +1,46 @@
+{
+    "name": "platform-payments",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-payments/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-payments",
+                "tsConfig": "libs/platform-payments/tsconfig.lib.json",
+                "packageJson": "libs/platform-payments/package.json",
+                "main": "libs/platform-payments/src/index.ts",
+                "assets": [
+                    "libs/platform-payments/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-payments/src/stripe/index.ts",
+                    "libs/platform-payments/src/paddle/index.ts",
+                    "libs/platform-payments/src/lemonsqueezy/index.ts",
+                    "libs/platform-payments/src/mollie/index.ts",
+                    "libs/platform-payments/src/health/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-payments"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

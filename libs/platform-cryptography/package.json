@@ -1,0 +1,81 @@
+{
+    "name": "@pixel-brewery/archipel-platform-cryptography",
+    "version": "0.1.24",
+    "description": "Cryptographic utilities for NestJS – bcrypt hashing, GUID generation, and TOTP OTP support.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "otp": [
+                "./src/otp/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./otp": {
+            "types": "./src/otp/index.d.ts",
+            "import": "./src/otp/index.js",
+            "default": "./src/otp/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-cryptography"
+    },
+    "keywords": [
+        "nestjs",
+        "bcrypt",
+        "crypto",
+        "otp",
+        "totp",
+        "uuid",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@otplib/core": "13.5.0",
+        "@otplib/hotp": "13.5.0",
+        "@otplib/totp": "13.5.0",
+        "@otplib/uri": "13.5.0",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^12.0.0",
+        "bcrypt": ">=5.0.0"
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@types/bcrypt": "6.0.0",
+        "bcrypt": "6.0.0",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Foundation"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

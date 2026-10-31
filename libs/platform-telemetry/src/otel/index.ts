@@ -1,0 +1,18 @@
+export { NoopTelemetryFacade } from '../core/NoopTelemetryFacade.js';
+export type { ITelemetryFacade } from '../core/NoopTelemetryFacade.js';
+export { TelemetryCacheMetricsRecorder } from '../core/TelemetryCacheMetricsRecorder.js';
+export { TelemetryFacade } from '../core/TelemetryFacade.js';
+export { TelemetryLoggerService } from '../logger/TelemetryLoggerService.js';
+export { MetricsService } from './MetricsService.js';
+export { OtelMetricsInterceptor } from './OtelMetricsInterceptor.js';
+export { ProviderInstrumentation } from './ProviderInstrumentation.js';
+export { OtelMetricClient } from './client/OtelMetricClient.js';
+export type { IMetricInstruments } from './MetricInstruments.js';
+export type { MetricKind } from './MetricKind.js';
+export { OtelSdkHolder } from '../OtelSdkHolder.js';
+export { TelemetryRuleEngine } from '../rules/TelemetryRuleEngine.js';
+export { TelemetryModule } from '../TelemetryModule.js';
+export type { ITelemetryModuleOptions } from '../options/TelemetryModuleOptions.js';
+export { defaultTelemetryOptions, validateTelemetryOptions } from '../options/TelemetryOptions.js';
+export type { ITelemetryMetricsOptions, ITelemetryOptions, ITelemetryTracesOptions } from '../options/TelemetryOptions.js';
+export * from '../tokens/TelemetryTokens.js';

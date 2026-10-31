@@ -1,0 +1,50 @@
+{
+    "name": "platform-telemetry",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-telemetry/src",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-telemetry",
+                "tsConfig": "libs/platform-telemetry/tsconfig.lib.json",
+                "packageJson": "libs/platform-telemetry/package.json",
+                "main": "libs/platform-telemetry/src/index.ts",
+                "assets": [
+                    "libs/platform-telemetry/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-telemetry/src/health/index.ts",
+                    "libs/platform-telemetry/src/otel/index.ts",
+                    "libs/platform-telemetry/src/otel/bootstrap/index.ts",
+                    "libs/platform-telemetry/src/otel/providers/otlp-http/index.ts",
+                    "libs/platform-telemetry/src/otel/providers/otlp-grpc/index.ts",
+                    "libs/platform-telemetry/src/otel/providers/prometheus/index.ts",
+                    "libs/platform-telemetry/src/otel/providers/console/index.ts",
+                    "libs/platform-telemetry/src/measurements/index.ts",
+                    "libs/platform-telemetry/src/measurements/providers/empty/index.ts",
+                    "libs/platform-telemetry/src/measurements/providers/vercel/index.ts",
+                    "libs/platform-telemetry/src/measurements/providers/new-relic/index.ts"
+                ]
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-telemetry"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

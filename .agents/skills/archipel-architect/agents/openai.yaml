@@ -1,0 +1,4 @@
+interface:
+    display_name: 'Archipel Architekt'
+    short_description: 'Architektur, Implementierung und Tests für Archipel'
+    default_prompt: 'Nutze $archipel-architect für diese Aufgabe und wähle die passenden Fachmodule und Projektregeln.'

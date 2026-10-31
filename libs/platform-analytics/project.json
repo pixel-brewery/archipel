@@ -1,0 +1,45 @@
+{
+    "name": "platform-analytics",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-analytics/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-analytics",
+                "tsConfig": "libs/platform-analytics/tsconfig.lib.json",
+                "packageJson": "libs/platform-analytics/package.json",
+                "main": "libs/platform-analytics/src/index.ts",
+                "assets": [
+                    "libs/platform-analytics/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-analytics/src/sentry/index.ts",
+                    "libs/platform-analytics/src/application-insights/index.ts",
+                    "libs/platform-analytics/src/datadog/index.ts",
+                    "libs/platform-analytics/src/health/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-analytics"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

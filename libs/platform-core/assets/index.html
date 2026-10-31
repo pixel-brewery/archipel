@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" />
+        <base href="/" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <title>{{title}}</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            :root {
+              --color-primary: {{style.primary}};
+              --color-secondary: {{style.secondary}};
+            }
+
+            @keyframes shimmer {
+              0%,
+              100% {
+                background-position: 0% 50%;
+              }
+              50% {
+                background-position: 100% 50%;
+              }
+            }
+
+            @keyframes slow-rotate {
+              from {
+                transform: rotate(0deg);
+              }
+              to {
+                transform: rotate(360deg);
+              }
+            }
+
+            @keyframes float {
+              0%,
+              100% {
+                transform: translateY(0);
+              }
+              50% {
+                transform: translateY(-12px);
+              }
+            }
+
+            .gradient-text {
+              background: linear-gradient(155deg, #fff 45%, var(--color-primary) 100%);
+              -webkit-background-clip: text;
+              background-clip: text;
+              -webkit-text-fill-color: transparent;
+              animation: shimmer 3s ease-in-out infinite;
+            }
+
+            .bg-orb {
+              background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-primary) 8%, transparent) 0%, transparent 50%);
+              animation: slow-rotate 30s linear infinite;
+            }
+
+            .health-chip.up,
+            .health-chip.ok {
+              color: #49cc90;
+              border-color: rgba(73, 204, 144, 0.4);
+              background: rgba(73, 204, 144, 0.08);
+            }
+
+            .health-chip.down,
+            .health-chip.error {
+              color: #f93e3e;
+              border-color: rgba(249, 62, 62, 0.4);
+              background: rgba(249, 62, 62, 0.08);
+            }
+
+            .health-indicator.up,
+            .health-indicator.ok {
+              background: #49cc90;
+            }
+
+            .health-indicator.down,
+            .health-indicator.error {
+              background: #f93e3e;
+            }
+        </style>
+    </head>
+    <body class="flex flex-col min-h-screen overflow-x-hidden bg-[#0d0d0d] text-[#e5e5e5] font-sans relative">
+        <div class="fixed -inset-[50%] pointer-events-none -z-10 bg-orb"></div>
+        <div class="relative z-10 mx-auto flex flex-1 max-w-6xl flex-col-reverse gap-16 px-6 py-16 lg:flex-row lg:items-center lg:gap-24 lg:px-10">
+            <div class="flex flex-2 flex-col items-start gap-6">
+                <h1 class="text-4xl lg:text-6xl font-semibold leading-tight">
+                    <span class="gradient-text">{{title}}</span>
+                </h1>
+                <p class="max-w-2xl text-lg text-white/70 leading-snug">{{description}}</p>
+                <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                    {{#each actions}}
+                    <a
+                        href="{{link}}"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+                        target="_self"
+                        rel="noreferrer"
+                        >{{description}}</a
+                    >
+                    {{/each}}
+                </div>
+                <div class="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {{#each features}}
+                    <div
+                        class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:-translate-y-1 hover:border-[var(--color-primary)] hover:bg-white/10"
+                    >
+                        <span class="mb-2 block text-2xl">{{icon}}</span>
+                        <h3 class="text-lg font-semibold text-white">{{title}}</h3>
+                        <a
+                            href="{{link}}"
+                            class="mt-1 inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-[var(--color-primary)]"
+                            target="_blank"
+                            rel="noreferrer"
+                            >Learn more →</a
+                        >
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="flex flex-1 items-center justify-center">
+                <div class="relative h-80 w-80 sm:h-96 sm:w-96">
+                    <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] blur-3xl"></div>
+                    <div class="relative flex h-full w-full items-center justify-center">
+                        <img
+                            src="{{logo}}"
+                            alt="{{title}} logo"
+                            class="h-48 w-48 object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                            style="animation: float 3s ease-in-out infinite"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{#if footer}}
+        <footer class="border-t border-white/10 bg-black/30 backdrop-blur">
+            <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-8 text-center text-sm text-white/70">
+                {{#if footer.links}}
+                <nav class="flex flex-wrap justify-center gap-4">
+                    {{#each footer.links}}
+                    <a href="{{url}}" class="text-white/70 hover:text-[var(--color-primary)]" target="_blank" rel="noreferrer">{{label}}</a>
+                    {{/each}}
+                </nav>
+                {{/if}}
+                <p class="text-white/80">{{footer.copyright}}</p>
+                <p>{{footer.stage}} • {{footer.version}}</p>
+                {{#if health}}
+                <div class="flex flex-wrap justify-center gap-2">
+                    {{#each health}}
+                    <span
+                        class="health-chip {{status}} inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/80"
+                        title="{{details.message}}"
+                    >
+                        <span class="health-indicator {{status}} h-2 w-2 rounded-full"></span>
+                        <span>{{name}}</span>
+                    </span>
+                    {{/each}}
+                </div>
+                {{/if}}
+            </div>
+        </footer>
+        {{/if}}
+    </body>
+</html>

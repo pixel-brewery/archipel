@@ -1,0 +1,148 @@
+{
+    "name": "@pixel-brewery/archipel-platform-blob-storage",
+    "version": "0.1.24",
+    "description": "Cloud file storage with pluggable providers for NestJS applications.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "strategies/aws-s3": [
+                "./src/strategies/aws-s3/index.d.ts"
+            ],
+            "strategies/azure": [
+                "./src/strategies/azure/index.d.ts"
+            ],
+            "strategies/empty": [
+                "./src/strategies/empty/index.d.ts"
+            ],
+            "strategies/local": [
+                "./src/strategies/local/index.d.ts"
+            ],
+            "strategies/vercel": [
+                "./src/strategies/vercel/index.d.ts"
+            ],
+            "health": [
+                "./src/health/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./strategies/aws-s3": {
+            "types": "./src/strategies/aws-s3/index.d.ts",
+            "import": "./src/strategies/aws-s3/index.js",
+            "default": "./src/strategies/aws-s3/index.js"
+        },
+        "./strategies/azure": {
+            "types": "./src/strategies/azure/index.d.ts",
+            "import": "./src/strategies/azure/index.js",
+            "default": "./src/strategies/azure/index.js"
+        },
+        "./strategies/empty": {
+            "types": "./src/strategies/empty/index.d.ts",
+            "import": "./src/strategies/empty/index.js",
+            "default": "./src/strategies/empty/index.js"
+        },
+        "./strategies/local": {
+            "types": "./src/strategies/local/index.d.ts",
+            "import": "./src/strategies/local/index.js",
+            "default": "./src/strategies/local/index.js"
+        },
+        "./strategies/vercel": {
+            "types": "./src/strategies/vercel/index.d.ts",
+            "import": "./src/strategies/vercel/index.js",
+            "default": "./src/strategies/vercel/index.js"
+        },
+        "./health": {
+            "types": "./src/health/index.d.ts",
+            "import": "./src/health/index.js",
+            "default": "./src/health/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-blob-storage"
+    },
+    "keywords": [
+        "nestjs",
+        "blob-storage",
+        "file-upload",
+        "cloud-storage",
+        "local-storage",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@aws-sdk/client-s3": ">=3.0.0",
+        "@aws-sdk/s3-request-presigner": ">=3.0.0",
+        "@azure/storage-blob": ">=12.0.0",
+        "@nestjs/axios": "^12.0.0",
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/platform-express": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "@pixel-brewery/archipel-platform-health": "0.1.24",
+        "axios": ">=1.0.0",
+        "rxjs": ">=7.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@aws-sdk/client-s3": {
+            "optional": true
+        },
+        "@aws-sdk/s3-request-presigner": {
+            "optional": true
+        },
+        "@azure/storage-blob": {
+            "optional": true
+        },
+        "@nestjs/terminus": {
+            "optional": true
+        },
+        "@pixel-brewery/archipel-platform-health": {
+            "optional": true
+        },
+        "axios": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@nestjs/axios": "12.0.1",
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@nestjs/platform-express": "12.3.2",
+        "@nestjs/terminus": "12.1.0",
+        "axios": "1.20.0",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5"
+    },
+    "archipel": {
+        "category": "Infrastructure"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

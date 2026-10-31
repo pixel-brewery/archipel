@@ -1,0 +1,124 @@
+{
+    "name": "@pixel-brewery/archipel-platform-queue",
+    "version": "0.1.24",
+    "description": "Queue infrastructure for NestJS with in-memory FIFO, BullMQ (Redis), Azure Service Bus, and Vercel Queues provider backends.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "bullmq": [
+                "./src/bullmq/index.d.ts"
+            ],
+            "azure": [
+                "./src/azure/index.d.ts"
+            ],
+            "health": [
+                "./src/health/index.d.ts"
+            ],
+            "vercel": [
+                "./src/vercel/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./bullmq": {
+            "types": "./src/bullmq/index.d.ts",
+            "import": "./src/bullmq/index.js",
+            "default": "./src/bullmq/index.js"
+        },
+        "./azure": {
+            "types": "./src/azure/index.d.ts",
+            "import": "./src/azure/index.js",
+            "default": "./src/azure/index.js"
+        },
+        "./health": {
+            "types": "./src/health/index.d.ts",
+            "import": "./src/health/index.js",
+            "default": "./src/health/index.js"
+        },
+        "./vercel": {
+            "types": "./src/vercel/index.d.ts",
+            "import": "./src/vercel/index.js",
+            "default": "./src/vercel/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-queue"
+    },
+    "keywords": [
+        "nestjs",
+        "queue",
+        "job-queue",
+        "fifo",
+        "memory-queue",
+        "bullmq",
+        "redis",
+        "azure-service-bus",
+        "vercel-queues",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "tslib": "2.8.1"
+    },
+    "peerDependencies": {
+        "@azure/service-bus": ">=7.0.0",
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "@pixel-brewery/archipel-platform-health": "0.1.24",
+        "@vercel/queue": ">=0.1.0",
+        "bullmq": ">=5.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@azure/service-bus": {
+            "optional": true
+        },
+        "@nestjs/terminus": {
+            "optional": true
+        },
+        "@pixel-brewery/archipel-platform-health": {
+            "optional": true
+        },
+        "@vercel/queue": {
+            "optional": true
+        },
+        "bullmq": {
+            "optional": true
+        }
+    },
+    "archipel": {
+        "category": "Infrastructure"
+    },
+    "devDependencies": {
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "singleQuote": true,
+    "tabWidth": 4,
+    "overrides": [
+        {
+            "files": "*.*",
+            "options": {
+                "printWidth": 160
+            }
+        },
+        {
+            "files": ".agents/skills/archipel-architect/SKILL.md",
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
+}

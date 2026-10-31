@@ -1,0 +1,19 @@
+{
+    "executors": {
+        "generate-package-docs": {
+            "implementation": "./src/executors/generate-package-docs/executor",
+            "schema": "./src/executors/generate-package-docs/schema.json",
+            "description": "Generates API documentation for a single NX library package using TypeDoc."
+        },
+        "generate-api-overview": {
+            "implementation": "./src/executors/generate-api-overview/executor",
+            "schema": "./src/executors/generate-api-overview/schema.json",
+            "description": "Generates an API symbol index (api-index.json) from generated package docs."
+        },
+        "build-llm-artifacts": {
+            "implementation": "./src/executors/build-llm-artifacts/executor",
+            "schema": "./src/executors/build-llm-artifacts/schema.json",
+            "description": "Generates LLM/MCP-compatible artifacts (llms.txt, llms-full.txt, docs-index.json)."
+        }
+    }
+}

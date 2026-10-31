@@ -1,0 +1,44 @@
+{
+    "name": "platform-documents",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-documents/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-documents",
+                "tsConfig": "libs/platform-documents/tsconfig.lib.json",
+                "packageJson": "libs/platform-documents/package.json",
+                "main": "libs/platform-documents/src/index.ts",
+                "assets": [
+                    "libs/platform-documents/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-documents/src/sharp/index.ts",
+                    "libs/platform-documents/src/docx/index.ts",
+                    "libs/platform-documents/src/pdf/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/libs/platform-documents"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-documents"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

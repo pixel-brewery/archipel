@@ -1,0 +1,40 @@
+{
+    "name": "platform-feature-flags",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-feature-flags/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-feature-flags",
+                "tsConfig": "libs/platform-feature-flags/tsconfig.lib.json",
+                "packageJson": "libs/platform-feature-flags/package.json",
+                "main": "libs/platform-feature-flags/src/index.ts",
+                "assets": [
+                    "libs/platform-feature-flags/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": ["libs/platform-feature-flags/src/azure/index.ts", "libs/platform-feature-flags/src/vercel/index.ts"],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-feature-flags"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

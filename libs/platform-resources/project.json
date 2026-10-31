@@ -1,0 +1,44 @@
+{
+    "name": "platform-resources",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-resources/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["backend", "lib"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-resources",
+                "tsConfig": "libs/platform-resources/tsconfig.lib.json",
+                "packageJson": "libs/platform-resources/package.json",
+                "main": "libs/platform-resources/src/index.ts",
+                "assets": [
+                    "libs/platform-resources/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "additionalEntryPoints": [
+                    "libs/platform-resources/src/file/index.ts",
+                    "libs/platform-resources/src/blob/index.ts",
+                    "libs/platform-resources/src/embedded/index.ts"
+                ],
+                "generateExportsField": true
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "mode": "run",
+                "coverage.reportsDirectory": "../../coverage/libs/platform-resources"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        }
+    }
+}

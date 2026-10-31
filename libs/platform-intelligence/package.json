@@ -1,0 +1,251 @@
+{
+    "name": "@pixel-brewery/archipel-platform-intelligence",
+    "version": "0.1.24",
+    "description": "Provider-neutral intelligence infrastructure for NestJS – language, embeddings, media, reranking, realtime, agents, tools, diagnostics, files, and skills.",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "typesVersions": {
+        "*": {
+            "provider/openai": [
+                "./src/providers/openai/index.d.ts"
+            ],
+            "provider/openai/tools": [
+                "./src/providers/openai/tools/index.d.ts"
+            ],
+            "provider/anthropic": [
+                "./src/providers/anthropic/index.d.ts"
+            ],
+            "provider/anthropic/tools": [
+                "./src/providers/anthropic/tools/index.d.ts"
+            ],
+            "provider/google": [
+                "./src/providers/google/index.d.ts"
+            ],
+            "provider/google/tools": [
+                "./src/providers/google/tools/index.d.ts"
+            ],
+            "provider/grok": [
+                "./src/providers/grok/index.d.ts"
+            ],
+            "provider/grok/tools": [
+                "./src/providers/grok/tools/index.d.ts"
+            ],
+            "provider/mimo": [
+                "./src/providers/mimo/index.d.ts"
+            ],
+            "provider/mimo/tools": [
+                "./src/providers/mimo/tools/index.d.ts"
+            ],
+            "provider/gateway": [
+                "./src/providers/gateway/index.d.ts"
+            ],
+            "realtime": [
+                "./src/realtime/index.d.ts"
+            ],
+            "health": [
+                "./src/health/index.d.ts"
+            ]
+        }
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./provider/openai": {
+            "types": "./src/providers/openai/index.d.ts",
+            "import": "./src/providers/openai/index.js",
+            "default": "./src/providers/openai/index.js"
+        },
+        "./provider/openai/tools": {
+            "types": "./src/providers/openai/tools/index.d.ts",
+            "import": "./src/providers/openai/tools/index.js",
+            "default": "./src/providers/openai/tools/index.js"
+        },
+        "./provider/anthropic": {
+            "types": "./src/providers/anthropic/index.d.ts",
+            "import": "./src/providers/anthropic/index.js",
+            "default": "./src/providers/anthropic/index.js"
+        },
+        "./provider/anthropic/tools": {
+            "types": "./src/providers/anthropic/tools/index.d.ts",
+            "import": "./src/providers/anthropic/tools/index.js",
+            "default": "./src/providers/anthropic/tools/index.js"
+        },
+        "./provider/google": {
+            "types": "./src/providers/google/index.d.ts",
+            "import": "./src/providers/google/index.js",
+            "default": "./src/providers/google/index.js"
+        },
+        "./provider/google/tools": {
+            "types": "./src/providers/google/tools/index.d.ts",
+            "import": "./src/providers/google/tools/index.js",
+            "default": "./src/providers/google/tools/index.js"
+        },
+        "./provider/grok": {
+            "types": "./src/providers/grok/index.d.ts",
+            "import": "./src/providers/grok/index.js",
+            "default": "./src/providers/grok/index.js"
+        },
+        "./provider/grok/tools": {
+            "types": "./src/providers/grok/tools/index.d.ts",
+            "import": "./src/providers/grok/tools/index.js",
+            "default": "./src/providers/grok/tools/index.js"
+        },
+        "./provider/mimo": {
+            "types": "./src/providers/mimo/index.d.ts",
+            "import": "./src/providers/mimo/index.js",
+            "default": "./src/providers/mimo/index.js"
+        },
+        "./provider/mimo/tools": {
+            "types": "./src/providers/mimo/tools/index.d.ts",
+            "import": "./src/providers/mimo/tools/index.js",
+            "default": "./src/providers/mimo/tools/index.js"
+        },
+        "./provider/gateway": {
+            "types": "./src/providers/gateway/index.d.ts",
+            "import": "./src/providers/gateway/index.js",
+            "default": "./src/providers/gateway/index.js"
+        },
+        "./realtime": {
+            "types": "./src/realtime/index.d.ts",
+            "import": "./src/realtime/index.js",
+            "default": "./src/realtime/index.js"
+        },
+        "./health": {
+            "types": "./src/health/index.d.ts",
+            "import": "./src/health/index.js",
+            "default": "./src/health/index.js"
+        }
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pixel-brewery/archipel.git",
+        "directory": "libs/platform-intelligence"
+    },
+    "keywords": [
+        "nestjs",
+        "intelligence",
+        "ai",
+        "openai",
+        "anthropic",
+        "google",
+        "grok",
+        "mimo",
+        "mimo-tools",
+        "agents",
+        "structured-output",
+        "embeddings",
+        "media-generation",
+        "image-generation",
+        "speech-generation",
+        "transcription",
+        "video-generation",
+        "reranking",
+        "files",
+        "skills",
+        "gateway",
+        "xai",
+        "text-generation",
+        "streaming",
+        "realtime",
+        "voice",
+        "websocket",
+        "tool-calling",
+        "archipel"
+    ],
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "files": [
+        "src/**/*.js",
+        "src/**/*.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "dependencies": {
+        "@ai-sdk/provider": "4.0.31",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.24",
+        "ai": "7.0.148",
+        "ajv": "8.20.0",
+        "ajv-formats": "3.0.1",
+        "tslib": "2.8.1",
+        "ws": "8.22.0"
+    },
+    "optionalDependencies": {
+        "@ai-sdk/anthropic": "4.0.85",
+        "@ai-sdk/gateway": "4.0.121",
+        "@ai-sdk/google": "4.0.102",
+        "@ai-sdk/openai": "4.0.99",
+        "@ai-sdk/openai-compatible": "3.0.80",
+        "@ai-sdk/xai": "5.0.27"
+    },
+    "peerDependencies": {
+        "@ai-sdk/anthropic": ">=4.0.0",
+        "@ai-sdk/gateway": ">=4.0.0",
+        "@ai-sdk/google": ">=4.0.0",
+        "@ai-sdk/openai": ">=4.0.0",
+        "@ai-sdk/openai-compatible": ">=3.0.0",
+        "@ai-sdk/xai": ">=4.0.0",
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/terminus": "^12.0.0",
+        "@pixel-brewery/archipel-platform-health": "0.1.24"
+    },
+    "peerDependenciesMeta": {
+        "@ai-sdk/anthropic": {
+            "optional": true
+        },
+        "@ai-sdk/gateway": {
+            "optional": true
+        },
+        "@ai-sdk/google": {
+            "optional": true
+        },
+        "@ai-sdk/openai": {
+            "optional": true
+        },
+        "@ai-sdk/openai-compatible": {
+            "optional": true
+        },
+        "@ai-sdk/xai": {
+            "optional": true
+        },
+        "@nestjs/terminus": {
+            "optional": true
+        },
+        "@pixel-brewery/archipel-platform-health": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@ai-sdk/anthropic": "4.0.85",
+        "@ai-sdk/gateway": "4.0.121",
+        "@ai-sdk/google": "4.0.102",
+        "@ai-sdk/openai": "4.0.99",
+        "@ai-sdk/openai-compatible": "3.0.80",
+        "@ai-sdk/provider": "4.0.31",
+        "@ai-sdk/xai": "5.0.27",
+        "@nestjs/common": "12.3.2",
+        "@nestjs/core": "12.3.2",
+        "@types/ws": "8.18.2",
+        "ai": "7.0.148",
+        "reflect-metadata": "0.2.2",
+        "rxjs": "7.8.2",
+        "vitest": "5.0.5",
+        "zod": "4.6.7"
+    },
+    "archipel": {
+        "category": "AI & Extensibility"
+    },
+    "homepage": "https://pixel-brewery.github.io/archipel/",
+    "bugs": {
+        "url": "https://github.com/pixel-brewery/archipel/issues"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
+}

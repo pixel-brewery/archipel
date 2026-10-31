@@ -1,0 +1,47 @@
+{
+    "name": "platform-intelligence-agents",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/platform-intelligence-agents/src",
+    "projectType": "library",
+    "tags": ["backend", "lib", "layer:orchestration"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/libs/platform-intelligence-agents",
+                "main": "libs/platform-intelligence-agents/src/index.ts",
+                "tsConfig": "libs/platform-intelligence-agents/tsconfig.lib.json",
+                "assets": [
+                    "libs/platform-intelligence-agents/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ],
+                "packageJson": "libs/platform-intelligence-agents/package.json",
+                "generateExportsField": true,
+                "additionalEntryPoints": ["libs/platform-intelligence-agents/src/mcp/index.ts"]
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "cache": true,
+            "inputs": ["default", "^production"],
+            "outputs": ["{workspaceRoot}/coverage/libs/platform-intelligence-agents"],
+            "options": {
+                "command": "vitest run --config libs/platform-intelligence-agents/vitest.config.mjs"
+            }
+        },
+        "docs": {
+            "executor": "nx-plugins:generate-package-docs"
+        },
+        "typecheck-tests": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project libs/platform-intelligence-agents/tsconfig.test.json"
+            }
+        }
+    }
+}

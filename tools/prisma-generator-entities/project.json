@@ -1,0 +1,33 @@
+{
+    "name": "prisma-generator-entities",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "tools/prisma-generator-entities/src",
+    "projectType": "library",
+    "tags": ["tool"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/tools/prisma-generator-entities",
+                "tsConfig": "tools/prisma-generator-entities/tsconfig.lib.json",
+                "packageJson": "tools/prisma-generator-entities/package.json",
+                "main": "tools/prisma-generator-entities/src/index.ts",
+                "assets": [
+                    "tools/prisma-generator-entities/*.md",
+                    {
+                        "input": ".",
+                        "glob": "LICENSE",
+                        "output": "."
+                    }
+                ]
+            }
+        },
+        "test": {
+            "outputs": ["{projectRoot}/{options.coverage.reportsDirectory}", "{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "coverage.reportsDirectory": "../../coverage/tools/prisma-generator-entities"
+            }
+        }
+    }
+}
