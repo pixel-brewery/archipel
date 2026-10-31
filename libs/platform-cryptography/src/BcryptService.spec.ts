@@ -347,6 +347,7 @@ describe('BcryptService', () => {
     // #region Integration Tests
 
     describe('integration', () => {
+        // Three hashes and nine comparisons intentionally retain 12 bcrypt rounds and need time on shared CI runners.
         it('should handle multiple hash-compare cycles', async () => {
             // Arrange
             const passwords = ['password1', 'password2', 'password3'];
@@ -370,7 +371,7 @@ describe('BcryptService', () => {
                     }
                 }
             }
-        });
+        }, 20_000);
 
         it('should maintain consistency across service instances with same options', async () => {
             // Arrange
