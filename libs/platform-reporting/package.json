@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-reporting",
-    "version": "0.1.29",
+    "version": "0.1.30",
     "description": "Business reporting framework with pluggable data contributors and query execution for NestJS.",
     "type": "module",
     "main": "./src/index.js",
