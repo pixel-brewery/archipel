@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-telemetry",
-    "version": "0.1.26",
+    "version": "0.1.27",
     "description": "OpenTelemetry tracing and metrics with optional direct numeric measurements for NestJS.",
     "type": "module",
     "sideEffects": false,
@@ -129,9 +129,9 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-caching": "0.1.26",
-        "@pixel-brewery/archipel-platform-configuration": "0.1.26",
-        "@pixel-brewery/archipel-platform-core": "0.1.26",
+        "@pixel-brewery/archipel-platform-caching": "0.1.27",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.27",
+        "@pixel-brewery/archipel-platform-core": "0.1.27",
         "tslib": "2.8.1"
     },
     "peerDependencies": {
@@ -152,7 +152,7 @@
         "@opentelemetry/sdk-metrics": ">=3.0.0",
         "@opentelemetry/sdk-trace": ">=3.0.0",
         "@opentelemetry/semantic-conventions": ">=1.30.0",
-        "@pixel-brewery/archipel-platform-health": "0.1.26",
+        "@pixel-brewery/archipel-platform-health": "0.1.27",
         "@vercel/functions": ">=3.9.5",
         "rxjs": ">=7.0.0"
     },

@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-health",
-    "version": "0.1.26",
+    "version": "0.1.27",
     "description": "NestJS health check orchestration with pluggable health indicators and @nestjs/terminus integration.",
     "type": "module",
     "main": "./src/index.js",

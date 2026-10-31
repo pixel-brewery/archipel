@@ -1,3 +1,7 @@
+## 0.1.27 (2026-10-31)
+
+This was a version bump only for platform-resources to align it with other projects, there were no code changes.
+
 ## 0.1.26 (2026-10-31)
 
 This was a version bump only for platform-resources to align it with other projects, there were no code changes.

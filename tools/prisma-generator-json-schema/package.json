@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-prisma-generator-json-schema",
-    "version": "0.1.26",
+    "version": "0.1.27",
     "description": "Prisma generator for JSON Schema validation documents.",
     "type": "module",
     "main": "./src/index.js",
