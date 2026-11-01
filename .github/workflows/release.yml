@@ -1,3 +1,4 @@
+# cspell:ignore pipefail
 name: Release Archipel packages
 
 on:
@@ -11,6 +12,11 @@ on:
                 required: true
                 default: patch
                 options: [patch, minor, major]
+            source_sha:
+                description: Exact merge source required by the automatic dependency release request
+                type: string
+                required: false
+                default: ''
 
 permissions: {}
 
@@ -52,8 +58,14 @@ jobs:
                   GH_TOKEN: ${{ github.token }}
               run: node .github/scripts/requirePublicRepository.mjs
             - name: Require the triggering source to remain current
+              env:
+                  EXPECTED_SOURCE_SHA: ${{ inputs.source_sha }}
               run: |
                   set -euo pipefail
+                  if [ -n "$EXPECTED_SOURCE_SHA" ] && [ "$EXPECTED_SOURCE_SHA" != "$GITHUB_SHA" ]; then
+                      echo 'The requested merge source no longer matches this workflow revision.' >&2
+                      exit 1
+                  fi
                   git fetch origin main --tags
                   test "$(git rev-parse origin/main)" = "$GITHUB_SHA"
             - run: corepack enable
