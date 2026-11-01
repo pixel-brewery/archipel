@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-intelligence",
-    "version": "0.1.31",
+    "version": "0.1.32",
     "description": "Provider-neutral intelligence infrastructure for NestJS – language, embeddings, media, reranking, realtime, agents, tools, diagnostics, files, and skills.",
     "type": "module",
     "main": "./src/index.js",
@@ -168,7 +168,7 @@
     ],
     "dependencies": {
         "@ai-sdk/provider": "4.0.31",
-        "@pixel-brewery/archipel-platform-configuration": "0.1.31",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.32",
         "ai": "7.0.148",
         "ajv": "8.20.0",
         "ajv-formats": "3.0.1",
@@ -192,7 +192,7 @@
         "@ai-sdk/xai": ">=4.0.0",
         "@nestjs/common": "^12.0.0",
         "@nestjs/terminus": "^12.0.0",
-        "@pixel-brewery/archipel-platform-health": "0.1.31"
+        "@pixel-brewery/archipel-platform-health": "0.1.32"
     },
     "peerDependenciesMeta": {
         "@ai-sdk/anthropic": {

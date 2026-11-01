@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-openapi",
-    "version": "0.1.31",
+    "version": "0.1.32",
     "description": "Multi-tenant Swagger and OpenAPI documentation with feature-scoped discovery for NestJS.",
     "type": "module",
     "main": "./src/index.js",
@@ -37,9 +37,9 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-configuration": "0.1.31",
-        "@pixel-brewery/archipel-platform-core": "0.1.31",
-        "@pixel-brewery/archipel-platform-resources": "0.1.31",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.32",
+        "@pixel-brewery/archipel-platform-core": "0.1.32",
+        "@pixel-brewery/archipel-platform-resources": "0.1.32",
         "tslib": "2.8.1"
     },
     "peerDependencies": {
