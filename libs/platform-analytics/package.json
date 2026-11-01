@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-analytics",
-    "version": "0.1.30",
+    "version": "0.1.31",
     "description": "Provider-agnostic analytics and error tracking for NestJS with support for Sentry, Application Insights, and Datadog.",
     "type": "module",
     "main": "./src/index.js",
@@ -73,14 +73,14 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-configuration": "0.1.30",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.31",
         "tslib": "2.8.1"
     },
     "peerDependencies": {
         "@nestjs/common": "^12.0.0",
         "@nestjs/core": "^12.0.0",
         "@nestjs/terminus": "^12.0.0",
-        "@pixel-brewery/archipel-platform-health": "0.1.30",
+        "@pixel-brewery/archipel-platform-health": "0.1.31",
         "@sentry/node": ">=9.0.0",
         "applicationinsights": ">=3.0.0",
         "dd-trace": ">=5.0.0"
