@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-mcp",
-    "version": "0.1.26",
+    "version": "0.1.33",
     "description": "MCP server providing Archipel platform knowledge - documentation, query patterns, and coding conventions - to AI development tools.",
     "type": "module",
     "main": "./src/main.js",

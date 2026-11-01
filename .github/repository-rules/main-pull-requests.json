@@ -43,6 +43,10 @@
                     {
                         "context": "verify (windows-latest)",
                         "integration_id": 15368
+                    },
+                    {
+                        "context": "Quality Gate",
+                        "integration_id": 15368
                     }
                 ]
             }

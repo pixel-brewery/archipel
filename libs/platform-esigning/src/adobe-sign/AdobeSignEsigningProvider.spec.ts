@@ -1,7 +1,7 @@
 // #region Imports
 
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SigningProviderError } from '../errors/SigningProviderError.js';
 import { WebhookVerificationError } from '../errors/WebhookVerificationError.js';
 import type { ICreateSigningRequest } from '../models/ICreateSigningRequest.js';
@@ -65,9 +65,12 @@ describe('AdobeSignEsigningProvider', () => {
     // #region Setup
 
     beforeEach(() => {
-        vi.restoreAllMocks();
         configService = createMockConfigService();
         provider = new AdobeSignEsigningProvider(configService);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     // #endregion
@@ -132,10 +135,11 @@ describe('AdobeSignEsigningProvider', () => {
         it('should throw a provider error when the upload fails', async () => {
             // arrange
             const request = createDefaultSigningRequest();
-            vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(createFetchResponse({ message: 'Bad Request' }, 400));
+            const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(createFetchResponse({ message: 'Bad Request' }, 400));
 
             // act & assert
             await expect(provider.createSigningRequest(request)).rejects.toThrow(SigningProviderError);
+            expect(fetchSpy).toHaveBeenCalledTimes(1);
         });
     });
 
