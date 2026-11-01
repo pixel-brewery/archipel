@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-resources",
-    "version": "0.1.31",
+    "version": "0.1.32",
     "description": "Strategy-based resource loading infrastructure for NestJS with file system, blob storage, and embedded resource support plus optional caching.",
     "type": "module",
     "main": "./src/index.js",
@@ -71,7 +71,7 @@
     },
     "peerDependencies": {
         "@nestjs/common": "^12.0.0",
-        "@pixel-brewery/archipel-platform-caching": "0.1.31"
+        "@pixel-brewery/archipel-platform-caching": "0.1.32"
     },
     "peerDependenciesMeta": {
         "@pixel-brewery/archipel-platform-caching": {
@@ -80,7 +80,7 @@
     },
     "devDependencies": {
         "@nestjs/common": "12.3.2",
-        "@pixel-brewery/archipel-platform-caching": "0.1.31",
+        "@pixel-brewery/archipel-platform-caching": "0.1.32",
         "@types/mime-types": "3.0.1",
         "reflect-metadata": "0.2.2",
         "rxjs": "7.8.2",

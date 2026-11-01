@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-documents",
-    "version": "0.1.31",
+    "version": "0.1.32",
     "description": "Document generation engine supporting DOCX and PDF with template-based rendering for NestJS.",
     "type": "module",
     "main": "./src/index.js",
@@ -65,8 +65,8 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-core": "0.1.31",
-        "@pixel-brewery/archipel-platform-resources": "0.1.31",
+        "@pixel-brewery/archipel-platform-core": "0.1.32",
+        "@pixel-brewery/archipel-platform-resources": "0.1.32",
         "tslib": "2.8.1",
         "type-fest": "5.10.0"
     },
@@ -93,7 +93,7 @@
     },
     "devDependencies": {
         "@nestjs/common": "12.3.2",
-        "@pixel-brewery/archipel-platform-configuration": "0.1.31",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.32",
         "docxtemplater": "3.71.1",
         "pdf-lib": "1.17.1",
         "pizzip": "3.3.0",
