@@ -54,7 +54,8 @@
         "update": "yarn upgrade-interactive",
         "spell": "cspell --gitignore .",
         "verify:esm": "node tools/verify-esm-packages.mjs",
-        "verify": "yarn agents:check && yarn format:check && yarn ci:check && yarn lint && yarn test && yarn spell && yarn docs && yarn build && yarn verify:esm",
+        "verify": "yarn agents:check && yarn public:check && yarn format:check && yarn ci:check && yarn lint && yarn test && yarn spell && yarn docs && yarn build && yarn verify:esm",
+        "public:check": "node .github/scripts/findPrivateReferences.mjs",
         "release:major": "gh workflow run release.yml --ref main -f specifier=major",
         "ci:check": "vitest run --config=.github/scripts/vitest.config.mjs",
         "packaging:test": "vitest run --config=.github/scripts/vitest.config.mjs tools/verify-esm-packages.spec.mjs tools/verify-published-packages.spec.mjs"

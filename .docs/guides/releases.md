@@ -49,9 +49,26 @@ Native-token Dependabot merges do not produce another push-triggered workflow.
 The trusted merge helper therefore dispatches the release workflow explicitly
 after a verified merge. It accepts only a native bot PR from this repository,
 the canonical current PR workflow attempt, the unchanged tested head and all
-three successful platform jobs. The refresh helper requests one native
+three successful platform jobs and the successful `Quality Gate`. The refresh helper requests one native
 Dependabot rebase per outdated PR and main revision. Neither privileged helper
 checks out PR code or installs PR dependencies.
+
+The successful merge job retains `merged` and `merge_sha` outputs. A separate
+release-request job uses that exact source, so a failed request can be retried
+without attempting to merge an already merged PR. It verifies the immutable
+public repository, `main`, and the active release workflow's identity. A newer
+main revision supersedes the old request; an existing release attempt for the
+same source is retained regardless of its outcome. Recover a failed release in
+its original run instead of preparing a second candidate. The follow-up also
+refreshes remaining dependency PRs, including after a failed request.
+
+Automatic requests dispatch `release.yml` on `main` with `specifier: patch` and
+`source_sha` equal to the merge commit. The release preflight rejects the run if
+that source no longer equals its own revision, closing the race between the
+request's final main check and dispatch. Normal main pushes and manual releases
+retain their existing behavior; the optional source input is blank for those
+manual requests. Native-token merges continue to obey the PR/check rules; the
+release App remains exclusive to verified metadata publication.
 
 The documentation MCP server reports its own installed package version in the
 MCP initialization response. It reads the adjacent package manifest in source,
@@ -74,12 +91,26 @@ timer. Do not configure a same-named repository or organization secret fallback.
 This credential authenticates CI; it is independent of a maintainer's browser
 login and never belongs in source, an issue or a chat.
 
-The main PR rule requires resolved conversations and these exact checks from
+The checked-in main PR rule specifies resolved conversations and these exact checks from
 GitHub Actions integration `15368`, with strict current-base checking:
 
 - `verify (ubuntu-latest)`
 - `verify (macos-latest)`
 - `verify (windows-latest)`
+- `Quality Gate`
+
+The verification workflow also emits a stable `Quality Gate` after the complete
+platform matrix. It always runs and succeeds only when every platform succeeds;
+failed, cancelled or skipped verification fails the gate. Pushes to non-main
+branches, pull requests, merge-queue groups and manual verification run the same
+checks. Main releases call this same reusable workflow for the exact prepared
+candidate, including the gate, before publication. The gate does not publish or
+need source checkout, dependencies or repository permissions.
+
+The checked-in protection payload includes all four contexts. Configure the live
+rule only after the workflow revision is published and each required context is
+observed from GitHub Actions. Read back the active protection independently;
+editing the workflow or policy payload changes no GitHub setting by itself.
 
 The sole-maintainer configuration has zero required approving reviews and retains
 `@RueDeRennes` as CODEOWNER. Only release App `5547670` bypasses this PR/check rule.
@@ -94,7 +125,7 @@ only GitHub-owned, SHA-pinned actions are permitted.
 The owner-selected baseline includes the verified `dev` and `main` source at
 package version `0.1.24`. Existing unmerged Dependabot suggestions are regenerated
 against the new source; they are not copied blindly into main. The replacement
-repository has a new identity and begins with one parentless main commit. Previous
+repository has a new identity and begins with one main commit without a parent. Previous
 Git tags, PR refs and release history are not imported. Existing registry packages
 and published `0.1.24` archives remain unchanged. The next patch is `0.1.25` for
 both groups; absent tags select Nx's first-release mode with the committed
@@ -143,6 +174,14 @@ bot automation deliberately remain inactive.
 packaging regressions, lint, all library and tool unit tests, spelling, generated
 API docs, complete builds and ESM/package checks. It uses one local task worker.
 `yarn docs:build` verifies the static documentation application separately.
+
+The same verification includes `yarn public:check`, which rejects excluded private
+project references in tracked and new non-ignored paths, symlink targets, UTF-8
+and UTF-16 content, and decoded gzip archives. It streams file and archive content
+without an expanded-size limit, fails when an archive cannot be decoded, and
+redacts the excluded identifier from diagnostic paths. Ignored local data is
+outside this source check unless it has been force-tracked. Git history and
+remote issue or project content require their own separate audit.
 
 `yarn release:dry-run` previews an ordinary patch. For a fresh source baseline,
 `yarn release:first:dry-run` previews both groups without writing versions,

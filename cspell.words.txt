@@ -30,7 +30,6 @@ esigning
 fesm
 featureflag
 fileset
-flamox
 Googlebot
 guids
 healthcheck
