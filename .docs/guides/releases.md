@@ -91,12 +91,13 @@ timer. Do not configure a same-named repository or organization secret fallback.
 This credential authenticates CI; it is independent of a maintainer's browser
 login and never belongs in source, an issue or a chat.
 
-The main PR rule requires resolved conversations and these exact checks from
+The checked-in main PR rule specifies resolved conversations and these exact checks from
 GitHub Actions integration `15368`, with strict current-base checking:
 
 - `verify (ubuntu-latest)`
 - `verify (macos-latest)`
 - `verify (windows-latest)`
+- `Quality Gate`
 
 The verification workflow also emits a stable `Quality Gate` after the complete
 platform matrix. It always runs and succeeds only when every platform succeeds;
@@ -106,9 +107,10 @@ checks. Main releases call this same reusable workflow for the exact prepared
 candidate, including the gate, before publication. The gate does not publish or
 need source checkout, dependencies or repository permissions.
 
-Retain the existing three required contexts until the updated workflow is
-published. Then add `Quality Gate` to the remote required checks and read back
-the active protection rule; editing the workflow alone changes no GitHub setting.
+The checked-in protection payload includes all four contexts. Configure the live
+rule only after the workflow revision is published and each required context is
+observed from GitHub Actions. Read back the active protection independently;
+editing the workflow or policy payload changes no GitHub setting by itself.
 
 The sole-maintainer configuration has zero required approving reviews and retains
 `@RueDeRennes` as CODEOWNER. Only release App `5547670` bypasses this PR/check rule.
