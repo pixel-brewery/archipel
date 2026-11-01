@@ -1,3 +1,7 @@
+## 0.1.33 (2026-11-01)
+
+This was a version bump only for platform-configuration to align it with other projects, there were no code changes.
+
 ## 0.1.32 (2026-11-01)
 
 This was a version bump only for platform-configuration to align it with other projects, there were no code changes.
