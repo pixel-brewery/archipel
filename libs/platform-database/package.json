@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-database",
-    "version": "0.1.26",
+    "version": "0.1.31",
     "description": "Prisma ORM integration with PostgreSQL, repository base classes, query patterns, and pagination for NestJS.",
     "type": "module",
     "main": "./src/index.js",
@@ -57,14 +57,14 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-configuration": "0.1.26",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.31",
         "@prisma/driver-adapter-utils": "7.10.1",
         "tslib": "2.8.1"
     },
     "peerDependencies": {
         "@nestjs/common": "^12.0.0",
         "@nestjs/terminus": "^12.0.0",
-        "@pixel-brewery/archipel-platform-health": "0.1.26",
+        "@pixel-brewery/archipel-platform-health": "0.1.31",
         "@prisma/client": ">=7.0.0",
         "express": ">=5.0.0",
         "pg": ">=8.16.3"

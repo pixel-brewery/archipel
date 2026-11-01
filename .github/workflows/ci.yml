@@ -4,6 +4,7 @@ on:
     push:
         branches-ignore: [main]
     pull_request:
+    merge_group:
     workflow_dispatch:
     workflow_call:
         inputs:
@@ -95,3 +96,16 @@ jobs:
                   path: ${{ runner.temp }}/archipel-release
                   if-no-files-found: error
                   retention-days: 7
+
+    quality-gate:
+        name: Quality Gate
+        if: ${{ always() }}
+        needs: verify
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions: {}
+        steps:
+            - name: Require every platform verification to succeed
+              env:
+                  VERIFY_RESULT: ${{ needs.verify.result }}
+              run: test "$VERIFY_RESULT" = success

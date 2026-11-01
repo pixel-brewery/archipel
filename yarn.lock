@@ -30,6 +30,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ai-sdk/gateway@npm:4.0.129":
+  version: 4.0.129
+  resolution: "@ai-sdk/gateway@npm:4.0.129"
+  dependencies:
+    "@ai-sdk/provider": "npm:4.0.34"
+    "@ai-sdk/provider-utils": "npm:5.0.70"
+    "@vercel/oidc": "npm:3.2.0"
+  peerDependencies:
+    zod: ^3.25.76 || ^4.1.8
+  checksum: 10c0/bc2bf5def210cb23d33e6b0e94fe2ee755132103dd5ba93d7eb0608dcff84635d6592d6b6fa320c5e13311fe821eb8f4f59c46eea63602ee4c00511f4f1e92a3
+  languageName: node
+  linkType: hard
+
 "@ai-sdk/google@npm:4.0.102":
   version: 4.0.102
   resolution: "@ai-sdk/google@npm:4.0.102"
@@ -4430,11 +4443,11 @@ __metadata:
   linkType: hard
 
 "@hono/node-server@npm:^1.19.9 || ^2.0.5":
-  version: 2.0.12
-  resolution: "@hono/node-server@npm:2.0.12"
+  version: 2.1.5
+  resolution: "@hono/node-server@npm:2.1.5"
   peerDependencies:
-    hono: ^4
-  checksum: 10c0/c3f56e286ddf81394cab02f74391ebead7d601c1140f2bbcafe24e09b49ceb77519982965b0e069b0c2c9ad1840cba088ac67844a6c98b356f7eedf28801db0d
+    hono: ^4 || ^5.0.0-0
+  checksum: 10c0/3c3d5ffcc4a229e532530729b64db623493171bcda7b40ffbac3a46489884f700c881439d8c0d0413cd18793458ca252acedf6a9c13c8c3a024037e47974cacb
   languageName: node
   linkType: hard
 
@@ -4778,6 +4791,13 @@ __metadata:
   dependencies:
     minipass: "npm:^7.0.4"
   checksum: 10c0/c25b6dc1598790d5b55c0947a9b7d111cfa92594db5296c3b907e2f533c033666f692a3939eadac17b1c7c40d362d0b0635dc874cbfe3e70db7c2b07cc97a5d2
+  languageName: node
+  linkType: hard
+
+"@isaacs/nonrecursive-glob-match@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@isaacs/nonrecursive-glob-match@npm:1.0.3"
+  checksum: 10c0/dc2eb2b9cffc8d4b22b0de8beb8ecdc903b7bef1cb094d83fe0a7e454f0c7e1a8bcb4a168f66299eb17e1620fdf3c8cdf69545d11933845a122a10393b86c40a
   languageName: node
   linkType: hard
 
@@ -7485,7 +7505,7 @@ __metadata:
   dependencies:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     "@sentry/node": "npm:11.10.0"
     applicationinsights: "npm:3.17.0"
     dd-trace: "npm:6.21.0"
@@ -7497,7 +7517,7 @@ __metadata:
     "@nestjs/common": ^12.0.0
     "@nestjs/core": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     "@sentry/node": ">=9.0.0"
     applicationinsights: ">=3.0.0"
     dd-trace: ">=5.0.0"
@@ -7524,10 +7544,10 @@ __metadata:
     "@nestjs/jwt": "npm:12.0.3"
     "@nestjs/passport": "npm:12.0.0"
     "@nestjs/swagger": "npm:12.0.5"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-core": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-cryptography": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-mapping": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-core": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-cryptography": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-mapping": "npm:0.1.31"
     "@types/passport-apple": "npm:2.0.3"
     "@types/passport-github2": "npm:1.2.9"
     "@types/passport-google-oauth20": "npm:2.0.17"
@@ -7553,7 +7573,7 @@ __metadata:
     "@nestjs/passport": ^12.0.0
     "@nestjs/swagger": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     class-transformer: ">=0.5.0"
     class-validator: ">=0.14.0"
     express: ">=5.0.0"
@@ -7582,7 +7602,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-blob-storage@npm:0.1.26, @pixel-brewery/archipel-platform-blob-storage@workspace:libs/platform-blob-storage":
+"@pixel-brewery/archipel-platform-blob-storage@npm:0.1.31, @pixel-brewery/archipel-platform-blob-storage@workspace:libs/platform-blob-storage":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-blob-storage@workspace:libs/platform-blob-storage"
   dependencies:
@@ -7591,8 +7611,8 @@ __metadata:
     "@nestjs/core": "npm:12.3.2"
     "@nestjs/platform-express": "npm:12.3.2"
     "@nestjs/terminus": "npm:12.1.0"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    axios: "npm:1.20.0"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    axios: "npm:1.21.0"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.8.1"
@@ -7605,7 +7625,7 @@ __metadata:
     "@nestjs/common": ^12.0.0
     "@nestjs/platform-express": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     axios: ">=1.0.0"
     rxjs: ">=7.0.0"
   peerDependenciesMeta:
@@ -7630,11 +7650,11 @@ __metadata:
   dependencies:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-core": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-database": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-openapi": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-resources": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-core": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-database": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-openapi": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-resources": "npm:0.1.31"
     "@types/compression": "npm:1.8.1"
     "@types/express": "npm:5.0.6"
     "@types/express-session": "npm:1.19.0"
@@ -7677,7 +7697,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-caching@npm:0.1.26, @pixel-brewery/archipel-platform-caching@workspace:libs/platform-caching":
+"@pixel-brewery/archipel-platform-caching@npm:0.1.31, @pixel-brewery/archipel-platform-caching@workspace:libs/platform-caching":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-caching@workspace:libs/platform-caching"
   dependencies:
@@ -7691,8 +7711,8 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-configuration": 0.1.26
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-configuration": 0.1.31
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     ioredis: ">=5.0.0"
   peerDependenciesMeta:
     "@nestjs/terminus":
@@ -7706,7 +7726,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-configuration@npm:0.1.26, @pixel-brewery/archipel-platform-configuration@npm:^0.1.26, @pixel-brewery/archipel-platform-configuration@workspace:libs/platform-configuration":
+"@pixel-brewery/archipel-platform-configuration@npm:0.1.31, @pixel-brewery/archipel-platform-configuration@npm:^0.1.31, @pixel-brewery/archipel-platform-configuration@workspace:libs/platform-configuration":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-configuration@workspace:libs/platform-configuration"
   dependencies:
@@ -7725,7 +7745,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-core@npm:0.1.26, @pixel-brewery/archipel-platform-core@workspace:libs/platform-core":
+"@pixel-brewery/archipel-platform-core@npm:0.1.31, @pixel-brewery/archipel-platform-core@workspace:libs/platform-core":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-core@workspace:libs/platform-core"
   dependencies:
@@ -7734,17 +7754,17 @@ __metadata:
     "@nestjs/core": "npm:12.3.2"
     "@nestjs/swagger": "npm:12.0.5"
     "@nestjs/terminus": "npm:12.1.0"
-    "@pixel-brewery/archipel-platform-caching": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-health": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-resources": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-caching": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-health": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-resources": "npm:0.1.31"
     "@standard-schema/spec": "npm:1.1.0"
     "@types/mime-types": "npm:3.0.1"
-    axios: "npm:1.20.0"
+    axios: "npm:1.21.0"
     class-transformer: "npm:0.5.1"
     class-validator: "npm:0.15.1"
     express: "npm:5.3.0"
-    glob: "npm:13.0.6"
+    glob: "npm:14.0.2"
     mime-types: "npm:3.0.2"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -7772,7 +7792,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-cryptography@npm:0.1.26, @pixel-brewery/archipel-platform-cryptography@workspace:libs/platform-cryptography":
+"@pixel-brewery/archipel-platform-cryptography@npm:0.1.31, @pixel-brewery/archipel-platform-cryptography@workspace:libs/platform-cryptography":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-cryptography@workspace:libs/platform-cryptography"
   dependencies:
@@ -7793,14 +7813,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-database@npm:0.1.26, @pixel-brewery/archipel-platform-database@workspace:libs/platform-database":
+"@pixel-brewery/archipel-platform-database@npm:0.1.31, @pixel-brewery/archipel-platform-database@workspace:libs/platform-database":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-database@workspace:libs/platform-database"
   dependencies:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
     "@nestjs/terminus": "npm:12.1.0"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     "@prisma/client": "npm:7.10.1"
     "@prisma/driver-adapter-utils": "npm:7.10.1"
     "@types/pg": "npm:^8.23.1"
@@ -7812,7 +7832,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     "@prisma/client": ">=7.0.0"
     express: ">=5.0.0"
     pg: ">=8.16.3"
@@ -7831,9 +7851,9 @@ __metadata:
   resolution: "@pixel-brewery/archipel-platform-documents@workspace:libs/platform-documents"
   dependencies:
     "@nestjs/common": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-core": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-resources": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-core": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-resources": "npm:0.1.31"
     docxtemplater: "npm:3.71.1"
     pdf-lib: "npm:1.17.1"
     pizzip: "npm:3.3.0"
@@ -7867,7 +7887,7 @@ __metadata:
   dependencies:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.8.1"
@@ -7876,7 +7896,7 @@ __metadata:
     "@dropbox/sign": ">=1.0.0"
     "@nestjs/common": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     docusign-esign: ">=8.0.0"
   peerDependenciesMeta:
     "@dropbox/sign":
@@ -7900,7 +7920,7 @@ __metadata:
     "@microsoft/feature-management": "npm:2.3.1"
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     "@vercel/edge-config": "npm:1.5.1"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -7928,7 +7948,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-health@npm:0.1.26, @pixel-brewery/archipel-platform-health@workspace:libs/platform-health":
+"@pixel-brewery/archipel-platform-health@npm:0.1.31, @pixel-brewery/archipel-platform-health@workspace:libs/platform-health":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-health@workspace:libs/platform-health"
   dependencies:
@@ -7952,27 +7972,27 @@ __metadata:
     "@ai-sdk/provider": "npm:4.0.31"
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/testing": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:^0.1.26"
-    "@pixel-brewery/archipel-platform-intelligence": "npm:^0.1.26"
-    "@pixel-brewery/archipel-platform-mcp": "npm:^0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:^0.1.31"
+    "@pixel-brewery/archipel-platform-intelligence": "npm:^0.1.31"
+    "@pixel-brewery/archipel-platform-mcp": "npm:^0.1.31"
     tslib: "npm:2.8.1"
     vitest: "npm:5.0.5"
     zod: "npm:4.6.7"
   peerDependencies:
     "@nestjs/common": ^12.0.0
-    "@pixel-brewery/archipel-platform-mcp": ^0.1.26
+    "@pixel-brewery/archipel-platform-mcp": ^0.1.31
   peerDependenciesMeta:
     "@pixel-brewery/archipel-platform-mcp":
       optional: true
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-intelligence@npm:^0.1.26, @pixel-brewery/archipel-platform-intelligence@workspace:libs/platform-intelligence":
+"@pixel-brewery/archipel-platform-intelligence@npm:^0.1.31, @pixel-brewery/archipel-platform-intelligence@workspace:libs/platform-intelligence":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-intelligence@workspace:libs/platform-intelligence"
   dependencies:
     "@ai-sdk/anthropic": "npm:4.0.90"
-    "@ai-sdk/gateway": "npm:4.0.121"
+    "@ai-sdk/gateway": "npm:4.0.129"
     "@ai-sdk/google": "npm:4.0.102"
     "@ai-sdk/openai": "npm:4.0.99"
     "@ai-sdk/openai-compatible": "npm:3.0.80"
@@ -7980,7 +8000,7 @@ __metadata:
     "@ai-sdk/xai": "npm:5.0.27"
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     "@types/ws": "npm:8.18.2"
     ai: "npm:7.0.148"
     ajv: "npm:8.20.0"
@@ -8000,7 +8020,7 @@ __metadata:
     "@ai-sdk/xai": ">=4.0.0"
     "@nestjs/common": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
   dependenciesMeta:
     "@ai-sdk/anthropic":
       optional: true
@@ -8039,7 +8059,7 @@ __metadata:
   resolution: "@pixel-brewery/archipel-platform-logging@workspace:libs/platform-logging"
   dependencies:
     "@nestjs/common": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     express: "npm:5.3.0"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -8058,10 +8078,10 @@ __metadata:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
     "@nestjs/terminus": "npm:12.1.0"
-    "@pixel-brewery/archipel-platform-blob-storage": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-core": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-resources": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-blob-storage": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-core": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-resources": "npm:0.1.31"
     "@sendgrid/mail": "npm:8.1.6"
     form-data: "npm:4.0.6"
     mailgun.js: "npm:14.1.0"
@@ -8075,7 +8095,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     "@sendgrid/mail": ">=8.0.0"
     form-data: ">=4.0.0"
     mailgun.js: ">=10.0.0"
@@ -8101,7 +8121,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-mapping@npm:0.1.26, @pixel-brewery/archipel-platform-mapping@workspace:libs/platform-mapping":
+"@pixel-brewery/archipel-platform-mapping@npm:0.1.31, @pixel-brewery/archipel-platform-mapping@workspace:libs/platform-mapping":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-mapping@workspace:libs/platform-mapping"
   dependencies:
@@ -8115,7 +8135,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-mcp@npm:^0.1.26, @pixel-brewery/archipel-platform-mcp@workspace:libs/platform-mcp":
+"@pixel-brewery/archipel-platform-mcp@npm:^0.1.31, @pixel-brewery/archipel-platform-mcp@workspace:libs/platform-mcp":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-mcp@workspace:libs/platform-mcp"
   dependencies:
@@ -8133,7 +8153,7 @@ __metadata:
     "@nestjs/common": ^12.0.0
     "@nestjs/core": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     express: ">=5.0.0"
     zod: ">=3.25.0"
   peerDependenciesMeta:
@@ -8144,16 +8164,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-openapi@npm:0.1.26, @pixel-brewery/archipel-platform-openapi@workspace:libs/platform-openapi":
+"@pixel-brewery/archipel-platform-openapi@npm:0.1.31, @pixel-brewery/archipel-platform-openapi@workspace:libs/platform-openapi":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-openapi@workspace:libs/platform-openapi"
   dependencies:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
     "@nestjs/swagger": "npm:12.0.5"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-core": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-resources": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-core": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-resources": "npm:0.1.31"
     class-validator: "npm:0.15.1"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -8176,7 +8196,7 @@ __metadata:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
     "@paddle/paddle-node-sdk": "npm:3.10.0"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
     stripe: "npm:23.0.0"
@@ -8189,7 +8209,7 @@ __metadata:
     "@nestjs/core": ^12.0.0
     "@nestjs/terminus": ^12.0.0
     "@paddle/paddle-node-sdk": ">=3.0.0"
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     rxjs: ">=7.0.0"
     stripe: ">=23.0.0"
   peerDependenciesMeta:
@@ -8214,7 +8234,7 @@ __metadata:
   dependencies:
     "@nestjs/common": "npm:12.3.2"
     "@nestjs/core": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.8.1"
@@ -8222,7 +8242,7 @@ __metadata:
     "@azure/service-bus": ">=7.0.0"
     "@nestjs/common": ^12.0.0
     "@nestjs/terminus": ^12.0.0
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     "@vercel/queue": ">=0.1.0"
     bullmq: ">=5.0.0"
   peerDependenciesMeta:
@@ -8253,14 +8273,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pixel-brewery/archipel-platform-resources@npm:0.1.26, @pixel-brewery/archipel-platform-resources@workspace:libs/platform-resources":
+"@pixel-brewery/archipel-platform-resources@npm:0.1.31, @pixel-brewery/archipel-platform-resources@workspace:libs/platform-resources":
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-resources@workspace:libs/platform-resources"
   dependencies:
     "@nestjs/common": "npm:12.3.2"
-    "@pixel-brewery/archipel-platform-caching": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-caching": "npm:0.1.31"
     "@types/mime-types": "npm:3.0.1"
-    glob: "npm:13.0.6"
+    glob: "npm:14.0.2"
     mime-types: "npm:3.0.2"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -8268,7 +8288,7 @@ __metadata:
     vitest: "npm:5.0.5"
   peerDependencies:
     "@nestjs/common": ^12.0.0
-    "@pixel-brewery/archipel-platform-caching": 0.1.26
+    "@pixel-brewery/archipel-platform-caching": 0.1.31
   peerDependenciesMeta:
     "@pixel-brewery/archipel-platform-caching":
       optional: true
@@ -8295,9 +8315,9 @@ __metadata:
     "@opentelemetry/sdk-metrics": "npm:3.0.0"
     "@opentelemetry/sdk-trace": "npm:3.0.0"
     "@opentelemetry/semantic-conventions": "npm:1.43.0"
-    "@pixel-brewery/archipel-platform-caching": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.26"
-    "@pixel-brewery/archipel-platform-core": "npm:0.1.26"
+    "@pixel-brewery/archipel-platform-caching": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-configuration": "npm:0.1.31"
+    "@pixel-brewery/archipel-platform-core": "npm:0.1.31"
     "@vercel/functions": "npm:3.10.3"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -8321,7 +8341,7 @@ __metadata:
     "@opentelemetry/sdk-metrics": ">=3.0.0"
     "@opentelemetry/sdk-trace": ">=3.0.0"
     "@opentelemetry/semantic-conventions": ">=1.30.0"
-    "@pixel-brewery/archipel-platform-health": 0.1.26
+    "@pixel-brewery/archipel-platform-health": 0.1.31
     "@vercel/functions": ">=3.9.5"
     rxjs: ">=7.0.0"
   peerDependenciesMeta:
@@ -12078,7 +12098,7 @@ __metadata:
   resolution: "archipel@workspace:."
   dependencies:
     "@ai-sdk/anthropic": "npm:4.0.90"
-    "@ai-sdk/gateway": "npm:4.0.121"
+    "@ai-sdk/gateway": "npm:4.0.129"
     "@ai-sdk/google": "npm:4.0.102"
     "@ai-sdk/openai": "npm:4.0.99"
     "@ai-sdk/openai-compatible": "npm:3.0.80"
@@ -12270,15 +12290,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.20.0, axios@npm:^1.20.0":
-  version: 1.20.0
-  resolution: "axios@npm:1.20.0"
+"axios@npm:1.21.0":
+  version: 1.21.0
+  resolution: "axios@npm:1.21.0"
   dependencies:
     follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.6"
     https-proxy-agent: "npm:^5.0.1"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10c0/976088acf532286356f4c2e65df1ef47ba7da3936d83e928d0d64357bbf5370456abd3eb5826c15df322335fcb1fe200d4a84b4fcf20ffccdd63b40d80fa495c
+  checksum: 10c0/adaf1e81762aa7476b95a588f173796e9251a2683c1ffc3e2dfb3ae705c4f629976ef05ded4e7a513832214072058d480fb0bc7e46fe819621909a70f9571ed2
   languageName: node
   linkType: hard
 
@@ -12290,6 +12310,18 @@ __metadata:
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
   checksum: 10c0/f8b5f3aa954cc1da283e32ad81882967a371dfec7dcc75174fcae93093daeb5399aec2ec587d04779f46b00ff1c297ac9edf3fa596452d6a3d455ce5b58093a4
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.20.0":
+  version: 1.20.0
+  resolution: "axios@npm:1.20.0"
+  dependencies:
+    follow-redirects: "npm:^1.16.0"
+    form-data: "npm:^4.0.6"
+    https-proxy-agent: "npm:^5.0.1"
+    proxy-from-env: "npm:^2.1.0"
+  checksum: 10c0/976088acf532286356f4c2e65df1ef47ba7da3936d83e928d0d64357bbf5370456abd3eb5826c15df322335fcb1fe200d4a84b4fcf20ffccdd63b40d80fa495c
   languageName: node
   linkType: hard
 
@@ -12596,7 +12628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:5.0.12":
+"brace-expansion@npm:5.0.12, brace-expansion@npm:^5.0.12":
   version: 5.0.12
   resolution: "brace-expansion@npm:5.0.12"
   dependencies:
@@ -15242,9 +15274,9 @@ __metadata:
   linkType: hard
 
 "fast-uri@npm:^3.0.1":
-  version: 3.1.0
-  resolution: "fast-uri@npm:3.1.0"
-  checksum: 10c0/44364adca566f70f40d1e9b772c923138d47efeac2ae9732a872baafd77061f26b097ba2f68f0892885ad177becd065520412b8ffeec34b16c99433c5b9e2de7
+  version: 3.1.9
+  resolution: "fast-uri@npm:3.1.9"
+  checksum: 10c0/052757540d8c0bbc16bb124a45b8f5cb5d0932f9b89f019221ee41cdb3cafc1db44b2e809d6b888b87922af3e5560a863124454e9d9193e1fc955887357b5add
   languageName: node
   linkType: hard
 
@@ -15441,12 +15473,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.11, follow-redirects@npm:^1.16.0":
-  version: 1.16.0
-  resolution: "follow-redirects@npm:1.16.0"
+  version: 1.16.2
+  resolution: "follow-redirects@npm:1.16.2"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10c0/a1e2900163e6f1b4d1ed5c221b607f41decbab65534c63fe7e287e40a5d552a6496e7d9d7d976fa4ba77b4c51c11e5e9f683f10b43011ea11e442ff128d0e181
+  checksum: 10c0/ff38c8ceb904e505021057f58d395ea5f2e7c34257032960a76b21df1726395ce753f5678b6ee3b15210a557277c00b2607c67b682ee4dec1f33cb5147e08e90
   languageName: node
   linkType: hard
 
@@ -15693,14 +15725,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:13.0.6, glob@npm:^13.0.0, glob@npm:^13.0.6":
-  version: 13.0.6
-  resolution: "glob@npm:13.0.6"
+"glob@npm:14.0.2":
+  version: 14.0.2
+  resolution: "glob@npm:14.0.2"
   dependencies:
-    minimatch: "npm:^10.2.2"
+    minimatch: "npm:^11.0.0"
     minipass: "npm:^7.1.3"
-    path-scurry: "npm:^2.0.2"
-  checksum: 10c0/269c236f11a9b50357fe7a8c6aadac667e01deb5242b19c84975628f05f4438d8ee1354bb62c5d6c10f37fd59911b54d7799730633a2786660d8c69f1d18120a
+    path-scurry: "npm:^3.0.0"
+  checksum: 10c0/30e6d02930d281d1879048ac4631648491aa5e60d84fe4195b048f88545f341766a3e2ab05d0a9d59457bd8905720925d20a0491654feeb7fc68568177e8d8e4
   languageName: node
   linkType: hard
 
@@ -15717,6 +15749,17 @@ __metadata:
   bin:
     glob: dist/esm/bin.mjs
   checksum: 10c0/100705eddbde6323e7b35e1d1ac28bcb58322095bd8e63a7d0bef1a2cdafe0d0f7922a981b2b48369a4f8c1b077be5c171804534c3509dfe950dde15fbe6d828
+  languageName: node
+  linkType: hard
+
+"glob@npm:^13.0.0, glob@npm:^13.0.6":
+  version: 13.0.6
+  resolution: "glob@npm:13.0.6"
+  dependencies:
+    minimatch: "npm:^10.2.2"
+    minipass: "npm:^7.1.3"
+    path-scurry: "npm:^2.0.2"
+  checksum: 10c0/269c236f11a9b50357fe7a8c6aadac667e01deb5242b19c84975628f05f4438d8ee1354bb62c5d6c10f37fd59911b54d7799730633a2786660d8c69f1d18120a
   languageName: node
   linkType: hard
 
@@ -17989,6 +18032,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^11.0.0":
+  version: 11.0.3
+  resolution: "minimatch@npm:11.0.3"
+  dependencies:
+    "@isaacs/nonrecursive-glob-match": "npm:^1.0.3"
+    brace-expansion: "npm:^5.0.12"
+  checksum: 10c0/5e8f192102251981872d3c117b3804d4b2759a20b5d788e65af2263a7679d96692f00ca8784b245e38476d042472c818f10ceac06085dec23a22136931b76053
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.0.4, minimatch@npm:^3.1.1":
   version: 3.1.5
   resolution: "minimatch@npm:3.1.5"
@@ -19216,6 +19269,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-scurry@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "path-scurry@npm:3.0.0"
+  dependencies:
+    lru-cache: "npm:^11.0.0"
+    minipass: "npm:^7.1.2"
+  checksum: 10c0/3256223b51952732bc5460f574143d7d9904cd6d68fac3072906162c90e9f27fdf6f3fe812287e65a876f92d73c12a58368b28749ed07a58bdb04dc76f60a938
+  languageName: node
+  linkType: hard
+
 "path-to-regexp@npm:8.4.2, path-to-regexp@npm:^8.0.0":
   version: 8.4.2
   resolution: "path-to-regexp@npm:8.4.2"
@@ -19733,22 +19796,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.4.0":
-  version: 6.15.1
-  resolution: "qs@npm:6.15.1"
-  dependencies:
-    side-channel: "npm:^1.1.0"
-  checksum: 10c0/19ee504f0ebff72598503e38cd6d9bd7b52a8ab62ae18b1e6bee3d4db58469bd65871ef1893a881bafb0f80ef2f9ab586e1f255cf25cc8d816c0f5a704721d97
-  languageName: node
-  linkType: hard
-
-"qs@npm:^6.15.2, qs@npm:^6.16.0":
-  version: 6.16.1
-  resolution: "qs@npm:6.16.1"
+"qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.15.2, qs@npm:^6.16.0, qs@npm:^6.4.0":
+  version: 6.17.1
+  resolution: "qs@npm:6.17.1"
   dependencies:
     es-define-property: "npm:^1.0.1"
     side-channel: "npm:^1.1.1"
-  checksum: 10c0/84ee9124b251ab2953132fbea1d70c966aa6e6496cccabedbbb83afa412bf4177bddebc779ca3ddafe23da83b2f593d530b41be6a726e971404fabb20ff22c94
+  checksum: 10c0/55f09dd0282fda70ce9475719158f910f2214477b95aa7284675fb9977c9cdae89fb495423399227331de76766703aaa71372e96cded05046e21713c033e885d
   languageName: node
   linkType: hard
 
@@ -20586,7 +20640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"side-channel-list@npm:^1.0.0, side-channel-list@npm:^1.0.1":
+"side-channel-list@npm:^1.0.1":
   version: 1.0.1
   resolution: "side-channel-list@npm:1.0.1"
   dependencies:
@@ -20618,19 +20672,6 @@ __metadata:
     object-inspect: "npm:^1.13.3"
     side-channel-map: "npm:^1.0.1"
   checksum: 10c0/71362709ac233e08807ccd980101c3e2d7efe849edc51455030327b059f6c4d292c237f94dc0685031dd11c07dd17a68afde235d6cf2102d949567f98ab58185
-  languageName: node
-  linkType: hard
-
-"side-channel@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "side-channel@npm:1.1.0"
-  dependencies:
-    es-errors: "npm:^1.3.0"
-    object-inspect: "npm:^1.13.3"
-    side-channel-list: "npm:^1.0.0"
-    side-channel-map: "npm:^1.0.1"
-    side-channel-weakmap: "npm:^1.0.2"
-  checksum: 10c0/cb20dad41eb032e6c24c0982e1e5a24963a28aa6122b4f05b3f3d6bf8ae7fd5474ef382c8f54a6a3ab86e0cac4d41a23bd64ede3970e5bfb50326ba02a7996e6
   languageName: node
   linkType: hard
 

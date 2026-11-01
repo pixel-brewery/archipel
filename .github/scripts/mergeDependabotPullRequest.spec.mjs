@@ -27,10 +27,10 @@ const mainPath = `${repositoryPath}/branches/main`;
 
 function controlled() {
     const repository = { id: repositoryId, full_name: 'pixel-brewery/archipel' };
-    const jobs = ['ubuntu-latest', 'macos-latest', 'windows-latest'].map((os, index) => ({
+    const jobs = ['verify (ubuntu-latest)', 'verify (macos-latest)', 'verify (windows-latest)', 'Quality Gate'].map((name, index) => ({
         id: index + 1,
         run_id: 202,
-        name: `verify (${os})`,
+        name,
         status: 'completed',
         conclusion: 'success',
     }));
@@ -295,14 +295,28 @@ describe('Dependabot pull request merge', () => {
         expect(writes(dependencies.request)).toEqual([]);
     });
 
+    it.each(['failure', 'cancelled', 'skipped'])('rejects a %s aggregate gate even when the workflow reports success', async (conclusion) => {
+        // Arrange
+        const dependencies = controlled();
+
+        dependencies.records.jobs[dependencies.records.jobs.length - 1].conclusion = conclusion;
+
+        // Act
+        const result = await mergeDependabotPullRequest(context, dependencies);
+
+        // Assert
+        expect(result).toEqual({ status: 'skipped', reason: 'incomplete-verification' });
+        expect(writes(dependencies.request)).toEqual([]);
+    });
+
     it.each(['missing', 'duplicate', 'extra'])('rejects %s matrix coverage', async (kind) => {
         // Arrange
         const dependencies = controlled();
         const jobs = dependencies.records.jobs;
 
         if (kind === 'missing') jobs.pop();
-        else if (kind === 'duplicate') jobs[2] = { ...jobs[0], id: 4 };
-        else jobs.push({ ...jobs[0], id: 4, name: 'extra job' });
+        else if (kind === 'duplicate') jobs[2] = { ...jobs[0], id: 5 };
+        else jobs.push({ ...jobs[0], id: 5, name: 'extra job' });
 
         dependencies.records.jobPages[0].total_count = jobs.length;
 
@@ -319,8 +333,8 @@ describe('Dependabot pull request merge', () => {
         const dependencies = controlled();
 
         dependencies.records.jobPages = [
-            { total_count: 3, jobs: dependencies.records.jobs.slice(0, 1) },
-            { total_count: 3, jobs: dependencies.records.jobs.slice(1) },
+            { total_count: 4, jobs: dependencies.records.jobs.slice(0, 1) },
+            { total_count: 4, jobs: dependencies.records.jobs.slice(1) },
         ];
 
         // Act
@@ -342,8 +356,8 @@ describe('Dependabot pull request merge', () => {
             const jobs = dependencies.records.jobs;
 
             dependencies.records.jobPages = [
-                { total_count: 3, jobs: jobs.slice(0, 1) },
-                { total_count: kind === 'count-changed' ? 4 : 3, jobs: jobs.slice(1) },
+                { total_count: 4, jobs: jobs.slice(0, 1) },
+                { total_count: kind === 'count-changed' ? 5 : 4, jobs: jobs.slice(1) },
             ];
 
             if (kind === 'empty-page') dependencies.records.jobPages[1].jobs = [];

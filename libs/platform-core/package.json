@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-core",
-    "version": "0.1.26",
+    "version": "0.1.31",
     "description": "Core templates, events, identifiers, and shared backend utilities for NestJS applications.",
     "type": "module",
     "main": "./src/index.js",
@@ -62,9 +62,9 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-configuration": "0.1.26",
-        "@pixel-brewery/archipel-platform-health": "0.1.26",
-        "@pixel-brewery/archipel-platform-resources": "0.1.26",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.31",
+        "@pixel-brewery/archipel-platform-health": "0.1.31",
+        "@pixel-brewery/archipel-platform-resources": "0.1.31",
         "@standard-schema/spec": "1.1.0",
         "tslib": "2.8.1",
         "type-fest": "5.10.0"
@@ -95,13 +95,13 @@
         "@nestjs/core": "12.3.2",
         "@nestjs/swagger": "12.0.5",
         "@nestjs/terminus": "12.1.0",
-        "@pixel-brewery/archipel-platform-caching": "0.1.26",
+        "@pixel-brewery/archipel-platform-caching": "0.1.31",
         "@types/mime-types": "3.0.1",
-        "axios": "1.20.0",
+        "axios": "1.21.0",
         "class-transformer": "0.5.1",
         "class-validator": "0.15.1",
         "express": "5.3.0",
-        "glob": "13.0.6",
+        "glob": "14.0.2",
         "mime-types": "3.0.2",
         "reflect-metadata": "0.2.2",
         "rxjs": "7.8.2",
