@@ -354,6 +354,10 @@ export class AdobeSignEsigningProvider extends EsigningClientBase {
             body: formData,
         });
 
+        if (!response.ok) {
+            throw new SigningProviderError(PROVIDER_ID, `HTTP ${response.status} on POST /transientDocuments.`);
+        }
+
         const result = (await response.json()) as { transientDocumentId: string };
 
         return result.transientDocumentId;
