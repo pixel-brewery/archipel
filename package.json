@@ -134,7 +134,7 @@
         "cspell": "10.4.0",
         "dd-trace": "^6.21.0",
         "docusign-esign": "10.1.0",
-        "eslint": "10.13.0",
+        "eslint": "10.14.0",
         "eslint-config-prettier": "10.1.8",
         "express-rate-limit": "^8.7.1",
         "express-session": "^1.19.0",
