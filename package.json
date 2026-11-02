@@ -136,7 +136,7 @@
         "docusign-esign": "10.1.0",
         "eslint": "10.14.0",
         "eslint-config-prettier": "10.1.8",
-        "express-rate-limit": "^8.7.1",
+        "express-rate-limit": "^8.7.2",
         "express-session": "^1.19.0",
         "helmet": "^8.3.0",
         "husky": "9.1.7",
