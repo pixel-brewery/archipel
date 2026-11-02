@@ -1,3 +1,13 @@
+## 0.1.34 (2026-11-02)
+
+### 🩹 Fixes
+
+- **esigning:** reject failed Adobe Sign uploads ([5af3d3e](https://github.com/pixel-brewery/archipel/commit/5af3d3e))
+
+### ❤️ Thank You
+
+- RueDeRennes @RueDeRennes
+
 ## 0.1.33 (2026-11-01)
 
 This was a version bump only for platform-esigning to align it with other projects, there were no code changes.
