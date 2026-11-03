@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/archipel-hero.png" alt="Archipel — connected, modular building blocks for NestJS backends" width="1200" />
+  <img src=".github/assets/archipel-hero-v2.png" alt="Archipel — connected modular islands in light ceramic and glass" width="1200" />
 </p>
 
 # Archipel
