@@ -4,10 +4,11 @@
 
 # Archipel
 
-**Build your NestJS backend from focused, replaceable platform libraries.**
+**Build different backends on one shared foundation.**
 
-Typed configuration. Persistence. Identity. Payments. Queues. Observability. AI integrations.
-Compose the capabilities your application needs and keep its business rules in your own code.
+Archipel turns recurring backend work into reusable NestJS packages. Carry the same architecture,
+infrastructure and integration patterns across applications, so each new project starts with
+familiar tools and consistent behavior.
 
 ![Node.js 22.18+](https://img.shields.io/badge/Node.js-22.18%2B-417E38?style=flat-square)
 ![Native ESM](https://img.shields.io/badge/modules-native_ESM-263445?style=flat-square)
@@ -18,16 +19,24 @@ Compose the capabilities your application needs and keep its business rules in y
 
 ## Why Archipel exists
 
-Backend applications repeatedly need the same infrastructure: configuration, authentication,
-database access, file storage, email, background work and telemetry. Archipel gives those
-capabilities a shared set of NestJS modules, typed contracts and explicit extension points.
+Archipel grew out of building different applications whose backends kept needing the same
+architecture and capabilities. Configuration, database access, identity and integrations returned
+in every project, along with the work of making those pieces fit together consistently.
 
-Abstract base classes serve as contracts and dependency-injection tokens. Built-in provider
+That common foundation lives here as reusable NestJS packages. Each backend gets familiar
+contracts and patterns for how it is assembled, configured and extended. The application keeps
+its own entities, authorization decisions and workflows.
+
+- **Start from an established architecture.** Reuse shared capabilities and their integration
+  patterns as the starting point for the next backend.
+- **Work consistently across applications.** Shared configuration and extension contracts mean
+  fewer project-specific conventions to learn when developing, maintaining or operating another backend.
+- **Improve a capability once.** Adopt the same package fixes and improvements across the
+  applications that use it.
+
+Abstract base classes serve as both contracts and dependency-injection tokens. Built-in provider
 adapters and application-owned implementations use those same contracts. Provider-specific
 entry points let you select an integration together with its SDK dependencies.
-
-Install the packages you need, register their modules and supply the application-specific
-adapters. Your application owns its entities, authorization decisions and workflows.
 
 ## Get started
 
