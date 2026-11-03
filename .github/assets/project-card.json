@@ -1,24 +1,19 @@
 {
     "schemaVersion": 1,
+    "language": "en",
     "project": {
         "name": "Archipel",
         "slug": "archipel",
         "website": "https://github.com/pixel-brewery/archipel",
         "repository": "https://github.com/pixel-brewery/archipel"
     },
-    "description": {
-        "en": "Archipel is a modular collection of provider-independent NestJS libraries for the infrastructure that backend applications repeatedly need. It brings configuration, identity, persistence, payments, queues, documents, observability and AI integrations together through typed contracts and replaceable adapters.",
-        "de": "Archipel ist eine modulare Sammlung anbieterunabhängiger NestJS-Bibliotheken für wiederkehrende Backendinfrastruktur. Typisierte Verträge und austauschbare Adapter verbinden Konfiguration, Identitätsverwaltung, Datenhaltung, Zahlungen, Warteschlangen, Dokumente, Betriebsüberwachung und KI-Anbindungen."
-    },
+    "description": "Archipel is a modular collection of provider-independent NestJS libraries for the infrastructure that backend applications repeatedly need. It brings configuration, identity, persistence, payments, queues, documents, observability and AI integrations together through typed contracts and replaceable adapters.",
     "image": {
         "file": "project-card.webp",
         "format": "webp",
         "width": 960,
         "height": 540,
-        "alt": {
-            "en": "Archipel's island mark beside connected modular platforms for backend capabilities.",
-            "de": "Archipels Inselmarke neben verbundenen modularen Plattformen für Backendfunktionen."
-        }
+        "alt": "Archipel's island mark beside connected modular platforms for backend capabilities."
     },
     "artwork": {
         "kind": "illustration",
