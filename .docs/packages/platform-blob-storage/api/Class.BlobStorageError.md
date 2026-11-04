@@ -18,6 +18,7 @@ Describes a provider-independent blob storage operation failure.
 
 - [`BlobObjectNotFoundError`](Class.BlobObjectNotFoundError)
 - [`BlobStorageDisabledError`](Class.BlobStorageDisabledError)
+- [`BlobStoragePreconditionFailedError`](Class.BlobStoragePreconditionFailedError)
 - [`BlobStorageUnavailableError`](Class.BlobStorageUnavailableError)
 - [`BlobStorageUnsupportedOperationError`](Class.BlobStorageUnsupportedOperationError)
 

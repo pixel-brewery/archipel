@@ -9,6 +9,9 @@ import type {
     IBlobUploadRequest,
     IBlobUploadResult,
 } from '../../interfaces/IBlobProvider.js';
+import type { IBlobConditionalDeleteRequest } from '../../interfaces/IBlobConditionalDeleteRequest.js';
+import type { IBlobObjectHistoryRequest } from '../../interfaces/IBlobObjectHistoryRequest.js';
+import type { IBlobObjectHistoryResult } from '../../interfaces/IBlobObjectHistoryResult.js';
 
 /**
  * Abstract base class for blob storage strategies.
@@ -100,6 +103,28 @@ export abstract class BlobStorageStrategyBase {
      * @returns One page of entries and the token for the next page.
      */
     public listObjects?(request: IBlobListRequest): Promise<IBlobListResult>;
+
+    /**
+     * Observes one exact-key history page, including available versions, snapshots and soft deletion.
+     *
+     * Does not inspect container restoration, backups or other recovery systems.
+     *
+     * @param request - Exact key, bounded page and cancellation budget.
+     * @returns Provider observations, never an implicit irreversible-deletion guarantee.
+     * @public
+     */
+    public inspectObjectHistory?(request: IBlobObjectHistoryRequest): Promise<IBlobObjectHistoryResult>;
+
+    /**
+     * Deletes the selected object only while its exact observed ETag still matches.
+     *
+     * A supplied resource identity must match the actual target before deletion.
+     * Client cancellation does not undo a mutation already accepted by the provider.
+     *
+     * @param request - Exact ETag, optional immutable selector and cancellation budget.
+     * @public
+     */
+    public deleteObjectConditionally?(request: IBlobConditionalDeleteRequest): Promise<void>;
 
     // #endregion
 }

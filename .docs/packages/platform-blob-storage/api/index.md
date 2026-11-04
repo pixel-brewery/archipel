@@ -19,6 +19,7 @@ editUrl: false
 | [BlobService](Class.BlobService)                                                   | Provides a generic abstraction for blob storage operations independent of the underlying provider.                                                                                                                            |
 | [BlobStorageDisabledError](Class.BlobStorageDisabledError)                         | Indicates that a blob operation was attempted while storage is disabled.                                                                                                                                                      |
 | [BlobStorageError](Class.BlobStorageError)                                         | Describes a provider-independent blob storage operation failure.                                                                                                                                                              |
+| [BlobStoragePreconditionFailedError](Class.BlobStoragePreconditionFailedError)     | The selected object no longer meets the caller's conditional deletion guard.                                                                                                                                                  |
 | [BlobStorageStrategyBase](Class.BlobStorageStrategyBase)                           | Abstract base class for blob storage strategies. Every concrete provider (AWS S3, Azure, Vercel, Local, etc.) must extend this class. Serves as both the type contract and the NestJS DI token type reference.                |
 | [BlobStorageUnavailableError](Class.BlobStorageUnavailableError)                   | Indicates a transient provider or network availability failure.                                                                                                                                                               |
 | [BlobStorageUnsupportedOperationError](Class.BlobStorageUnsupportedOperationError) | Indicates that the selected provider does not implement an operation.                                                                                                                                                         |
@@ -29,20 +30,25 @@ editUrl: false
 
 ## Interfaces
 
-| Interface                                                | Description                             |
-| -------------------------------------------------------- | --------------------------------------- |
-| [IBlobDeleteRequest](Interface.IBlobDeleteRequest)       | -                                       |
-| [IBlobDownloadRequest](Interface.IBlobDownloadRequest)   | -                                       |
-| [IBlobDownloadResult](Interface.IBlobDownloadResult)     | -                                       |
-| [IBlobExistsRequest](Interface.IBlobExistsRequest)       | -                                       |
-| [IBlobListEntry](Interface.IBlobListEntry)               | One object of a bucket listing.         |
-| [IBlobListRequest](Interface.IBlobListRequest)           | Describes one page of a bucket listing. |
-| [IBlobListResult](Interface.IBlobListResult)             | One page of a bucket listing.           |
-| [IBlobModuleOptions](Interface.IBlobModuleOptions)       | -                                       |
-| [IBlobObjectMetadata](Interface.IBlobObjectMetadata)     | -                                       |
-| [IBlobSignedUrlRequest](Interface.IBlobSignedUrlRequest) | -                                       |
-| [IBlobUploadRequest](Interface.IBlobUploadRequest)       | -                                       |
-| [IBlobUploadResult](Interface.IBlobUploadResult)         | -                                       |
+| Interface                                                                                          | Description                                                                       |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [IBlobConditionalDeleteRequest](Interface.IBlobConditionalDeleteRequest)                           | Deletes only the object that still has the exact observed strong ETag.            |
+| [IBlobConditionalDeletionPersistenceRequest](Interface.IBlobConditionalDeletionPersistenceRequest) | Identifies the exact generation whose conditional provider deletion succeeded.    |
+| [IBlobDeleteRequest](Interface.IBlobDeleteRequest)                                                 | -                                                                                 |
+| [IBlobDownloadRequest](Interface.IBlobDownloadRequest)                                             | -                                                                                 |
+| [IBlobDownloadResult](Interface.IBlobDownloadResult)                                               | -                                                                                 |
+| [IBlobExistsRequest](Interface.IBlobExistsRequest)                                                 | -                                                                                 |
+| [IBlobListEntry](Interface.IBlobListEntry)                                                         | One object of a bucket listing.                                                   |
+| [IBlobListRequest](Interface.IBlobListRequest)                                                     | Describes one page of a bucket listing.                                           |
+| [IBlobListResult](Interface.IBlobListResult)                                                       | One page of a bucket listing.                                                     |
+| [IBlobModuleOptions](Interface.IBlobModuleOptions)                                                 | -                                                                                 |
+| [IBlobObjectHistoryEntry](Interface.IBlobObjectHistoryEntry)                                       | One current, versioned, snapshot or soft-deleted object observed by the provider. |
+| [IBlobObjectHistoryRequest](Interface.IBlobObjectHistoryRequest)                                   | Reads one bounded page of provider history for an exact canonical object key.     |
+| [IBlobObjectHistoryResult](Interface.IBlobObjectHistoryResult)                                     | One exact-key history page within the active provider's configured resource.      |
+| [IBlobObjectMetadata](Interface.IBlobObjectMetadata)                                               | -                                                                                 |
+| [IBlobSignedUrlRequest](Interface.IBlobSignedUrlRequest)                                           | -                                                                                 |
+| [IBlobUploadRequest](Interface.IBlobUploadRequest)                                                 | -                                                                                 |
+| [IBlobUploadResult](Interface.IBlobUploadResult)                                                   | -                                                                                 |
 
 ## Type Aliases
 

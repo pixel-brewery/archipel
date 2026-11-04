@@ -6,7 +6,7 @@ editUrl: false
 
 # Class: BlobService
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:33](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L33)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:36](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L36)
 
 Provides a generic abstraction for blob storage operations independent of the underlying provider.
 
@@ -22,7 +22,7 @@ new BlobService(
 ): BlobService;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:53](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L53)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:56](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L56)
 
 Initializes a new instance of the BlobService class.
 
@@ -46,7 +46,7 @@ Initializes a new instance of the BlobService class.
 createSignedUrl(request): Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:186](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L186)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:181](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L181)
 
 Generates a signed URL for the specified object.
 
@@ -70,7 +70,7 @@ A signed URL that can be used to access the object.
 deleteFile(key): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:280](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L280)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:326](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L326)
 
 Deletes a file by key.
 
@@ -92,7 +92,7 @@ Deletes a file by key.
 deleteObject(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:136](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L136)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:139](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L139)
 
 Deletes an object from the configured blob provider.
 
@@ -108,13 +108,41 @@ Deletes an object from the configured blob provider.
 
 ---
 
+### deleteObjectConditionally()
+
+```ts
+deleteObjectConditionally(request): Promise<void>;
+```
+
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:253](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L253)
+
+Deletes only the selected object that still has its exact observed strong ETag.
+
+Failed preconditions and unavailable objects throw without updating persistence.
+Deleting historical versions or snapshots does not release the base object's metadata.
+Base metadata uses only the optional generation-CAS hook and a verified resource identity.
+A successful provider deletion does not by itself prove that metadata was changed.
+Cancellation bounds client I/O, not a provider mutation already accepted remotely.
+
+#### Parameters
+
+| Parameter | Type                                                                       | Description                                                      |
+| --------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `request` | [`IBlobConditionalDeleteRequest`](Interface.IBlobConditionalDeleteRequest) | Exact ETag, optional immutable selector and cancellation budget. |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+---
+
 ### downloadFile()
 
 ```ts
 downloadFile<TData>(key, responseType?): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:265](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L265)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:311](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L311)
 
 Downloads a file by key.
 
@@ -145,7 +173,7 @@ The downloaded data and related metadata.
 downloadObject<TData>(request): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:122](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L122)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:125](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L125)
 
 Downloads an object from the configured blob provider.
 
@@ -175,7 +203,7 @@ The downloaded data and related metadata.
 fileExists(key): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:295](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L295)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:341](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L341)
 
 Determines whether a file exists by key.
 
@@ -193,13 +221,40 @@ Determines whether a file exists by key.
 
 ---
 
+### inspectObjectHistory()
+
+```ts
+inspectObjectHistory(request): Promise<IBlobObjectHistoryResult>;
+```
+
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:229](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L229)
+
+Reads one exact-key page of versions, snapshots and soft-deletion observations.
+
+Unsupported providers and failed reads throw; neither becomes an empty successful page.
+Callers must follow continuation tokens and separately assess other recovery systems.
+
+#### Parameters
+
+| Parameter | Type                                                               | Description                                      |
+| --------- | ------------------------------------------------------------------ | ------------------------------------------------ |
+| `request` | [`IBlobObjectHistoryRequest`](Interface.IBlobObjectHistoryRequest) | Exact key, bounded page and cancellation budget. |
+
+#### Returns
+
+`Promise`\<[`IBlobObjectHistoryResult`](Interface.IBlobObjectHistoryResult)\>
+
+One provider history page within the configured resource.
+
+---
+
 ### listObjects()
 
 ```ts
 listObjects(request?): Promise<IBlobListResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:212](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L212)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:207](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L207)
 
 Lists objects of the configured bucket page by page.
 
@@ -226,7 +281,7 @@ One page of entries and the token for the next page.
 objectExists(request): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:165](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L165)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:160](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L160)
 
 Determines whether an object exists without downloading its contents.
 
@@ -250,7 +305,7 @@ Determines whether an object exists without downloading its contents.
 supports(operation): boolean;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:233](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L233)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:279](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L279)
 
 Determines whether the configured provider supports an optional operation.
 
@@ -280,7 +335,7 @@ uploadFile(
 ): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:246](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L246)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:292](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L292)
 
 Uploads a buffer using the provided key.
 
@@ -307,7 +362,7 @@ The provider specific upload result.
 uploadObject(request): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:74](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L74)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:77](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L77)
 
 Uploads an object to the configured blob provider.
 
@@ -335,7 +390,7 @@ uploadVariant(
 ): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:99](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L99)
+Defined in: [libs/platform-blob-storage/src/services/BlobService.ts:102](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/services/BlobService.ts#L102)
 
 Uploads a derived variant for an existing blob object.
 

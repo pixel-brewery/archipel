@@ -2,6 +2,12 @@
 
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Injectable, Logger } from '@nestjs/common';
+import { BlobStorageError } from '../../errors/BlobStorageError.js';
+import { BlobStoragePreconditionFailedError } from '../../errors/BlobStoragePreconditionFailedError.js';
+import { BlobStorageUnavailableError } from '../../errors/BlobStorageUnavailableError.js';
+import type { IBlobConditionalDeleteRequest } from '../../interfaces/IBlobConditionalDeleteRequest.js';
+import type { IBlobObjectHistoryRequest } from '../../interfaces/IBlobObjectHistoryRequest.js';
+import type { IBlobObjectHistoryResult } from '../../interfaces/IBlobObjectHistoryResult.js';
 import type {
     IBlobDeleteRequest,
     IBlobDownloadRequest,
@@ -27,6 +33,8 @@ import { AZURE_BLOB_CONNECTION_STRING, AZURE_BLOB_CONTAINER_NAME } from './env.j
 @Injectable()
 export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
     // #region Fields
+
+    private static readonly REQUEST_TIMEOUT_MS = 30_000;
 
     private readonly _logger = new Logger(AzureBlobStorageStrategy.name);
     private readonly _connectionString: string;
@@ -101,7 +109,8 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
         const metadata: IBlobObjectMetadata = {
             provider: this.providerId,
-            bucket: request.bucket ?? this._containerName,
+            resourceId: this.resourceId(containerClient.url),
+            bucket: this._containerName,
             region: request.region,
             key,
             versionId: response.versionId,
@@ -142,22 +151,24 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async deleteObject(request: IBlobDeleteRequest): Promise<void> {
+        this.assertSelector(request.versionId, 'delete', request.key);
         const containerClient = await this.getContainerClient();
         const key = this.normalizeKey(request.key);
-        const blobClient = containerClient.getBlobClient(key);
+        const baseClient = containerClient.getBlobClient(key);
+        const blobClient = request.versionId !== undefined ? baseClient.withVersion(request.versionId) : baseClient;
 
-        await blobClient.delete({
-            deleteSnapshots: 'include',
-        });
+        await blobClient.delete(request.versionId !== undefined ? undefined : { deleteSnapshots: 'include' });
 
         this._logger.debug(`Deleted blob '${key}' from container '${this._containerName}'.`);
     }
 
     /** @inheritdoc */
     public async objectExists(request: IBlobExistsRequest): Promise<boolean> {
+        this.assertSelector(request.versionId, 'exists', request.key);
         const containerClient = await this.getContainerClient();
         const key = this.normalizeKey(request.key);
-        const blobClient = containerClient.getBlobClient(key);
+        const baseClient = containerClient.getBlobClient(key);
+        const blobClient = request.versionId !== undefined ? baseClient.withVersion(request.versionId) : baseClient;
 
         return blobClient.exists();
     }
@@ -185,6 +196,107 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
             })),
             continuationToken: page.value.continuationToken || undefined,
         };
+    }
+
+    /** @inheritdoc */
+    public override async inspectObjectHistory(request: IBlobObjectHistoryRequest): Promise<IBlobObjectHistoryResult> {
+        const operation = 'inspectObjectHistory';
+        this.assertTarget(request, operation);
+        const maxKeys = request.maxKeys ?? 1000;
+        if (!Number.isInteger(maxKeys) || maxKeys < 1 || maxKeys > 5000) {
+            throw this.invalidRequest(operation, request.key);
+        }
+        const abortSignal = this.requestSignal(request.timeoutMs, request.abortSignal, operation, request.key);
+
+        try {
+            abortSignal.throwIfAborted();
+            const containerClient = await this.getContainerClient();
+            abortSignal.throwIfAborted();
+            const iterator = containerClient
+                .listBlobsFlat({
+                    prefix: request.key,
+                    includeVersions: true,
+                    includeSnapshots: true,
+                    includeDeleted: true,
+                    includeDeletedWithVersions: true,
+                    abortSignal,
+                })
+                .byPage({ continuationToken: request.continuationToken, maxPageSize: maxKeys });
+            const page = await iterator.next();
+            abortSignal.throwIfAborted();
+            const entries = page.done || !page.value ? [] : page.value.segment.blobItems;
+
+            return {
+                providerId: this.providerId,
+                resourceId: this.resourceId(containerClient.url),
+                bucket: this._containerName,
+                entries: entries
+                    .filter((item) => item.name === request.key)
+                    .map((item) => ({
+                        key: item.name,
+                        versionId: item.versionId,
+                        snapshotId: item.snapshot || undefined,
+                        isCurrentVersion: item.isCurrentVersion,
+                        deleted: item.deleted,
+                        etag: item.properties.etag,
+                        deletedAt: item.properties.deletedOn,
+                        remainingRetentionDays: item.properties.remainingRetentionDays,
+                    })),
+                continuationToken: page.done || !page.value ? undefined : page.value.continuationToken || undefined,
+            };
+        } catch (error: unknown) {
+            if (abortSignal.aborted) {
+                throw new BlobStorageUnavailableError(this.providerId, operation, request.key, error);
+            }
+            throw error;
+        }
+    }
+
+    /** @inheritdoc */
+    public override async deleteObjectConditionally(request: IBlobConditionalDeleteRequest): Promise<void> {
+        const operation = 'deleteObjectConditionally';
+        this.assertTarget(request, operation);
+        this.assertSelector(request.versionId, operation, request.key);
+        this.assertSelector(request.snapshotId, operation, request.key);
+        // A single strong entity tag is required; wildcard, weak and list conditions can broaden the target.
+        if (
+            typeof request.ifMatch !== 'string' ||
+            // eslint-disable-next-line no-control-regex
+            !/^"[^"\x00-\x20\x7f]+"$/.test(request.ifMatch) ||
+            (request.versionId !== undefined && request.snapshotId !== undefined)
+        ) {
+            throw this.invalidRequest(operation, request.key);
+        }
+        const abortSignal = this.requestSignal(request.timeoutMs, request.abortSignal, operation, request.key);
+
+        try {
+            abortSignal.throwIfAborted();
+            const containerClient = await this.getContainerClient();
+            abortSignal.throwIfAborted();
+            if (request.resourceId !== undefined && request.resourceId !== this.resourceId(containerClient.url)) {
+                throw new BlobStoragePreconditionFailedError(this.providerId, operation, request.key);
+            }
+            const baseClient = containerClient.getBlobClient(request.key);
+            const selectedClient =
+                request.versionId !== undefined
+                    ? baseClient.withVersion(request.versionId)
+                    : request.snapshotId !== undefined
+                      ? baseClient.withSnapshot(request.snapshotId)
+                      : baseClient;
+            await selectedClient.delete({
+                conditions: { ifMatch: request.ifMatch },
+                ...(request.versionId === undefined && request.snapshotId === undefined ? { deleteSnapshots: 'include' as const } : {}),
+                abortSignal,
+            });
+        } catch (error: unknown) {
+            if (typeof error === 'object' && error !== null && 'statusCode' in error && error.statusCode === 412) {
+                throw new BlobStoragePreconditionFailedError(this.providerId, operation, request.key, error);
+            }
+            if (abortSignal.aborted) {
+                throw new BlobStorageUnavailableError(this.providerId, operation, request.key, error);
+            }
+            throw error;
+        }
     }
 
     /** @inheritdoc */
@@ -216,9 +328,50 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
         return `${blobClient.url}?${sasToken}`;
     }
 
-    // #endregion
+    private assertTarget(request: { readonly key: string; readonly bucket?: string }, operation: string): void {
+        if (
+            typeof request.key !== 'string' ||
+            !request.key ||
+            request.key !== this.normalizeKey(request.key) ||
+            (request.bucket !== undefined && request.bucket !== this._containerName)
+        ) {
+            throw this.invalidRequest(operation, request.key);
+        }
+    }
 
-    // #region Helpers
+    private invalidRequest(operation: string, key: string): BlobStorageError {
+        return new BlobStorageError(
+            'BLOB_STORAGE_INVALID_REQUEST',
+            'The blob storage request requires one exact configured target and a valid operation budget.',
+            this.providerId,
+            operation,
+            key,
+        );
+    }
+
+    private assertSelector(selector: string | undefined, operation: string, key: string): void {
+        if (selector !== undefined && (typeof selector !== 'string' || !selector.trim())) {
+            throw this.invalidRequest(operation, key);
+        }
+    }
+
+    private requestSignal(timeoutMs: number | undefined, abortSignal: AbortSignal | undefined, operation: string, key: string): AbortSignal {
+        const budget = timeoutMs ?? AzureBlobStorageStrategy.REQUEST_TIMEOUT_MS;
+        if (!Number.isInteger(budget) || budget < 1 || budget > AzureBlobStorageStrategy.REQUEST_TIMEOUT_MS) {
+            throw this.invalidRequest(operation, key);
+        }
+        const deadline = AbortSignal.timeout(budget);
+        return abortSignal ? AbortSignal.any([deadline, abortSignal]) : deadline;
+    }
+
+    private resourceId(containerUrl: string): string {
+        const resource = new URL(containerUrl);
+        resource.username = '';
+        resource.password = '';
+        resource.search = '';
+        resource.hash = '';
+        return resource.href;
+    }
 
     private async loadSdk(): Promise<typeof import('@azure/storage-blob')> {
         try {

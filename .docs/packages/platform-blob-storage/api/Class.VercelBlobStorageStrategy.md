@@ -138,6 +138,35 @@ Deletes a blob object from the storage backend.
 
 ---
 
+### deleteObjectConditionally()?
+
+```ts
+deleteObjectConditionally ? request : Promise<void>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:127](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L127)
+
+Deletes the selected object only while its exact observed ETag still matches.
+
+A supplied resource identity must match the actual target before deletion.
+Client cancellation does not undo a mutation already accepted by the provider.
+
+#### Parameters
+
+| Parameter | Type                                                                       | Description                                                      |
+| --------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `request` | [`IBlobConditionalDeleteRequest`](Interface.IBlobConditionalDeleteRequest) | Exact ETag, optional immutable selector and cancellation budget. |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`deleteObjectConditionally`](Class.BlobStorageStrategyBase#deleteobjectconditionally)
+
+---
+
 ### downloadObject()
 
 ```ts
@@ -169,6 +198,36 @@ The download result including payload and metadata.
 #### Overrides
 
 [`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`downloadObject`](Class.BlobStorageStrategyBase#downloadobject)
+
+---
+
+### inspectObjectHistory()?
+
+```ts
+inspectObjectHistory ? request : Promise<IBlobObjectHistoryResult>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:116](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L116)
+
+Observes one exact-key history page, including available versions, snapshots and soft deletion.
+
+Does not inspect container restoration, backups or other recovery systems.
+
+#### Parameters
+
+| Parameter | Type                                                               | Description                                      |
+| --------- | ------------------------------------------------------------------ | ------------------------------------------------ |
+| `request` | [`IBlobObjectHistoryRequest`](Interface.IBlobObjectHistoryRequest) | Exact key, bounded page and cancellation budget. |
+
+#### Returns
+
+`Promise`\<[`IBlobObjectHistoryResult`](Interface.IBlobObjectHistoryResult)\>
+
+Provider observations, never an implicit irreversible-deletion guarantee.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`inspectObjectHistory`](Class.BlobStorageStrategyBase#inspectobjecthistory)
 
 ---
 

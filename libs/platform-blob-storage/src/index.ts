@@ -4,6 +4,7 @@ export { BlobVariantPersistenceBase } from './abstracts/BlobVariantPersistenceBa
 export { BlobObjectNotFoundError } from './errors/BlobObjectNotFoundError.js';
 export { BlobStorageDisabledError } from './errors/BlobStorageDisabledError.js';
 export { BlobStorageError } from './errors/BlobStorageError.js';
+export { BlobStoragePreconditionFailedError } from './errors/BlobStoragePreconditionFailedError.js';
 export { BlobStorageUnavailableError } from './errors/BlobStorageUnavailableError.js';
 export { BlobStorageUnsupportedOperationError } from './errors/BlobStorageUnsupportedOperationError.js';
 export {
@@ -40,6 +41,11 @@ export {
     type IBlobUploadRequest,
     type IBlobUploadResult,
 } from './interfaces/IBlobProvider.js';
+export type { IBlobConditionalDeleteRequest } from './interfaces/IBlobConditionalDeleteRequest.js';
+export type { IBlobConditionalDeletionPersistenceRequest } from './interfaces/IBlobConditionalDeletionPersistenceRequest.js';
+export type { IBlobObjectHistoryEntry } from './interfaces/IBlobObjectHistoryEntry.js';
+export type { IBlobObjectHistoryRequest } from './interfaces/IBlobObjectHistoryRequest.js';
+export type { IBlobObjectHistoryResult } from './interfaces/IBlobObjectHistoryResult.js';
 export { BlobService } from './services/BlobService.js';
 export { BlobStorageStrategyBase } from './strategies/abstracts/BlobStorageStrategyBase.js';
 export { BLOB_STORAGE_STRATEGY_TOKEN } from './tokens/BlobStorageTokens.js';

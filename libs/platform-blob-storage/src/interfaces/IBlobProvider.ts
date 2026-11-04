@@ -23,6 +23,8 @@ export type BlobUploadBody = Buffer | Readable;
 
 export interface IBlobObjectMetadata {
     provider: string;
+    /** Actual provider resource without credentials; absent when the provider cannot identify it. */
+    resourceId?: string;
     bucket: string;
     region?: string;
     key: string;
@@ -77,6 +79,8 @@ export interface IBlobUploadResult {
 export const BlobOptionalOperation = {
     CreateSignedUrl: 'createSignedUrl',
     ListObjects: 'listObjects',
+    InspectObjectHistory: 'inspectObjectHistory',
+    DeleteObjectConditionally: 'deleteObjectConditionally',
 } as const;
 
 /**
