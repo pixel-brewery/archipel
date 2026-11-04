@@ -1,3 +1,7 @@
+## 0.1.38 (2026-11-04)
+
+This was a version bump only for platform-queue to align it with other projects, there were no code changes.
+
 ## 0.1.37 (2026-11-04)
 
 This was a version bump only for platform-queue to align it with other projects, there were no code changes.
