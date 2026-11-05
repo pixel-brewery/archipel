@@ -1,3 +1,19 @@
+## 0.1.39 (2026-11-05)
+
+### 🚀 Features
+
+- **blob:** inspect and delete exact generations ([847a1a0](https://github.com/pixel-brewery/archipel/commit/847a1a0))
+
+### 🩹 Fixes
+
+- **blob:** enforce execution limits and generation scope ([a3584d2](https://github.com/pixel-brewery/archipel/commit/a3584d2))
+- **blob:** preserve unselected snapshots ([278324f](https://github.com/pixel-brewery/archipel/commit/278324f))
+- **blob:** bound operations and redact diagnostics ([4fe2653](https://github.com/pixel-brewery/archipel/commit/4fe2653))
+
+### ❤️ Thank You
+
+- RueDeRennes @RueDeRennes
+
 ## 0.1.38 (2026-11-04)
 
 This was a version bump only for platform-logging to align it with other projects, there were no code changes.
