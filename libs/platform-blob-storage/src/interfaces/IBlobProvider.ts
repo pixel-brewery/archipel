@@ -1,6 +1,7 @@
 // #region Imports
 
 import type { Readable } from 'node:stream';
+import type { IBlobExecutionOptions } from './IBlobExecutionOptions.js';
 
 // #endregion
 
@@ -49,6 +50,8 @@ export interface IBlobUploadRequest {
     ownerUserId?: string;
     bucket?: string;
     region?: string;
+    /** Explicit guaranteed execution limits; unsupported strategies reject before I/O. */
+    execution?: IBlobExecutionOptions;
 }
 
 export interface IBlobUploadResult {
@@ -106,6 +109,8 @@ export interface IBlobListRequest {
     maxKeys?: number;
 
     bucket?: string;
+    /** Explicit guaranteed execution limits for this page, including SDK retries. */
+    execution?: IBlobExecutionOptions;
 }
 
 /**
@@ -140,6 +145,10 @@ export interface IBlobDownloadRequest {
     versionId?: string;
     responseType?: BlobDownloadResponseType;
     bucket?: string;
+    /** Explicit guaranteed execution limits, including response-body consumption. */
+    execution?: IBlobExecutionOptions;
+    /** Nonnegative safe integer byte limit; exceeding it aborts the response stream. */
+    maxBytes?: number;
 }
 
 export interface IBlobDownloadResult<TData> {

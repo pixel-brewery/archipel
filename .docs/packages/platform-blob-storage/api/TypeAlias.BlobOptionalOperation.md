@@ -10,6 +10,6 @@ editUrl: false
 type BlobOptionalOperation = (typeof BlobOptionalOperation)[keyof typeof BlobOptionalOperation];
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:79](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L79)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:82](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L82)
 
 An operation that a provider may or may not support.

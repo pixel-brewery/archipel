@@ -37,6 +37,7 @@ editUrl: false
 | [IBlobDeleteRequest](Interface.IBlobDeleteRequest)                                                 | -                                                                                 |
 | [IBlobDownloadRequest](Interface.IBlobDownloadRequest)                                             | -                                                                                 |
 | [IBlobDownloadResult](Interface.IBlobDownloadResult)                                               | -                                                                                 |
+| [IBlobExecutionOptions](Interface.IBlobExecutionOptions)                                           | Requests a provider-enforced deadline and optional caller cancellation.           |
 | [IBlobExistsRequest](Interface.IBlobExistsRequest)                                                 | -                                                                                 |
 | [IBlobListEntry](Interface.IBlobListEntry)                                                         | One object of a bucket listing.                                                   |
 | [IBlobListRequest](Interface.IBlobListRequest)                                                     | Describes one page of a bucket listing.                                           |
@@ -52,11 +53,12 @@ editUrl: false
 
 ## Type Aliases
 
-| Type Alias                                                     | Description                                          |
-| -------------------------------------------------------------- | ---------------------------------------------------- |
-| [BlobDownloadResponseType](TypeAlias.BlobDownloadResponseType) | -                                                    |
-| [BlobOptionalOperation](TypeAlias.BlobOptionalOperation)       | An operation that a provider may or may not support. |
-| [BlobUploadBody](TypeAlias.BlobUploadBody)                     | -                                                    |
+| Type Alias                                                     | Description                                                              |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [BlobDownloadResponseType](TypeAlias.BlobDownloadResponseType) | -                                                                        |
+| [BlobExecutionOperation](TypeAlias.BlobExecutionOperation)     | Existing blob operations that can explicitly guarantee execution limits. |
+| [BlobOptionalOperation](TypeAlias.BlobOptionalOperation)       | An operation that a provider may or may not support.                     |
+| [BlobUploadBody](TypeAlias.BlobUploadBody)                     | -                                                                        |
 
 ## Variables
 

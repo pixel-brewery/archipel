@@ -88,7 +88,7 @@ Gets the default bucket (container/directory) configured for the provider.
 createSignedUrl ? request : Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:92](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L92)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:105](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L105)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
@@ -143,7 +143,7 @@ Deletes a blob object from the storage backend.
 deleteObjectConditionally ? request : Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:127](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L127)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L140)
 
 Deletes the selected object only while its exact observed ETag still matches.
 
@@ -206,7 +206,7 @@ The download result including payload and metadata.
 inspectObjectHistory ? request : Promise<IBlobObjectHistoryResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:116](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L116)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:129](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L129)
 
 Observes one exact-key history page, including available versions, snapshots and soft deletion.
 
@@ -285,6 +285,37 @@ Determines whether a blob object exists in the storage backend.
 #### Overrides
 
 [`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`objectExists`](Class.BlobStorageStrategyBase#objectexists)
+
+---
+
+### supportsExecutionOptions()?
+
+```ts
+supportsExecutionOptions ? operation : boolean;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:61](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L61)
+
+Reports whether an existing operation honors explicit execution limits.
+
+Missing support must reject requested limits before provider I/O. Ordinary
+calls without limits retain their existing behavior.
+
+#### Parameters
+
+| Parameter   | Type                                                         | Description                                     |
+| ----------- | ------------------------------------------------------------ | ----------------------------------------------- |
+| `operation` | [`BlobExecutionOperation`](TypeAlias.BlobExecutionOperation) | Existing upload, download or listing operation. |
+
+#### Returns
+
+`boolean`
+
+Whether deadlines, cancellation and applicable byte limits are enforced.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`supportsExecutionOptions`](Class.BlobStorageStrategyBase#supportsexecutionoptions)
 
 ---
 

@@ -2,6 +2,9 @@
 
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Injectable, Logger } from '@nestjs/common';
+import { Readable } from 'node:stream';
+import type { BlobExecutionOperation } from '../../interfaces/BlobExecutionOperation.js';
+import type { IBlobExecutionOptions } from '../../interfaces/IBlobExecutionOptions.js';
 import { BlobStorageError } from '../../errors/BlobStorageError.js';
 import { BlobStoragePreconditionFailedError } from '../../errors/BlobStoragePreconditionFailedError.js';
 import { BlobStorageUnavailableError } from '../../errors/BlobStorageUnavailableError.js';
@@ -87,66 +90,81 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
     // #region Methods
 
     /** @inheritdoc */
+    public override supportsExecutionOptions(operation: BlobExecutionOperation): boolean {
+        return operation === 'uploadObject' || operation === 'downloadObject' || operation === 'listObjects';
+    }
+
+    /** @inheritdoc */
     public async uploadObject(request: IBlobUploadRequest): Promise<IBlobUploadResult> {
-        const { BlockBlobClient: _BlockBlobClient } = await this.loadSdk();
-        const containerClient = await this.getContainerClient();
-        const key = this.normalizeKey(request.key);
-        const blockBlobClient = containerClient.getBlockBlobClient(key) as InstanceType<typeof _BlockBlobClient>;
-
-        const contentType = request.contentType ?? 'application/octet-stream';
-        const contentLength = this.resolveContentLength(request);
-
-        const options = {
-            blobHTTPHeaders: {
-                blobContentType: contentType,
-            },
-            metadata: request.metadata,
-        };
-
-        const response = await blockBlobClient.upload(request.body, contentLength, options);
-
-        this._logger.debug(`Uploaded blob '${key}' to container '${this._containerName}'.`);
-
-        const metadata: IBlobObjectMetadata = {
-            provider: this.providerId,
-            resourceId: this.resourceId(containerClient.url),
-            bucket: this._containerName,
-            region: request.region,
-            key,
-            versionId: response.versionId,
-            size: contentLength,
-            contentType,
-            etag: response.etag,
-            checksumSha256: request.checksumSha256,
-            metadata: request.metadata,
-            isLatest: true,
-            ownerUserId: request.ownerUserId,
-        };
-
-        return {
-            metadata,
-            rawResponse: response,
-        };
+        const operation = 'uploadObject';
+        const abortSignal = this.executionSignal(request.execution, operation, request.key);
+        if (abortSignal) this.assertTarget(request, operation);
+        try {
+            abortSignal?.throwIfAborted();
+            const containerClient = await this.getContainerClient();
+            abortSignal?.throwIfAborted();
+            const key = this.normalizeKey(request.key);
+            const blockBlobClient = containerClient.getBlockBlobClient(key);
+            const contentType = request.contentType ?? 'application/octet-stream';
+            const contentLength = this.resolveContentLength(request);
+            const response = await blockBlobClient.upload(request.body, contentLength, {
+                blobHTTPHeaders: { blobContentType: contentType },
+                metadata: request.metadata,
+                ...(abortSignal ? { abortSignal } : {}),
+            });
+            abortSignal?.throwIfAborted();
+            this._logger.debug({ operation: 'blobObject.upload', providerId: this.providerId, result: 'succeeded' });
+            const metadata: IBlobObjectMetadata = {
+                provider: this.providerId,
+                resourceId: this.resourceId(containerClient.url),
+                bucket: this._containerName,
+                region: request.region,
+                key,
+                versionId: response.versionId,
+                size: contentLength,
+                contentType,
+                etag: response.etag,
+                checksumSha256: request.checksumSha256,
+                metadata: request.metadata,
+                isLatest: true,
+                ownerUserId: request.ownerUserId,
+            };
+            return { metadata, rawResponse: response };
+        } catch (error: unknown) {
+            if (abortSignal?.aborted) throw new BlobStorageUnavailableError(this.providerId, operation, request.key, error);
+            throw error;
+        }
     }
 
     /** @inheritdoc */
     public async downloadObject<TData>(request: IBlobDownloadRequest): Promise<IBlobDownloadResult<TData>> {
-        const containerClient = await this.getContainerClient();
-        const key = this.normalizeKey(request.key);
-        const blobClient = containerClient.getBlobClient(key);
-
-        const downloadOptions = request.versionId ? { conditions: { ifMatch: request.versionId } } : undefined;
-
-        const response = await blobClient.download(0, undefined, downloadOptions);
-        const data = await this.readResponseBody<TData>(response as unknown as Record<string, unknown>, request.responseType);
-
-        return {
-            data,
-            contentType: response.contentType,
-            contentLength: response.contentLength,
-            metadata: response.metadata as Record<string, string> | undefined,
-            rawResponse: response,
-        };
+        const operation = 'downloadObject';
+        const maxBytes = request.maxBytes;
+        const abortSignal = this.executionSignal(request.execution, operation, request.key, maxBytes !== undefined);
+        if (abortSignal) this.assertTarget(request, operation);
+        if (maxBytes !== undefined && (!Number.isSafeInteger(maxBytes) || maxBytes < 0)) {
+            throw this.invalidRequest(operation, request.key);
+        }
+        try {
+            abortSignal?.throwIfAborted();
+            const containerClient = await this.getContainerClient();
+            abortSignal?.throwIfAborted();
+            const key = this.normalizeKey(request.key);
+            const blobClient = containerClient.getBlobClient(key);
+            const downloadOptions =
+                request.versionId || abortSignal
+                    ? {
+                          ...(request.versionId ? { conditions: { ifMatch: request.versionId } } : {}),
+                          ...(abortSignal ? { abortSignal } : {}),
+                      }
+                    : undefined;
+            const response = await blobClient.download(0, undefined, downloadOptions);
+            const data = await this.readResponseBody<TData>(response as unknown as Record<string, unknown>, request.responseType, maxBytes, abortSignal, key);
+            return { data, contentType: response.contentType, contentLength: response.contentLength, metadata: response.metadata, rawResponse: response };
+        } catch (error: unknown) {
+            if (abortSignal?.aborted) throw new BlobStorageUnavailableError(this.providerId, operation, request.key, error);
+            throw error;
+        }
     }
 
     /** @inheritdoc */
@@ -159,7 +177,7 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
         await blobClient.delete(request.versionId !== undefined ? undefined : { deleteSnapshots: 'include' });
 
-        this._logger.debug(`Deleted blob '${key}' from container '${this._containerName}'.`);
+        this._logger.debug({ operation: 'blobObject.delete', providerId: this.providerId, result: 'succeeded' });
     }
 
     /** @inheritdoc */
@@ -175,27 +193,43 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public override async listObjects(request: IBlobListRequest = {}): Promise<IBlobListResult> {
-        const containerClient = await this.getContainerClient();
-        const maxKeys = Math.min(Math.max(request.maxKeys ?? 1000, 1), 5000);
-        const iterator = containerClient
-            .listBlobsFlat({ prefix: request.prefix })
-            .byPage({ continuationToken: request.continuationToken, maxPageSize: maxKeys });
-
-        const page = await iterator.next();
-
-        if (page.done || !page.value) {
-            return { entries: [] };
+        const operation = 'listObjects';
+        const key = request.prefix ?? '';
+        const abortSignal = this.executionSignal(request.execution, operation, key);
+        if (
+            abortSignal &&
+            ((request.bucket !== undefined && request.bucket !== this._containerName) ||
+                key !== this.normalizeKey(key) ||
+                (request.maxKeys !== undefined && (!Number.isInteger(request.maxKeys) || request.maxKeys < 1 || request.maxKeys > 5000)))
+        ) {
+            throw this.invalidRequest(operation, key);
         }
-
-        return {
-            entries: page.value.segment.blobItems.map((item: { name: string; properties: { contentLength?: number; lastModified?: Date; etag?: string } }) => ({
-                key: item.name,
-                size: item.properties.contentLength ?? 0,
-                lastModified: item.properties.lastModified,
-                etag: item.properties.etag,
-            })),
-            continuationToken: page.value.continuationToken || undefined,
-        };
+        try {
+            abortSignal?.throwIfAborted();
+            const containerClient = await this.getContainerClient();
+            abortSignal?.throwIfAborted();
+            const maxKeys = Math.min(Math.max(request.maxKeys ?? 1000, 1), 5000);
+            const iterator = containerClient
+                .listBlobsFlat({ prefix: request.prefix, ...(abortSignal ? { abortSignal } : {}) })
+                .byPage({ continuationToken: request.continuationToken, maxPageSize: maxKeys });
+            const page = await iterator.next();
+            abortSignal?.throwIfAborted();
+            if (page.done || !page.value) return { entries: [] };
+            return {
+                entries: page.value.segment.blobItems.map(
+                    (item: { name: string; properties: { contentLength?: number; lastModified?: Date; etag?: string } }) => ({
+                        key: item.name,
+                        size: item.properties.contentLength ?? 0,
+                        lastModified: item.properties.lastModified,
+                        etag: item.properties.etag,
+                    }),
+                ),
+                continuationToken: page.value.continuationToken || undefined,
+            };
+        } catch (error: unknown) {
+            if (abortSignal?.aborted) throw new BlobStorageUnavailableError(this.providerId, operation, key, error);
+            throw error;
+        }
     }
 
     /** @inheritdoc */
@@ -427,21 +461,77 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
         return 0;
     }
 
-    private async readResponseBody<TData>(response: Record<string, unknown>, responseType?: string): Promise<TData> {
+    private async readResponseBody<TData>(
+        response: Record<string, unknown>,
+        responseType?: string,
+        maxBytes?: number,
+        abortSignal?: AbortSignal,
+        key = '',
+    ): Promise<TData> {
         const readableBody = response['readableStreamBody'] as NodeJS.ReadableStream | undefined;
-
         if (!readableBody) {
+            abortSignal?.throwIfAborted();
             return undefined as TData;
         }
-
-        const chunks: Array<Buffer> = [];
-
-        for await (const chunk of readableBody) {
-            chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk as unknown as Uint8Array));
+        if (abortSignal && !(readableBody instanceof Readable)) {
+            throw new BlobStorageError(
+                'BLOB_STORAGE_RESPONSE_INVALID',
+                'The blob response cannot honor the requested execution limits.',
+                this.providerId,
+                'downloadObject',
+                key,
+            );
         }
-
+        const stop = (): void => {
+            if (readableBody instanceof Readable) readableBody.destroy();
+        };
+        const chunks: Array<Buffer> = [];
+        let size = 0;
+        const tooLarge = (): BlobStorageError =>
+            new BlobStorageError(
+                'BLOB_STORAGE_RESPONSE_TOO_LARGE',
+                'The blob response exceeds the requested byte limit.',
+                this.providerId,
+                'downloadObject',
+                key,
+            );
+        abortSignal?.addEventListener('abort', stop, { once: true });
+        try {
+            if (abortSignal?.aborted) {
+                stop();
+                abortSignal.throwIfAborted();
+            }
+            if (maxBytes !== undefined && typeof response['contentLength'] === 'number' && response['contentLength'] > maxBytes) {
+                stop();
+                throw tooLarge();
+            }
+            for await (const value of readableBody) {
+                abortSignal?.throwIfAborted();
+                const chunk: unknown = value;
+                if (!Buffer.isBuffer(chunk) && typeof chunk !== 'string' && !(chunk instanceof Uint8Array)) {
+                    stop();
+                    throw new BlobStorageError(
+                        'BLOB_STORAGE_RESPONSE_INVALID',
+                        'The blob response contains invalid byte data.',
+                        this.providerId,
+                        'downloadObject',
+                        key,
+                    );
+                }
+                const chunkBytes = typeof chunk === 'string' ? Buffer.byteLength(chunk) : chunk.byteLength;
+                if (maxBytes !== undefined && chunkBytes > maxBytes - size) {
+                    stop();
+                    throw tooLarge();
+                }
+                const buffer = Buffer.isBuffer(chunk) ? chunk : typeof chunk === 'string' ? Buffer.from(chunk) : Buffer.from(chunk);
+                chunks.push(buffer);
+                size += chunkBytes;
+            }
+            abortSignal?.throwIfAborted();
+        } finally {
+            abortSignal?.removeEventListener('abort', stop);
+        }
         const buffer = Buffer.concat(chunks);
-
         switch (responseType) {
             case 'arraybuffer':
                 return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as TData;
@@ -457,6 +547,12 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
             default:
                 return buffer as TData;
         }
+    }
+
+    private executionSignal(execution: IBlobExecutionOptions | undefined, operation: string, key: string, required = false): AbortSignal | undefined {
+        if (execution === undefined && !required) return undefined;
+        if (execution !== undefined && (execution === null || typeof execution !== 'object')) throw this.invalidRequest(operation, key);
+        return this.requestSignal(execution?.timeoutMs, execution?.abortSignal, operation, key);
     }
 
     private parseConnectionString(): { accountName: string; accountKey: string } {

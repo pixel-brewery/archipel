@@ -6,7 +6,7 @@ editUrl: false
 
 # Interface: IBlobUploadResult
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:54](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L54)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:57](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L57)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:54](http
 metadata: IBlobObjectMetadata;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:55](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L55)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:58](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L58)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:55](http
 metadataPersisted?: boolean;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:67](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L67)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:70](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L70)
 
 Whether the registered persistence abstract base recorded this object.
 
@@ -44,4 +44,4 @@ having to choose between losing a successful upload and swallowing the error sil
 rawResponse?: unknown;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:56](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L56)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:59](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L59)

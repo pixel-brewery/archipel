@@ -89,6 +89,25 @@ BLOB_VERCEL_TOKEN=your-vercel-blob-token
 
 ---
 
+## Explicit execution limits
+
+The existing `uploadObject`, `downloadObject` and `listObjects` requests accept `execution: { timeoutMs, abortSignal }`. The timeout is a whole number from 1 to 30,000 milliseconds, defaulting to 30,000 when explicit execution is requested. `downloadObject` additionally accepts `maxBytes`, a nonnegative safe integer; this also requests guaranteed execution with the default deadline if no `execution` object is provided. Upload variants share the upload capability.
+
+Probe `blobs.supportsExecutionOptions('downloadObject')` (or `'uploadObject'` / `'listObjects'`) before depending on these limits. Azure supports all three operations. Strategies without explicit support reject requested limits with `BlobStorageUnsupportedOperationError` before I/O, rather than silently ignoring them. Requests without limits keep their existing behavior.
+
+```typescript
+const result = await blobs.downloadObject<string>({
+    key: 'records/example.json',
+    responseType: 'text',
+    maxBytes: 256 * 1024,
+    execution: { timeoutMs: 5000, abortSignal: cancellation.signal },
+});
+```
+
+The Azure adapter passes the same combined deadline/caller signal through SDK retries and listing pages. It keeps cancellation active after download headers and destroys the response stream at the deadline or byte limit. A response over the declared or observed byte limit fails with `BLOB_STORAGE_RESPONSE_TOO_LARGE`. Limited calls reject alternate buckets. The limit bounds provider I/O and response consumption, not a persistence adapter's later database work. Cancellation cannot undo an upload already accepted remotely; callers retain responsibility for uncertain outcomes, durable intents and idempotency. No additional immutable-storage or restore policy is implied.
+
+---
+
 ## Uploading Files
 
 Inject `BlobService` to upload files. It returns metadata about the stored blob.
@@ -251,6 +270,8 @@ These operations observe the configured container's object history and retain or
 By default, `BlobService` performs storage operations without persisting metadata to your database. If you need to track uploaded files (for listing, auditing, or cleanup), implement the optional persistence abstract bases.
 
 A abstract base runs **after** the object is already stored, so a failing abstract base must not fail the operation. `BlobService` catches and logs the failure and reports it through `metadataPersisted` on the upload result. Consumers that keep their own accounting should treat `metadataPersisted === false` as drift to reconcile rather than as a failed upload.
+
+Operation diagnostics use fixed operation, provider and outcome fields. They do not include object keys, bucket/container names, filesystem paths, request metadata or prefixes. Upload, variant and deletion persistence failures do not log raw adapter errors, provider payloads, variant labels or original object identities. Successful provider results and the existing `metadataPersisted` outcome remain unchanged; applications retain their own private reconciliation evidence. Conditional deletion separately reports safe provider and metadata-update outcomes.
 
 ### BlobObjectPersistenceBase
 

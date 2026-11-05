@@ -42,6 +42,8 @@ export {
     type IBlobUploadResult,
 } from './interfaces/IBlobProvider.js';
 export type { IBlobConditionalDeleteRequest } from './interfaces/IBlobConditionalDeleteRequest.js';
+export type { BlobExecutionOperation } from './interfaces/BlobExecutionOperation.js';
+export type { IBlobExecutionOptions } from './interfaces/IBlobExecutionOptions.js';
 export type { IBlobConditionalDeletionPersistenceRequest } from './interfaces/IBlobConditionalDeletionPersistenceRequest.js';
 export type { IBlobObjectHistoryEntry } from './interfaces/IBlobObjectHistoryEntry.js';
 export type { IBlobObjectHistoryRequest } from './interfaces/IBlobObjectHistoryRequest.js';

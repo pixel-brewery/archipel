@@ -109,7 +109,7 @@ export class AwsS3BlobStorageStrategy extends BlobStorageStrategyBase {
 
         const response = await client.send(command);
 
-        this._logger.debug(`Uploaded blob '${key}' to bucket '${bucket}'.`);
+        this._logger.debug({ operation: 'blobObject.upload', providerId: this.providerId, result: 'succeeded' });
 
         const metadata: IBlobObjectMetadata = {
             provider: this.providerId,
@@ -173,7 +173,7 @@ export class AwsS3BlobStorageStrategy extends BlobStorageStrategyBase {
 
         await client.send(command);
 
-        this._logger.debug(`Deleted blob '${key}' from bucket '${bucket}'.`);
+        this._logger.debug({ operation: 'blobObject.delete', providerId: this.providerId, result: 'succeeded' });
     }
 
     /** @inheritdoc */

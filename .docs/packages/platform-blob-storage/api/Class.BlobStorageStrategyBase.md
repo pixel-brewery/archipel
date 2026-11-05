@@ -6,7 +6,7 @@ editUrl: false
 
 # Abstract Class: BlobStorageStrategyBase
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:23](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L23)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:24](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L24)
 
 Abstract base class for blob storage strategies.
 Every concrete provider (AWS S3, Azure, Vercel, Local, etc.) must extend this class.
@@ -28,7 +28,7 @@ Serves as both the type contract and the NestJS DI token type reference.
 protected new BlobStorageStrategyBase(): BlobStorageStrategyBase;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:41](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L41)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:42](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L42)
 
 #### Returns
 
@@ -42,7 +42,7 @@ Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStra
 abstract readonly defaultBucket?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:34](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L34)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:35](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L35)
 
 Gets the default bucket (container/directory) configured for the provider.
 
@@ -54,7 +54,7 @@ Gets the default bucket (container/directory) configured for the provider.
 abstract readonly providerId: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:29](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L29)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:30](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L30)
 
 Gets the unique identifier for this storage provider.
 
@@ -66,7 +66,7 @@ Gets the unique identifier for this storage provider.
 createSignedUrl ? request : Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:92](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L92)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:105](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L105)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
@@ -91,7 +91,7 @@ The generated signed URL.
 abstract deleteObject(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:74](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L74)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:87](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L87)
 
 Deletes a blob object from the storage backend.
 
@@ -113,7 +113,7 @@ Deletes a blob object from the storage backend.
 deleteObjectConditionally ? request : Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:127](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L127)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L140)
 
 Deletes the selected object only while its exact observed ETag still matches.
 
@@ -138,7 +138,7 @@ Client cancellation does not undo a mutation already accepted by the provider.
 abstract downloadObject<TData>(request): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:66](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L66)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:79](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L79)
 
 Downloads a blob object from the storage backend.
 
@@ -168,7 +168,7 @@ The download result including payload and metadata.
 inspectObjectHistory ? request : Promise<IBlobObjectHistoryResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:116](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L116)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:129](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L129)
 
 Observes one exact-key history page, including available versions, snapshots and soft deletion.
 
@@ -194,7 +194,7 @@ Provider observations, never an implicit irreversible-deletion guarantee.
 listObjects ? request : Promise<IBlobListResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:105](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L105)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:118](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L118)
 
 Lists objects of a bucket page by page.
 
@@ -222,7 +222,7 @@ One page of entries and the token for the next page.
 abstract objectExists(request): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:82](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L82)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:95](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L95)
 
 Determines whether a blob object exists in the storage backend.
 
@@ -238,13 +238,40 @@ Determines whether a blob object exists in the storage backend.
 
 ---
 
+### supportsExecutionOptions()?
+
+```ts
+supportsExecutionOptions ? operation : boolean;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:61](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L61)
+
+Reports whether an existing operation honors explicit execution limits.
+
+Missing support must reject requested limits before provider I/O. Ordinary
+calls without limits retain their existing behavior.
+
+#### Parameters
+
+| Parameter   | Type                                                         | Description                                     |
+| ----------- | ------------------------------------------------------------ | ----------------------------------------------- |
+| `operation` | [`BlobExecutionOperation`](TypeAlias.BlobExecutionOperation) | Existing upload, download or listing operation. |
+
+#### Returns
+
+`boolean`
+
+Whether deadlines, cancellation and applicable byte limits are enforced.
+
+---
+
 ### uploadObject()
 
 ```ts
 abstract uploadObject(request): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:57](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L57)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:70](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L70)
 
 Uploads a blob object to the storage backend.
 

@@ -53,63 +53,33 @@ export class EmptyBlobStorageStrategy extends BlobStorageStrategyBase {
     //#region Methods
 
     public override uploadObject(request: IBlobUploadRequest): Promise<IBlobUploadResult> {
-        this._logger.log(
-            `[upload] ${JSON.stringify({
-                key: request.key,
-                contentType: request.contentType,
-                contentLength: request.contentLength,
-                metadata: request.metadata,
-                checksumSha256: request.checksumSha256,
-                ownerUserId: request.ownerUserId,
-                bucket: request.bucket,
-                region: request.region,
-            })}`,
-        );
+        this._logger.log({ operation: 'blobObject.upload', providerId: this.providerId, result: 'disabled' });
 
         return Promise.reject(new BlobStorageDisabledError('upload', request.key));
     }
 
     public override downloadObject<TData>(request: IBlobDownloadRequest): Promise<IBlobDownloadResult<TData>> {
-        this._logger.log(
-            `[download] ${JSON.stringify({
-                key: request.key,
-                versionId: request.versionId,
-                responseType: request.responseType,
-                bucket: request.bucket,
-            })}`,
-        );
+        this._logger.log({ operation: 'blobObject.download', providerId: this.providerId, result: 'disabled' });
 
         return Promise.reject(new BlobStorageDisabledError('download', request.key));
     }
 
     public override deleteObject(request: IBlobDeleteRequest): Promise<void> {
-        this._logger.log(
-            `[delete] ${JSON.stringify({
-                key: request.key,
-                versionId: request.versionId,
-                bucket: request.bucket,
-            })}`,
-        );
+        this._logger.log({ operation: 'blobObject.delete', providerId: this.providerId, result: 'disabled' });
 
         return Promise.reject(new BlobStorageDisabledError('delete', request.key));
     }
 
     /** @inheritdoc */
     public override objectExists(request: IBlobExistsRequest): Promise<boolean> {
-        this._logger.log(
-            `[exists] ${JSON.stringify({
-                key: request.key,
-                versionId: request.versionId,
-                bucket: request.bucket,
-            })}`,
-        );
+        this._logger.log({ operation: 'blobObject.exists', providerId: this.providerId, result: 'disabled' });
 
         return Promise.reject(new BlobStorageDisabledError('exists', request.key));
     }
 
     /** @inheritdoc */
     public override listObjects(request: IBlobListRequest = {}): Promise<IBlobListResult> {
-        this._logger.log(`[list] ${JSON.stringify({ prefix: request.prefix, bucket: request.bucket })}`);
+        this._logger.log({ operation: 'blobObject.list', providerId: this.providerId, result: 'disabled' });
 
         return Promise.reject(new BlobStorageDisabledError('list', request.prefix ?? ''));
     }

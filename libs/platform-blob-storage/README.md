@@ -13,10 +13,31 @@ Blob storage abstraction for file uploads and asset management.
 - **Signed URLs** — Time-limited pre-signed URLs for direct client access
 - **Object listing** — Paged enumeration by prefix across Vercel, Azure, AWS S3 and the local filesystem, for reconciling your own bookkeeping against actual storage
 - **Capability probing** — `supports(BlobOptionalOperation.InspectObjectHistory)` and the other optional operation keys tell you what the configured provider can do before you attempt it
+- **Explicit execution limits** — Existing upload, download and listing requests optionally require provider-enforced deadlines and caller cancellation. Azure supports them; downloads also abort at a requested byte limit. Unsupported strategies fail before I/O instead of ignoring limits.
 - **Azure object history** — Exact-key, paginated inspection of current objects, versions, snapshots and soft-deleted entries, including available deletion and remaining-retention facts
 - **Azure conditional deletion** — A single strong ETag guards the base object or one selected version/snapshot; changed targets fail with `BlobStoragePreconditionFailedError`
 - **Metadata tracking** — Optional persistence abstract bases for upload auditing and image variant tracking; a failing abstract base never fails the storage operation and is reported through `metadataPersisted`
 - **Health checks** — `BlobHealthIndicator` for readiness probes (separate `/health` subpath)
+
+## Guaranteed execution options
+
+`uploadObject`, `uploadVariant`, `downloadObject` and `listObjects` retain their existing behavior when no limits are supplied. To require a bound, pass `execution: { timeoutMs, abortSignal }`; `timeoutMs` is an integer from 1 to 30,000 and defaults to 30,000 when `execution` is present. Probe `supportsExecutionOptions('uploadObject' | 'downloadObject' | 'listObjects')`. Only a strategy that explicitly advertises and implements this contract may accept the options. Otherwise `BlobService` throws `BlobStorageUnsupportedOperationError` before provider or metadata-persistence effects. Upload variants use the upload capability.
+
+Azure combines the caller signal and deadline and supplies the resulting signal to the existing SDK operation, all SDK retries, the listing pager and download-body consumption. A download can additionally specify `maxBytes`, a nonnegative safe integer. This alone also requires execution support and applies the default deadline. The response stream is destroyed if the declared length or actual accumulated bytes exceeds the limit (`BLOB_STORAGE_RESPONSE_TOO_LARGE`), or when cancelled. Requested limits reject a target outside the configured bucket. Calls without limits preserve their compatibility behavior.
+
+```typescript
+if (!blobs.supportsExecutionOptions('downloadObject')) {
+    throw new Error('The selected provider cannot enforce the required read limits.');
+}
+const result = await blobs.downloadObject<string>({
+    key: 'records/example.json',
+    responseType: 'text',
+    maxBytes: 256 * 1024,
+    execution: { timeoutMs: 5000, abortSignal: cancellation.signal },
+});
+```
+
+The budget bounds provider I/O, including response consumption; it does not undo a remotely accepted upload or replace a persistence adapter's database limits. A cancelled mutation may have an unknown provider outcome. Callers still own durable intent, idempotency and recovery. These options do not supply create-only writes, immutable retention, independent journaling or restore guarantees. Those policies belong to the consuming application and its actual storage configuration.
 
 ## ⚠️ Environment Variables
 
@@ -106,6 +127,10 @@ Conditional deletion requires exactly one quoted strong `ifMatch` ETag. Empty, w
 Supply the trusted `resourceId` to also guard the actual provider resource before deletion. After a successful base deletion, metadata may change only through the optional `BlobObjectPersistenceBase.markAsDeletedIfUnchanged` hook. Its `IBlobConditionalDeletionPersistenceRequest` carries provider, resource, bucket, key, exact ETag and selectors; adapters must compare these atomically. Missing scope or hook, a `false` comparison result, and hook errors never fall back to `markAsDeleted`. A newer upload at the same key remains untouched. Safe diagnostics distinguish provider success from skipped, unmatched or failed metadata updates without exposing adapter errors. The provider method's successful return alone is not proof of a metadata change. Legacy `deleteObject` retains its existing callback contract.
 
 Both new requests accept `abortSignal` and `timeoutMs` from 1 to 30,000. The signal reaches SDK listing and deletion, including SDK retries. Client cancellation cannot undo a mutation already accepted remotely; callers still need durable identity, concurrency and reconciliation rules. Alternate buckets are rejected by these new Azure operations. No permanent-delete, container-restore or backup-retention guarantee is supplied.
+
+## Operation diagnostics
+
+Provider operation logs expose only fixed operation, provider and outcome facts. Azure, local and S3 upload/delete diagnostics omit object keys, container/bucket names and filesystem paths. The disabled strategy likewise omits request metadata and prefixes. Persistence failures preserve the successful provider result and `metadataPersisted: false` where applicable, while logging a fixed failure result without raw adapter errors, payloads, variant labels or original object identities. Conditional-delete diagnostics retain their separate safe provider-deletion and metadata-update outcomes.
 
 ## Peer Dependencies
 
