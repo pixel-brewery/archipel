@@ -91,7 +91,7 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
 
         await writeFile(filePath, buffer);
 
-        this._logger.debug(`Uploaded blob to local filesystem: ${key}`);
+        this._logger.debug({ operation: 'blobObject.upload', providerId: this.providerId, result: 'succeeded' });
 
         const fileStats = await stat(filePath);
         const etag = this.computeEtag(buffer);
@@ -158,7 +158,7 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
 
         await unlink(filePath);
 
-        this._logger.debug(`Deleted blob from local filesystem: ${key}`);
+        this._logger.debug({ operation: 'blobObject.delete', providerId: this.providerId, result: 'succeeded' });
     }
 
     /** @inheritdoc */

@@ -1,6 +1,7 @@
 // #region Imports
 
 import type { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
+import { Logger } from '@nestjs/common';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -59,6 +60,22 @@ describe('LocalBlobStorageStrategy', () => {
             // act & assert
             await expect(strategy.deleteObject({ key: 'images/missing.png' })).rejects.toMatchObject({ code: 'ENOENT' });
         });
+    });
+
+    it.each(['upload', 'delete'] as const)('preserves filesystem %s without logging the private key or base directory', async (operation) => {
+        const key = 'sensitive-folder/private-document.bin';
+        if (operation === 'delete') await strategy.uploadObject({ key, body: Buffer.from('private-content') });
+        const debug = vi.spyOn(Logger.prototype, 'debug').mockImplementation(() => undefined);
+
+        if (operation === 'upload') {
+            const result = await strategy.uploadObject({ key, body: Buffer.from('private-content') });
+            expect(result.metadata.key).toBe(key);
+            expect(result.metadata.size).toBe(15);
+        } else await expect(strategy.deleteObject({ key })).resolves.toBeUndefined();
+
+        expect(debug).toHaveBeenCalledExactlyOnceWith({ operation: `blobObject.${operation}`, providerId: 'local', result: 'succeeded' });
+        const logged = JSON.stringify(debug.mock.calls);
+        for (const privateValue of [key, basePath, 'test-bucket', 'private-content']) expect(logged).not.toContain(privateValue);
     });
 
     // #endregion

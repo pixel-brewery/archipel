@@ -6,7 +6,7 @@ editUrl: false
 
 # Interface: IBlobDownloadRequest
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:134](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L134)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:143](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L143)
 
 ## Properties
 
@@ -16,7 +16,19 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:134](htt
 bucket?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:138](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L138)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:147](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L147)
+
+---
+
+### execution?
+
+```ts
+execution?: IBlobExecutionOptions;
+```
+
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:149](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L149)
+
+Explicit guaranteed execution limits, including response-body consumption.
 
 ---
 
@@ -26,7 +38,19 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:138](htt
 key: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:135](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L135)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:144](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L144)
+
+---
+
+### maxBytes?
+
+```ts
+maxBytes?: number;
+```
+
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:151](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L151)
+
+Nonnegative safe integer byte limit; exceeding it aborts the response stream.
 
 ---
 
@@ -36,7 +60,7 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:135](htt
 responseType?: BlobDownloadResponseType;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:137](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L137)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:146](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L146)
 
 ---
 
@@ -46,4 +70,4 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:137](htt
 versionId?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:136](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L136)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:145](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L145)

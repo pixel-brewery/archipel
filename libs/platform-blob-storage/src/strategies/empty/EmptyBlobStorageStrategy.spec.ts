@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { Buffer } from 'node:buffer';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BlobStorageDisabledError } from '../../errors/BlobStorageDisabledError.js';
 import type { IBlobDeleteRequest, IBlobDownloadRequest, IBlobUploadRequest } from '../../interfaces/IBlobProvider.js';
 import { EmptyBlobStorageStrategy } from './EmptyBlobStorageStrategy.js';
@@ -20,6 +20,7 @@ describe('EmptyBlobStorageStrategy', () => {
         strategy = new EmptyBlobStorageStrategy();
         logSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => undefined);
     });
+    afterEach(() => vi.restoreAllMocks());
 
     describe('providerId', () => {
         it('should return "empty" as the provider id', () => {
@@ -36,10 +37,10 @@ describe('EmptyBlobStorageStrategy', () => {
     });
 
     describe('uploadObject', () => {
-        it('should log the upload request and fail closed', async () => {
+        it('reports a disabled upload without logging the private request', async () => {
             // arrange
             const request: IBlobUploadRequest = {
-                key: 'test/image.png',
+                key: 'private-object-path/sensitive-name.bin',
                 body: Buffer.from('test-data'),
                 contentType: 'image/png',
                 contentLength: 9,
@@ -55,9 +56,11 @@ describe('EmptyBlobStorageStrategy', () => {
 
             // assert
             expect(logSpy).toHaveBeenCalledOnce();
-            expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[upload]'));
-            expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('"key":"test/image.png"'));
+            expect(logSpy).toHaveBeenCalledWith({ operation: 'blobObject.upload', providerId: 'empty', result: 'disabled' });
 
+            expect(JSON.stringify(logSpy.mock.calls)).not.toContain(request.key);
+            expect(JSON.stringify(logSpy.mock.calls)).not.toContain('"foo"');
+            expect(JSON.stringify(logSpy.mock.calls)).not.toContain('my-bucket');
             await expect(result).rejects.toBeInstanceOf(BlobStorageDisabledError);
         });
 
@@ -80,7 +83,7 @@ describe('EmptyBlobStorageStrategy', () => {
     });
 
     describe('downloadObject', () => {
-        it('should log the download request and fail closed', async () => {
+        it('reports a disabled download without logging the private request', async () => {
             // arrange
             const request: IBlobDownloadRequest = {
                 key: 'test/image.png',
@@ -94,15 +97,15 @@ describe('EmptyBlobStorageStrategy', () => {
 
             // assert
             expect(logSpy).toHaveBeenCalledOnce();
-            expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[download]'));
-            expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('"key":"test/image.png"'));
+            expect(logSpy).toHaveBeenCalledWith({ operation: 'blobObject.download', providerId: 'empty', result: 'disabled' });
 
+            expect(JSON.stringify(logSpy.mock.calls)).not.toContain(request.key);
             await expect(result).rejects.toBeInstanceOf(BlobStorageDisabledError);
         });
     });
 
     describe('deleteObject', () => {
-        it('should log the delete request and fail closed', async () => {
+        it('reports a disabled deletion without logging the private request', async () => {
             // arrange
             const request: IBlobDeleteRequest = {
                 key: 'test/image.png',
@@ -115,8 +118,8 @@ describe('EmptyBlobStorageStrategy', () => {
 
             // assert
             expect(logSpy).toHaveBeenCalledOnce();
-            expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[delete]'));
-            expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('"key":"test/image.png"'));
+            expect(logSpy).toHaveBeenCalledWith({ operation: 'blobObject.delete', providerId: 'empty', result: 'disabled' });
+            expect(JSON.stringify(logSpy.mock.calls)).not.toContain(request.key);
             await expect(result).rejects.toBeInstanceOf(BlobStorageDisabledError);
         });
     });
@@ -130,7 +133,7 @@ describe('EmptyBlobStorageStrategy', () => {
             const result = strategy.objectExists(request);
 
             // assert
-            expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[exists]'));
+            expect(logSpy).toHaveBeenCalledWith({ operation: 'blobObject.exists', providerId: 'empty', result: 'disabled' });
             await expect(result).rejects.toBeInstanceOf(BlobStorageDisabledError);
         });
     });
@@ -138,6 +141,8 @@ describe('EmptyBlobStorageStrategy', () => {
     // #endregion
 
     it('should refuse listing while storage is disabled', async () => {
-        await expect(strategy.listObjects({ prefix: 'leads/' })).rejects.toThrow();
+        await expect(strategy.listObjects({ prefix: 'private-prefix/' })).rejects.toThrow();
+        expect(logSpy).toHaveBeenCalledExactlyOnceWith({ operation: 'blobObject.list', providerId: 'empty', result: 'disabled' });
+        expect(JSON.stringify(logSpy.mock.calls)).not.toContain('private-prefix/');
     });
 });

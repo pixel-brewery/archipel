@@ -89,6 +89,25 @@ BLOB_VERCEL_TOKEN=your-vercel-blob-token
 
 ---
 
+## Explicit execution limits
+
+The existing `uploadObject`, `downloadObject` and `listObjects` requests accept `execution: { timeoutMs, abortSignal }`. The timeout is a whole number from 1 to 30,000 milliseconds, defaulting to 30,000 when explicit execution is requested. `downloadObject` additionally accepts `maxBytes`, a nonnegative safe integer; this also requests guaranteed execution with the default deadline if no `execution` object is provided. Upload variants share the upload capability.
+
+Probe `blobs.supportsExecutionOptions('downloadObject')` (or `'uploadObject'` / `'listObjects'`) before depending on these limits. Azure supports all three operations. Strategies without explicit support reject requested limits with `BlobStorageUnsupportedOperationError` before I/O, rather than silently ignoring them. Requests without limits keep their existing behavior.
+
+```typescript
+const result = await blobs.downloadObject<string>({
+    key: 'records/example.json',
+    responseType: 'text',
+    maxBytes: 256 * 1024,
+    execution: { timeoutMs: 5000, abortSignal: cancellation.signal },
+});
+```
+
+The Azure adapter passes the same combined deadline/caller signal through SDK retries and listing pages. It keeps cancellation active after download headers and destroys the response stream at the deadline or byte limit. A response over the declared or observed byte limit fails with `BLOB_STORAGE_RESPONSE_TOO_LARGE`. Limited calls reject alternate buckets. The limit bounds provider I/O and response consumption, not a persistence adapter's later database work. Cancellation cannot undo an upload already accepted remotely; callers retain responsibility for uncertain outcomes, durable intents and idempotency. No additional immutable-storage or restore policy is implied.
+
+---
+
 ## Uploading Files
 
 Inject `BlobService` to upload files. It returns metadata about the stored blob.
@@ -165,7 +184,7 @@ Signed URLs are useful for serving private files directly to the client without 
 ## Deleting Files
 
 ```typescript
-await this._blobService.delete('avatars/user-123');
+await this._blobService.deleteFile('avatars/user-123');
 ```
 
 ---
@@ -199,11 +218,62 @@ Providers that cannot enumerate throw `BlobStorageUnsupportedOperationError`. Pr
 
 ---
 
+## Inspecting Object History and Deleting Conditionally
+
+Azure implements two additional optional operations. Probe `BlobOptionalOperation.InspectObjectHistory` and `BlobOptionalOperation.DeleteObjectConditionally` before using them. An unsupported strategy throws `BlobStorageUnsupportedOperationError`; it never supplies a fabricated empty history or falls back to an unguarded deletion.
+
+```typescript
+import { BlobOptionalOperation } from '@pixel-brewery/archipel-platform-blob-storage';
+
+if (!this._blobService.supports(BlobOptionalOperation.InspectObjectHistory)) {
+    throw new Error('The configured provider cannot inspect object history.');
+}
+
+const page = await this._blobService.inspectObjectHistory({
+    key: 'archive/document.pdf',
+    maxKeys: 100,
+    timeoutMs: 5000,
+});
+// Compare providerId, resourceId and bucket with the application's trusted identity.
+// Follow page.continuationToken within a bounded application-owned scan,
+// even if page.entries is empty.
+```
+
+Each entry concerns only the exact canonical key and carries available `versionId`, `snapshotId`, `isCurrentVersion`, `deleted`, `etag`, `deletedAt` and `remainingRetentionDays` facts. One call reads one provider page, with `maxKeys` from 1 to 5,000 and a default of 1,000. Missing optional facts are unknown. A failed listing or unavailable container remains an error, not proof that the object's recoverable history is empty.
+
+The returned `resourceId` is the actual container endpoint without user information, query or fragment. Azure upload metadata returns the same identity and the actual configured `bucket`; it does not claim that an ignored legacy upload bucket was used. Persist upload identity together with its version and ETag when the application needs a durable generation record. A later inspection cannot prove an unrecorded historical upload identity merely because its path matches.
+
+After the application has independently authorized and matched that identity, it can guard one deletion with a single exact strong ETag:
+
+```typescript
+await this._blobService.deleteObjectConditionally({
+    key: 'archive/document.pdf',
+    resourceId: 'https://account.blob.core.windows.net/container',
+    versionId: 'previous-version',
+    ifMatch: '"known-strong-etag"',
+    timeoutMs: 5000,
+});
+```
+
+Select `versionId` or `snapshotId`, never both. With neither selector, the base object is selected. Empty selectors and empty, wildcard, weak or multi-value ETags are invalid; alternate buckets are rejected by these new Azure operations. A supplied `resourceId` must match the actual target before mutation. A provider precondition failure returns `BlobStoragePreconditionFailedError` (`BLOB_STORAGE_PRECONDITION_FAILED`). It does not silently retry against a newer object. Historical version/snapshot deletion leaves base-object persistence accounting intact. Ordinary Azure `deleteObject` and `objectExists` also honor their existing `versionId` selector.
+
+A conditional base-object deletion never deletes unselected snapshots or versions. If associated snapshots prevent Azure from deleting the base object, the provider returns `409`; no include-all-snapshots option or broader retry is applied. Callers must inspect and explicitly delete each intended snapshot with its own `snapshotId` and observed strong ETag, then retry the base deletion only while its resource identity and ETag still match.
+
+After successful conditional deletion of the base object, persistence uses only the optional `BlobObjectPersistenceBase.markAsDeletedIfUnchanged(request): Promise<boolean>` hook. Its exported `IBlobConditionalDeletionPersistenceRequest` contains `providerId`, `resourceId`, `bucket`, `key`, `ifMatch` and optional selectors. Implement the comparison and update as one atomic write; return `false` if the stored generation is missing or different. Never release a newer upload merely because it reuses the same key. Without a supplied resource identity or a CAS-capable hook, metadata stays unchanged. A `false` return or hook failure likewise never invokes the legacy key-only `markAsDeleted` fallback. Safe diagnostics distinguish provider success from skipped, unmatched or failed bookkeeping without logging raw adapter errors. A fulfilled provider method is not by itself a metadata-update receipt; applications retain their own reconciliation evidence. Historical selectors never invoke base accounting. The existing ordinary `deleteObject` callback remains unchanged.
+
+Both operations accept an optional `abortSignal`. Their default and maximum whole-request client I/O budget is 30,000 ms, including SDK retries; `timeoutMs` can reduce it to a positive whole-millisecond value. The SDK receives the cancellation signal directly. Aborting client I/O does not undo a remotely accepted mutation, so applications still need durable reconciliation and concurrency guards.
+
+These operations observe the configured container's object history and retain ordinary Azure deletion semantics. They neither perform permanent deletion nor inspect deleted containers, backups, replicas or external restore paths. An empty history, a current-object 404 or successful delete is not an irreversible-erasure guarantee.
+
+---
+
 ## Tracking Metadata (Optional Abstract Bases)
 
 By default, `BlobService` performs storage operations without persisting metadata to your database. If you need to track uploaded files (for listing, auditing, or cleanup), implement the optional persistence abstract bases.
 
 A abstract base runs **after** the object is already stored, so a failing abstract base must not fail the operation. `BlobService` catches and logs the failure and reports it through `metadataPersisted` on the upload result. Consumers that keep their own accounting should treat `metadataPersisted === false` as drift to reconcile rather than as a failed upload.
+
+Operation diagnostics use fixed operation, provider and outcome fields. They do not include object keys, bucket/container names, filesystem paths, request metadata or prefixes. Upload, variant and deletion persistence failures do not log raw adapter errors, provider payloads, variant labels or original object identities. Successful provider results and the existing `metadataPersisted` outcome remain unchanged; applications retain their own private reconciliation evidence. Conditional deletion separately reports safe provider and metadata-update outcomes.
 
 ### BlobObjectPersistenceBase
 

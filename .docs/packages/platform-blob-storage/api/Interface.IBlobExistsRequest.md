@@ -6,7 +6,7 @@ editUrl: false
 
 # Interface: IBlobExistsRequest
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:155](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L155)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:168](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L168)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:155](htt
 bucket?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:158](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L158)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:171](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L171)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:158](htt
 key: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:156](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L156)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:169](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L169)
 
 ---
 
@@ -36,4 +36,4 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:156](htt
 versionId?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:157](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L157)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:170](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L170)
