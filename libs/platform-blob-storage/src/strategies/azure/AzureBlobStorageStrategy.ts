@@ -319,7 +319,6 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
                       : baseClient;
             await selectedClient.delete({
                 conditions: { ifMatch: request.ifMatch },
-                ...(request.versionId === undefined && request.snapshotId === undefined ? { deleteSnapshots: 'include' as const } : {}),
                 abortSignal,
             });
         } catch (error: unknown) {

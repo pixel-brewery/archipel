@@ -4,6 +4,8 @@
  * At most one version or snapshot selector may be supplied. Omitting both selects
  * the base object. Empty selectors, wildcard/weak/list ETags and alternate buckets
  * are rejected rather than broadening the deletion.
+ * Unselected snapshots and versions must remain unchanged. Associated snapshots
+ * can require separate conditional deletions before the base object can be deleted.
  *
  * @public
  */

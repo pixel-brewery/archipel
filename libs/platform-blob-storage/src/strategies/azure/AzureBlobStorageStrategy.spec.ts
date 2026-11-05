@@ -269,12 +269,38 @@ describe('AzureBlobStorageStrategy', () => {
             expect(selected).toHaveBeenCalledWith(
                 expect.objectContaining({ conditions: { ifMatch: '"original-etag"' }, abortSignal: expect.any(AbortSignal) }),
             );
+            expect(selected.mock.calls[0]?.[0]).not.toHaveProperty('deleteSnapshots');
             if ('versionId' in selector || 'snapshotId' in selector) {
                 expect(sdk.baseDelete).not.toHaveBeenCalled();
-                expect(selected.mock.calls[0]?.[0]).not.toHaveProperty('deleteSnapshots');
             }
         },
     );
+
+    it('preserves unselected snapshots when Azure refuses a conditional base deletion', async () => {
+        // arrange
+        const snapshots = new Set(['first-snapshot', 'second-snapshot']);
+        const conflict = Object.assign(new Error('The base object has snapshots.'), {
+            statusCode: 409,
+            code: 'SnapshotsPresent',
+        });
+        sdk.baseDelete.mockImplementationOnce(async (options: { deleteSnapshots?: string }) => {
+            if (options.deleteSnapshots === 'include') {
+                snapshots.clear();
+                return;
+            }
+            throw conflict;
+        });
+
+        // act
+        const deletion = strategy.deleteObjectConditionally({ key, resourceId, ifMatch: '"original-etag"' });
+
+        // assert
+        await expect(deletion).rejects.toBe(conflict);
+        expect(snapshots).toEqual(new Set(['first-snapshot', 'second-snapshot']));
+        expect(sdk.baseDelete).toHaveBeenCalledOnce();
+        expect(sdk.versionDelete).not.toHaveBeenCalled();
+        expect(sdk.snapshotDelete).not.toHaveBeenCalled();
+    });
 
     it('maps a changed object to a stable precondition failure without deleting a different generation', async () => {
         // arrange

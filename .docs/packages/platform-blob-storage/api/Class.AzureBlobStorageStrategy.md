@@ -88,7 +88,7 @@ Gets the default bucket (container/directory) configured for the provider.
 createSignedUrl(request): Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:337](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L337)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:336](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L336)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
