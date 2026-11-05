@@ -1,0 +1,25 @@
+{
+    "schemaVersion": 1,
+    "language": "en",
+    "project": {
+        "name": "Archipel",
+        "slug": "archipel",
+        "website": "https://github.com/pixel-brewery/archipel",
+        "repository": "https://github.com/pixel-brewery/archipel"
+    },
+    "description": "Archipel gives different applications a common backend architecture and consistent behavior for shared capabilities. Its modular NestJS libraries connect identity, data, payments, documents, queues, observability and AI through typed contracts and replaceable adapters.",
+    "image": {
+        "file": "project-card.webp",
+        "format": "webp",
+        "width": 960,
+        "height": 540,
+        "alt": "Archipel's island mark beside connected modular platforms for backend capabilities."
+    },
+    "artwork": {
+        "kind": "illustration",
+        "generator": "Built-in Imagegen",
+        "generatedOn": "2026-11-03",
+        "prompt": "Use case: ads-marketing. Asset: compact portfolio project card in a SEVEN-PROJECT MATCHED SERIES. Image 1 is the Mosaik MASTER CARD: match its 16:9 landscape framing, composition, typography scale, pure white / very light warm-gray seamless background, soft studio lighting, grounded shadows, restrained tactile ceramic/glass materials, generous 7% safe margins and premium editorial quality. Request target 1280x720. Brand lockup occupies LEFT THIRD with large exact black project name and existing mark when available, sculptural product-specific still life occupies RIGHT TWO THIRDS. Match the master; do not repeat its mosaic subject. Physical metaphor artwork, NOT a screenshot or proposed interface; no operating UI controls, dense text or dashboards. The text must remain readable at 600px wide. No tagline, subtitles, other prose, people, robot, brains, stock clip art, watermark, unrelated logos or background gradients.\n\nPROJECT SPECIFICATION:\nImage 2 is Archipel's existing artwork and identity reference. Left large exact black word \"Archipel\", optionally with the small existing turquoise/coral/cream island-cluster mark above; do not invent a logo. Right scene: a finely crafted modular archipelago of off-white ceramic platforms with turquoise and coral tops, linked by precise thin curved connections, one central database-cylinder engraving and a few peripheral module engravings for identity, mail and integration. Keep the concept of connected replaceable backend building blocks from Image2, but render it in Image1's WHITE studio scene and premium physical material style, not Image2's dark flat infographic. No provider logos or extra text."
+    },
+    "blogDescription": "Several applications needed the same backend capabilities, with the same architecture and predictable behavior. Archipel grew from that need for a shared foundation: a modular NestJS library family that makes common infrastructure consistent across products while keeping each application's business rules with its own code.\n\n- **One foundation:** configuration, identity, persistence and validation.\n- **Product infrastructure:** payments, documents, queues, observability and AI.\n- **Replaceable integrations:** typed contracts and adapters for different providers."
+}

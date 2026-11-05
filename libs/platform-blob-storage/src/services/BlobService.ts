@@ -23,8 +23,8 @@ import type { IBlobConditionalDeleteRequest } from '../interfaces/IBlobCondition
 import type { IBlobObjectHistoryRequest } from '../interfaces/IBlobObjectHistoryRequest.js';
 import type { IBlobObjectHistoryResult } from '../interfaces/IBlobObjectHistoryResult.js';
 import type { BlobExecutionOperation } from '../interfaces/BlobExecutionOperation.js';
-import type { IBlobExecutionOptions } from '../interfaces/IBlobExecutionOptions.js';
 import type { BlobStorageStrategyBase } from '../strategies/abstracts/BlobStorageStrategyBase.js';
+import { assertBlobExecutionSupport } from '../strategies/assertBlobExecutionSupport.js';
 import { BLOB_STORAGE_STRATEGY_TOKEN } from '../tokens/BlobStorageTokens.js';
 
 // #endregion
@@ -77,7 +77,7 @@ export class BlobService {
      * @returns The provider specific upload result.
      */
     public async uploadObject(request: IBlobUploadRequest): Promise<IBlobUploadResult> {
-        this.assertExecutionSupport('uploadObject', request.key, request.execution);
+        assertBlobExecutionSupport(this._storageStrategy, 'uploadObject', request.key, request.execution);
         let result: IBlobUploadResult;
 
         try {
@@ -103,7 +103,7 @@ export class BlobService {
      * @returns The provider specific upload result.
      */
     public async uploadVariant(originalId: string, label: string, request: IBlobUploadRequest): Promise<IBlobUploadResult> {
-        this.assertExecutionSupport('uploadObject', request.key, request.execution);
+        assertBlobExecutionSupport(this._storageStrategy, 'uploadObject', request.key, request.execution);
         let result: IBlobUploadResult;
 
         try {
@@ -127,7 +127,7 @@ export class BlobService {
      * @returns The downloaded data and related metadata.
      */
     public async downloadObject<TData>(request: IBlobDownloadRequest): Promise<IBlobDownloadResult<TData>> {
-        this.assertExecutionSupport('downloadObject', request.key, request.execution, request.maxBytes);
+        assertBlobExecutionSupport(this._storageStrategy, 'downloadObject', request.key, request.execution, request.maxBytes);
         try {
             return await this._storageStrategy.downloadObject<TData>(request);
         } catch (error: unknown) {
@@ -210,7 +210,7 @@ export class BlobService {
      * @returns One page of entries and the token for the next page.
      */
     public async listObjects(request: IBlobListRequest = {}): Promise<IBlobListResult> {
-        this.assertExecutionSupport('listObjects', request.prefix ?? '', request.execution);
+        assertBlobExecutionSupport(this._storageStrategy, 'listObjects', request.prefix ?? '', request.execution);
         if (!this._storageStrategy.listObjects) {
             throw new BlobStorageUnsupportedOperationError(this._storageStrategy.providerId, 'listObjects', request.prefix ?? '');
         }
@@ -357,12 +357,6 @@ export class BlobService {
      */
     public fileExists(key: string): Promise<boolean> {
         return this.objectExists({ key });
-    }
-
-    private assertExecutionSupport(operation: BlobExecutionOperation, key: string, execution: IBlobExecutionOptions | undefined, maxBytes?: number): void {
-        if ((execution !== undefined || maxBytes !== undefined) && !this.supportsExecutionOptions(operation)) {
-            throw new BlobStorageUnsupportedOperationError(this._storageStrategy.providerId, `${operation}.execution`, key);
-        }
     }
 
     private async markAsDeletedIfUnchanged(request: IBlobConditionalDeleteRequest): Promise<void> {

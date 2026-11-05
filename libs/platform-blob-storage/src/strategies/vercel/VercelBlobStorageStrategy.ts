@@ -20,6 +20,7 @@ import {
     type IBlobUploadResult,
 } from '../../interfaces/IBlobProvider.js';
 import { BlobStorageStrategyBase } from '../abstracts/BlobStorageStrategyBase.js';
+import { assertBlobExecutionSupport } from '../assertBlobExecutionSupport.js';
 import { VERCEL_BLOB_BUCKET, VERCEL_BLOB_PUBLIC_URL, VERCEL_BLOB_READ_WRITE_TOKEN, VERCEL_BLOB_REGION, VERCEL_BLOB_URL } from './env.js';
 
 // #endregion
@@ -93,6 +94,7 @@ export class VercelBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async uploadObject(request: IBlobUploadRequest): Promise<IBlobUploadResult> {
+        assertBlobExecutionSupport(this, 'uploadObject', request.key, request.execution);
         const key = this.normalizeKey(request.key);
         const url = this.buildApiUrl(key, request.bucket);
         const headers = this.createAuthorizationHeaders();
@@ -121,6 +123,7 @@ export class VercelBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async downloadObject<TData>(request: IBlobDownloadRequest): Promise<IBlobDownloadResult<TData>> {
+        assertBlobExecutionSupport(this, 'downloadObject', request.key, request.execution, request.maxBytes);
         const key = this.normalizeKey(request.key);
         const url = this.buildApiUrl(key, request.bucket, request.versionId);
         const responseType = this.mapResponseType(request.responseType);
@@ -170,6 +173,7 @@ export class VercelBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public override async listObjects(request: IBlobListRequest = {}): Promise<IBlobListResult> {
+        assertBlobExecutionSupport(this, 'listObjects', request.prefix ?? '', request.execution);
         const axiosConfig: AxiosRequestConfig = {
             headers: this.createAuthorizationHeaders(),
             timeout: this._timeoutMs,

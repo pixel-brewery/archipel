@@ -179,6 +179,8 @@ const signedUrl = await this._blobService.getSignedUrl('avatars/user-123', {
 
 Signed URLs are useful for serving private files directly to the client without proxying through your server.
 
+For Azure, passing `versionId` scopes both the existence check and the signed URL to that version.
+
 ---
 
 ## Deleting Files
@@ -241,7 +243,7 @@ const page = await this._blobService.inspectObjectHistory({
 
 Each entry concerns only the exact canonical key and carries available `versionId`, `snapshotId`, `isCurrentVersion`, `deleted`, `etag`, `deletedAt` and `remainingRetentionDays` facts. One call reads one provider page, with `maxKeys` from 1 to 5,000 and a default of 1,000. Missing optional facts are unknown. A failed listing or unavailable container remains an error, not proof that the object's recoverable history is empty.
 
-The returned `resourceId` is the actual container endpoint without user information, query or fragment. Azure upload metadata returns the same identity and the actual configured `bucket`; it does not claim that an ignored legacy upload bucket was used. Persist upload identity together with its version and ETag when the application needs a durable generation record. A later inspection cannot prove an unrecorded historical upload identity merely because its path matches.
+Azure history inspection requires `@azure/storage-blob` 12.8.0 or later. The returned `resourceId` is the actual container endpoint without user information, query or fragment. Azure upload metadata returns this identity for the configured `bucket`. An unrestricted legacy upload with an alternate bucket keeps that value in metadata and leaves `resourceId` unset. Persist upload identity together with its version and ETag when the application needs a durable generation record. A later inspection cannot prove an unrecorded historical upload identity merely because its path matches.
 
 After the application has independently authorized and matched that identity, it can guard one deletion with a single exact strong ETag:
 

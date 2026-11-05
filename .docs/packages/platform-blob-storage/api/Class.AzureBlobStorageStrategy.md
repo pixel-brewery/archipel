@@ -6,7 +6,7 @@ editUrl: false
 
 # Class: AzureBlobStorageStrategy
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:37](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L37)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:40](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L40)
 
 Provides a blob storage strategy backed by Microsoft Azure Blob Storage.
 
@@ -22,7 +22,7 @@ Provides a blob storage strategy backed by Microsoft Azure Blob Storage.
 new AzureBlobStorageStrategy(configService): AzureBlobStorageStrategy;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:58](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L58)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:61](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L61)
 
 Initializes a new instance of the AzureBlobStorageStrategy class.
 
@@ -48,7 +48,7 @@ Initializes a new instance of the AzureBlobStorageStrategy class.
 readonly providerId: string = 'azure';
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:81](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L81)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:84](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L84)
 
 Gets the unique identifier for this storage provider.
 
@@ -66,7 +66,7 @@ Gets the unique identifier for this storage provider.
 get defaultBucket(): string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:84](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L84)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:87](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L87)
 
 Gets the default bucket (container/directory) configured for the provider.
 
@@ -88,7 +88,7 @@ Gets the default bucket (container/directory) configured for the provider.
 createSignedUrl(request): Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:336](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L336)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:345](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L345)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
@@ -117,7 +117,7 @@ The generated signed URL.
 deleteObject(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:171](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L171)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:175](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L175)
 
 Deletes a blob object from the storage backend.
 
@@ -143,7 +143,7 @@ Deletes a blob object from the storage backend.
 deleteObjectConditionally(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:290](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L290)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:299](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L299)
 
 Deletes the selected object only while its exact observed ETag still matches.
 
@@ -172,7 +172,7 @@ Client cancellation does not undo a mutation already accepted by the provider.
 downloadObject<TData>(request): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L140)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:144](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L144)
 
 Downloads a blob object from the storage backend.
 
@@ -206,7 +206,7 @@ The download result including payload and metadata.
 inspectObjectHistory(request): Promise<IBlobObjectHistoryResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:236](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L236)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:242](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L242)
 
 Observes one exact-key history page, including available versions, snapshots and soft deletion.
 
@@ -236,7 +236,7 @@ Provider observations, never an implicit irreversible-deletion guarantee.
 listObjects(request?): Promise<IBlobListResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:195](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L195)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:201](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L201)
 
 Lists objects of a bucket page by page.
 
@@ -268,7 +268,7 @@ One page of entries and the token for the next page.
 objectExists(request): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:184](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L184)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:189](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L189)
 
 Determines whether a blob object exists in the storage backend.
 
@@ -294,7 +294,7 @@ Determines whether a blob object exists in the storage backend.
 supportsExecutionOptions(operation): boolean;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:93](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L93)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:96](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L96)
 
 Reports whether an existing operation honors explicit execution limits.
 
@@ -325,7 +325,7 @@ Whether deadlines, cancellation and applicable byte limits are enforced.
 uploadObject(request): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:98](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L98)
+Defined in: [libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts:101](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/azure/AzureBlobStorageStrategy.ts#L101)
 
 Uploads a blob object to the storage backend.
 

@@ -2,10 +2,11 @@
 
 import type { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Logger } from '@nestjs/common';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BlobStorageUnsupportedOperationError } from '../../errors/BlobStorageUnsupportedOperationError.js';
 import { LOCAL_BLOB_BASE_PATH, LOCAL_BLOB_BUCKET } from './env.js';
 import { LocalBlobStorageStrategy } from './LocalBlobStorageStrategy.js';
 
@@ -35,6 +36,26 @@ describe('LocalBlobStorageStrategy', () => {
     afterEach(async () => {
         vi.restoreAllMocks();
         await rm(basePath, { force: true, recursive: true });
+    });
+
+    it('rejects unsupported upload cancellation before creating any directories', async () => {
+        const result = strategy.uploadObject({
+            key: 'images/photo.png',
+            body: Buffer.from('data'),
+            execution: { abortSignal: AbortSignal.abort() },
+        });
+
+        await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        await expect(readdir(basePath)).resolves.toEqual([]);
+    });
+
+    it.each([
+        ['a deadline', { execution: { timeoutMs: 1000 } }],
+        ['a byte limit', { maxBytes: 0 }],
+    ] as const)('rejects %s before looking up a download', async (_limit, options) => {
+        const result = strategy.downloadObject({ key: 'images/missing.png', ...options });
+
+        await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
     });
 
     describe('objectExists', () => {
@@ -81,6 +102,12 @@ describe('LocalBlobStorageStrategy', () => {
     // #endregion
 
     describe('listObjects', () => {
+        it('rejects an unsupported listing deadline', async () => {
+            const result = strategy.listObjects({ execution: { timeoutMs: 1000 } });
+
+            await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        });
+
         it('should enumerate stored objects across nested directories', async () => {
             await strategy.uploadObject({ key: 'leads/7/a.pdf', body: Buffer.from('aa') });
             await strategy.uploadObject({ key: 'leads/8/b.pdf', body: Buffer.from('bbbb') });

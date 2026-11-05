@@ -6,7 +6,7 @@ editUrl: false
 
 # Class: AwsS3BlobStorageStrategy
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:29](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L29)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:30](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L30)
 
 Provides a blob storage strategy backed by Amazon S3.
 
@@ -22,7 +22,7 @@ Provides a blob storage strategy backed by Amazon S3.
 new AwsS3BlobStorageStrategy(configService): AwsS3BlobStorageStrategy;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:50](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L50)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:51](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L51)
 
 Initializes a new instance of the AwsS3BlobStorageStrategy class.
 
@@ -48,7 +48,7 @@ Initializes a new instance of the AwsS3BlobStorageStrategy class.
 readonly providerId: string = 'aws-s3';
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:80](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L80)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:81](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L81)
 
 Gets the unique identifier for this storage provider.
 
@@ -66,7 +66,7 @@ Gets the unique identifier for this storage provider.
 get defaultBucket(): string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:83](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L83)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:84](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L84)
 
 Gets the default bucket (container/directory) configured for the provider.
 
@@ -88,7 +88,7 @@ Gets the default bucket (container/directory) configured for the provider.
 createSignedUrl(request): Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:197](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L197)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:202](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L202)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
@@ -117,7 +117,7 @@ The generated signed URL.
 deleteObject(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:162](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L162)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:167](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L167)
 
 Deletes a blob object from the storage backend.
 
@@ -172,7 +172,7 @@ Client cancellation does not undo a mutation already accepted by the provider.
 downloadObject<TData>(request): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:137](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L137)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L140)
 
 Downloads a blob object from the storage backend.
 
@@ -236,7 +236,7 @@ Provider observations, never an implicit irreversible-deletion guarantee.
 listObjects(request?): Promise<IBlobListResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:219](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L219)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:224](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L224)
 
 Lists objects of a bucket page by page.
 
@@ -268,7 +268,7 @@ One page of entries and the token for the next page.
 objectExists(request): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:180](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L180)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:185](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L185)
 
 Determines whether a blob object exists in the storage backend.
 
@@ -325,7 +325,7 @@ Whether deadlines, cancellation and applicable byte limits are enforced.
 uploadObject(request): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:92](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L92)
+Defined in: [libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts:93](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/aws-s3/AwsS3BlobStorageStrategy.ts#L93)
 
 Uploads a blob object to the storage backend.
 

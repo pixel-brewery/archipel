@@ -16,6 +16,7 @@ import type {
     IBlobUploadResult,
 } from '../../interfaces/IBlobProvider.js';
 import { BlobStorageStrategyBase } from '../abstracts/BlobStorageStrategyBase.js';
+import { assertBlobExecutionSupport } from '../assertBlobExecutionSupport.js';
 import { AWS_S3_ACCESS_KEY_ID, AWS_S3_BUCKET, AWS_S3_ENDPOINT, AWS_S3_REGION, AWS_S3_SECRET_ACCESS_KEY } from './env.js';
 
 // #endregion
@@ -90,6 +91,8 @@ export class AwsS3BlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async uploadObject(request: IBlobUploadRequest): Promise<IBlobUploadResult> {
+        assertBlobExecutionSupport(this, 'uploadObject', request.key, request.execution);
+
         const { PutObjectCommand } = await this.loadSdk();
         const client = await this.getClient();
         const key = this.normalizeKey(request.key);
@@ -135,6 +138,8 @@ export class AwsS3BlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async downloadObject<TData>(request: IBlobDownloadRequest): Promise<IBlobDownloadResult<TData>> {
+        assertBlobExecutionSupport(this, 'downloadObject', request.key, request.execution, request.maxBytes);
+
         const { GetObjectCommand } = await this.loadSdk();
         const client = await this.getClient();
         const key = this.normalizeKey(request.key);
@@ -217,6 +222,8 @@ export class AwsS3BlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public override async listObjects(request: IBlobListRequest = {}): Promise<IBlobListResult> {
+        assertBlobExecutionSupport(this, 'listObjects', request.prefix ?? '', request.execution);
+
         const { ListObjectsV2Command } = await this.loadSdk();
         const client = await this.getClient();
 
