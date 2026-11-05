@@ -10,4 +10,4 @@ editUrl: false
 type BlobDownloadResponseType = (typeof BlobDownloadResponseTypes)[keyof typeof BlobDownloadResponseTypes];
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:16](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L16)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:17](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L17)

@@ -1,12 +1,16 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Logger } from '@nestjs/common';
 import type { BlobObjectPersistenceBase } from '../abstracts/BlobObjectPersistenceBase.js';
 import type { BlobVariantPersistenceBase } from '../abstracts/BlobVariantPersistenceBase.js';
 import { BlobObjectNotFoundError } from '../errors/BlobObjectNotFoundError.js';
 import { BlobStorageError } from '../errors/BlobStorageError.js';
+import { BlobStoragePreconditionFailedError } from '../errors/BlobStoragePreconditionFailedError.js';
 import { BlobStorageUnavailableError } from '../errors/BlobStorageUnavailableError.js';
 import { BlobStorageUnsupportedOperationError } from '../errors/BlobStorageUnsupportedOperationError.js';
-import type { IBlobObjectMetadata, IBlobUploadRequest, IBlobUploadResult } from '../interfaces/IBlobProvider.js';
+import { BlobOptionalOperation, type IBlobObjectMetadata, type IBlobUploadRequest, type IBlobUploadResult } from '../interfaces/IBlobProvider.js';
+import type { IBlobConditionalDeletionPersistenceRequest } from '../interfaces/IBlobConditionalDeletionPersistenceRequest.js';
 import type { BlobStorageStrategyBase } from '../strategies/abstracts/BlobStorageStrategyBase.js';
+import type { BlobExecutionOperation } from '../interfaces/BlobExecutionOperation.js';
 import { BlobService } from './BlobService.js';
 
 describe('BlobService', () => {
@@ -50,6 +54,7 @@ describe('BlobService', () => {
         objectPersistenceMock = {
             createFromMetadata: vi.fn().mockResolvedValue({ id: 'blob-1' }),
             markAsDeleted: vi.fn().mockResolvedValue(1),
+            markAsDeletedIfUnchanged: vi.fn().mockResolvedValue(true),
         };
 
         variantPersistenceMock = {
@@ -57,6 +62,245 @@ describe('BlobService', () => {
         };
 
         service = new BlobService(strategyMock, objectPersistenceMock as BlobObjectPersistenceBase, variantPersistenceMock as BlobVariantPersistenceBase);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it.each(['uploadObject', 'uploadVariant', 'downloadObject', 'listObjects'] as const)(
+        'rejects guaranteed execution for unsupported %s before provider or persistence effects',
+        async (operation) => {
+            const execution = { timeoutMs: 1000 };
+            const listObjects = vi.fn();
+            strategyMock.listObjects = listObjects;
+
+            const result =
+                operation === 'uploadObject'
+                    ? service.uploadObject({ key: 'a', body: Buffer.from('a'), execution })
+                    : operation === 'uploadVariant'
+                      ? service.uploadVariant('original', 'preview', { key: 'a', body: Buffer.from('a'), execution })
+                      : operation === 'downloadObject'
+                        ? service.downloadObject({ key: 'a', execution, maxBytes: 10 })
+                        : service.listObjects({ prefix: 'a/', execution });
+
+            await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+            expect(strategyMock.uploadObject).not.toHaveBeenCalled();
+            expect(strategyMock.downloadObject).not.toHaveBeenCalled();
+            expect(listObjects).not.toHaveBeenCalled();
+            expect(objectPersistenceMock.createFromMetadata).not.toHaveBeenCalled();
+            expect(variantPersistenceMock.createFromMetadata).not.toHaveBeenCalled();
+        },
+    );
+
+    it('rejects an unsupported byte limit even without explicit deadline options', async () => {
+        const result = service.downloadObject({ key: 'a', maxBytes: 1 });
+
+        await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        expect(strategyMock.downloadObject).not.toHaveBeenCalled();
+    });
+
+    it('passes guaranteed options only to an explicitly capable operation while preserving normal metadata persistence', async () => {
+        strategyMock.supportsExecutionOptions = vi.fn((operation: BlobExecutionOperation) => operation === 'uploadObject');
+        const execution = { timeoutMs: 1000, abortSignal: new AbortController().signal };
+        const request = { key: 'a', body: Buffer.from('a'), execution };
+
+        const result = await service.uploadObject(request);
+
+        expect(service.supportsExecutionOptions('uploadObject')).toBe(true);
+        expect(service.supportsExecutionOptions('downloadObject')).toBe(false);
+        expect(strategyMock.uploadObject).toHaveBeenCalledWith(request);
+        expect(objectPersistenceMock.createFromMetadata).toHaveBeenCalledWith(sampleMetadata);
+        expect(result.metadataPersisted).toBe(true);
+    });
+
+    it.each([BlobOptionalOperation.InspectObjectHistory, BlobOptionalOperation.DeleteObjectConditionally])(
+        'rejects unsupported %s without falling back to ordinary object operations',
+        async (operation) => {
+            // arrange
+            const supported = service.supports(operation);
+
+            // act
+            const result =
+                operation === BlobOptionalOperation.InspectObjectHistory
+                    ? service.inspectObjectHistory({ key: 'images/photo.png' })
+                    : service.deleteObjectConditionally({ key: 'images/photo.png', ifMatch: '"original"' });
+
+            // assert
+            expect(supported).toBe(false);
+            await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+            expect(strategyMock.deleteObject).not.toHaveBeenCalled();
+            expect(strategyMock.objectExists).not.toHaveBeenCalled();
+            expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+        },
+    );
+
+    it('preserves an empty history page with continuation without changing persistence', async () => {
+        // arrange
+        const page = { providerId: 'azure', resourceId: 'https://storage.example/objects', bucket: 'objects', entries: [], continuationToken: 'next-page' };
+        strategyMock.inspectObjectHistory = vi.fn().mockResolvedValue(page);
+
+        // act
+        const result = await service.inspectObjectHistory({ key: 'images/photo.png' });
+
+        // assert
+        expect(result).toEqual(page);
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+        expect(objectPersistenceMock.createFromMetadata).not.toHaveBeenCalled();
+    });
+
+    it('does not turn a missing history container into an empty successful history', async () => {
+        // arrange
+        strategyMock.inspectObjectHistory = vi.fn().mockRejectedValue({ statusCode: 404, code: 'ContainerNotFound' });
+
+        // act
+        const result = service.inspectObjectHistory({ key: 'images/photo.png' });
+
+        // assert
+        await expect(result).rejects.toBeInstanceOf(BlobObjectNotFoundError);
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+    });
+
+    it('preserves a failed deletion precondition without releasing stored metadata', async () => {
+        // arrange
+        const error = new BlobStoragePreconditionFailedError('azure', 'deleteObjectConditionally', 'images/photo.png');
+        strategyMock.deleteObjectConditionally = vi.fn().mockRejectedValue(error);
+
+        // act
+        const result = service.deleteObjectConditionally({ key: 'images/photo.png', ifMatch: '"original"' });
+
+        // assert
+        await expect(result).rejects.toBe(error);
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+    });
+
+    it.each([{ versionId: 'older-version' }, { snapshotId: 'snapshot' }])(
+        'keeps base-object accounting when conditionally deleting history %j',
+        async (selector) => {
+            // arrange
+            strategyMock.deleteObjectConditionally = vi.fn().mockResolvedValue(undefined);
+
+            // act
+            await service.deleteObjectConditionally({
+                key: 'images/photo.png',
+                resourceId: 'https://storage.example/objects',
+                ifMatch: '"original"',
+                ...selector,
+            });
+
+            // assert
+            expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+            expect(objectPersistenceMock.markAsDeletedIfUnchanged).not.toHaveBeenCalled();
+        },
+    );
+
+    it('uses only the generation-CAS persistence hook after successful base deletion', async () => {
+        // arrange
+        strategyMock.deleteObjectConditionally = vi.fn().mockResolvedValue(undefined);
+
+        // act
+        await service.deleteObjectConditionally({ key: 'images/photo.png', resourceId: 'https://storage.example/objects', ifMatch: '"original"' });
+
+        // assert
+        expect(objectPersistenceMock.markAsDeletedIfUnchanged).toHaveBeenCalledWith({
+            providerId: 'vercel',
+            resourceId: 'https://storage.example/objects',
+            bucket: 'default-bucket',
+            key: 'images/photo.png',
+            ifMatch: '"original"',
+            versionId: undefined,
+            snapshotId: undefined,
+        });
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+    });
+
+    it('preserves a newly uploaded generation when post-delete persistence no longer matches', async () => {
+        // arrange
+        const resourceId = 'https://storage.example/objects';
+        let metadata = { resourceId, etag: '"original"', released: false };
+        strategyMock.deleteObjectConditionally = vi.fn().mockImplementation(async () => {
+            metadata = { resourceId, etag: '"new-upload"', released: false };
+        });
+        objectPersistenceMock.markAsDeleted = vi.fn().mockImplementation(async () => {
+            metadata.released = true;
+        });
+        objectPersistenceMock.markAsDeletedIfUnchanged = vi.fn().mockImplementation(async (guard: IBlobConditionalDeletionPersistenceRequest) => {
+            if (metadata.resourceId !== guard.resourceId || metadata.etag !== guard.ifMatch) return false;
+            metadata.released = true;
+            return true;
+        });
+
+        // act
+        await service.deleteObjectConditionally({ key: 'images/photo.png', resourceId, ifMatch: '"original"' });
+
+        // assert
+        expect(metadata).toEqual({ resourceId, etag: '"new-upload"', released: false });
+        expect(objectPersistenceMock.markAsDeletedIfUnchanged).toHaveBeenCalledOnce();
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+    });
+
+    it.each(['hook', 'resource'] as const)('does not fall back to key-only accounting when the conditional %s is unavailable', async (missing) => {
+        // arrange
+        strategyMock.deleteObjectConditionally = vi.fn().mockResolvedValue(undefined);
+        if (missing === 'hook') delete objectPersistenceMock.markAsDeletedIfUnchanged;
+
+        // act
+        await service.deleteObjectConditionally({
+            key: 'images/photo.png',
+            ifMatch: '"original"',
+            ...(missing === 'resource' ? {} : { resourceId: 'https://storage.example/objects' }),
+        });
+
+        // assert
+        expect(strategyMock.deleteObjectConditionally).toHaveBeenCalledOnce();
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+        if (missing !== 'hook') expect(objectPersistenceMock.markAsDeletedIfUnchanged).not.toHaveBeenCalled();
+    });
+
+    it('keeps provider success distinct from a failed persistence hook without exposing its error', async () => {
+        // arrange
+        strategyMock.deleteObjectConditionally = vi.fn().mockResolvedValue(undefined);
+        objectPersistenceMock.markAsDeletedIfUnchanged = vi.fn().mockRejectedValue(new Error('private provider error payload'));
+        const diagnostic = vi.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+
+        // act
+        await service.deleteObjectConditionally({ key: 'images/photo.png', resourceId: 'https://storage.example/objects', ifMatch: '"original"' });
+
+        // assert
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+        expect(diagnostic).toHaveBeenCalledWith({
+            operation: 'blobObject.conditionalDeletePersistence',
+            providerId: 'vercel',
+            providerDeletion: 'succeeded',
+            metadataUpdate: 'failed',
+        });
+    });
+
+    it('retains the original provider guard when the caller changes its request during deletion', async () => {
+        // arrange
+        const request = { key: 'images/photo.png', resourceId: 'https://storage.example/objects', ifMatch: '"original"' };
+        strategyMock.deleteObjectConditionally = vi.fn().mockImplementation(async () => {
+            request.ifMatch = '"new-upload"';
+        });
+
+        // act
+        await service.deleteObjectConditionally(request);
+
+        // assert
+        expect(objectPersistenceMock.markAsDeletedIfUnchanged).toHaveBeenCalledWith(expect.objectContaining({ ifMatch: '"original"' }));
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
+    });
+
+    it('does not release accounting when the conditional target is unavailable', async () => {
+        // arrange
+        strategyMock.deleteObjectConditionally = vi.fn().mockRejectedValue({ statusCode: 404 });
+
+        // act
+        const result = service.deleteObjectConditionally({ key: 'images/photo.png', ifMatch: '"original"' });
+
+        // assert
+        await expect(result).rejects.toBeInstanceOf(BlobObjectNotFoundError);
+        expect(objectPersistenceMock.markAsDeleted).not.toHaveBeenCalled();
     });
 
     it('should upload an object and persist metadata', async () => {
@@ -274,13 +518,22 @@ describe('BlobService', () => {
 
     describe('persistence isolation', () => {
         it('should keep an upload successful when the persistence port fails', async () => {
-            const persistence = { createFromMetadata: vi.fn().mockRejectedValue(new Error('db down')), markAsDeleted: vi.fn() };
+            sampleMetadata.key = 'private-object-path/sensitive-name.bin';
+            const diagnostic = vi.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+            const persistence = {
+                createFromMetadata: vi.fn().mockRejectedValue(Object.assign(new Error('private-adapter-message'), { payload: 'private-raw-payload' })),
+                markAsDeleted: vi.fn(),
+            };
             const service = new BlobService(strategyMock as never, persistence as never, null);
 
             const result = await service.uploadObject({ key: 'a', body: Buffer.from('x') });
 
             expect(result.metadataPersisted).toBe(false);
-            expect(persistence.createFromMetadata).toHaveBeenCalled();
+            expect(result.metadata).toBe(sampleMetadata);
+            expect(persistence.createFromMetadata).toHaveBeenCalledWith(sampleMetadata);
+            expect(diagnostic.mock.calls).toEqual([[{ operation: 'blobObject.uploadPersistence', providerId: 'vercel', result: 'failed' }]]);
+            for (const privateValue of [sampleMetadata.key, 'private-adapter-message', 'private-raw-payload'])
+                expect(JSON.stringify(diagnostic.mock.calls)).not.toContain(privateValue);
         });
 
         it('should report a successful persistence on the upload result', async () => {
@@ -293,10 +546,40 @@ describe('BlobService', () => {
         });
 
         it('should keep a deletion successful when the persistence port fails', async () => {
-            const persistence = { createFromMetadata: vi.fn(), markAsDeleted: vi.fn().mockRejectedValue(new Error('db down')) };
+            const key = 'private-object-path/sensitive-name.bin';
+            const diagnostic = vi.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+            const persistence = {
+                createFromMetadata: vi.fn(),
+                markAsDeleted: vi.fn().mockRejectedValue(Object.assign(new Error('private-adapter-message'), { payload: 'private-raw-payload' })),
+            };
             const service = new BlobService(strategyMock as never, persistence as never, null);
 
-            await expect(service.deleteObject({ key: 'a' })).resolves.toBeUndefined();
+            await expect(service.deleteObject({ key })).resolves.toBeUndefined();
+
+            expect(persistence.markAsDeleted).toHaveBeenCalledWith('vercel', 'default-bucket', key, undefined);
+            expect(diagnostic.mock.calls).toEqual([[{ operation: 'blobObject.deletePersistence', providerId: 'vercel', result: 'failed' }]]);
+            for (const privateValue of [key, 'private-adapter-message', 'private-raw-payload'])
+                expect(JSON.stringify(diagnostic.mock.calls)).not.toContain(privateValue);
+        });
+
+        it('retains a successful variant and failed persistence outcome without logging private labels, identity or adapter errors', async () => {
+            const diagnostic = vi.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+            const originalId = 'private-original-id';
+            const label = 'private-variant-label';
+            sampleMetadata.key = 'private-object-path/sensitive-name.bin';
+            const variants = {
+                createFromMetadata: vi.fn().mockRejectedValue(Object.assign(new Error('private-adapter-message'), { payload: 'private-raw-payload' })),
+            };
+            const service = new BlobService(strategyMock, null, variants as unknown as BlobVariantPersistenceBase);
+
+            const result = await service.uploadVariant(originalId, label, { key: sampleMetadata.key, body: Buffer.from('private-content') });
+
+            expect(result.metadataPersisted).toBe(false);
+            expect(result.metadata).toBe(sampleMetadata);
+            expect(variants.createFromMetadata).toHaveBeenCalledWith(originalId, label, sampleMetadata);
+            expect(diagnostic.mock.calls).toEqual([[{ operation: 'blobVariant.uploadPersistence', providerId: 'vercel', result: 'failed' }]]);
+            for (const privateValue of [originalId, label, sampleMetadata.key, 'private-adapter-message', 'private-raw-payload'])
+                expect(JSON.stringify(diagnostic.mock.calls)).not.toContain(privateValue);
         });
     });
 

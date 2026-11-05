@@ -1,4 +1,5 @@
 import type { IBlobObjectMetadata } from '../interfaces/IBlobProvider.js';
+import type { IBlobConditionalDeletionPersistenceRequest } from '../interfaces/IBlobConditionalDeletionPersistenceRequest.js';
 
 /**
  * Abstract base for persisting blob object metadata.
@@ -37,6 +38,18 @@ export abstract class BlobObjectPersistenceBase {
      * @param versionId - Optional version identifier.
      */
     public abstract markAsDeleted(provider: string, bucket: string, key: string, versionId?: string): Promise<void>;
+
+    /**
+     * Marks only the atomically matched generation as deleted after a conditional provider deletion.
+     *
+     * Compare provider, resource, bucket, key, exact ETag and any selector in the same write.
+     * Missing capability, scope or a failed comparison must never fall back to key-only marking.
+     *
+     * @param request - Verified provider scope and exact deletion precondition.
+     * @returns Whether the matching metadata generation was actually changed.
+     * @public
+     */
+    public markAsDeletedIfUnchanged?(request: IBlobConditionalDeletionPersistenceRequest): Promise<boolean>;
 
     // #endregion
 }

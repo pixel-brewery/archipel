@@ -6,7 +6,7 @@ editUrl: false
 
 # Class: VercelBlobStorageStrategy
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:33](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L33)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:34](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L34)
 
 Provides a blob storage strategy backed by the Vercel Blob API.
 
@@ -22,7 +22,7 @@ Provides a blob storage strategy backed by the Vercel Blob API.
 new VercelBlobStorageStrategy(httpService, configService): VercelBlobStorageStrategy;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:56](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L56)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:57](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L57)
 
 Initializes a new instance of the VercelBlobStorageStrategy class.
 
@@ -49,7 +49,7 @@ Initializes a new instance of the VercelBlobStorageStrategy class.
 readonly providerId: string = 'vercel';
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:83](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L83)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:84](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L84)
 
 Gets the unique identifier for this storage provider.
 
@@ -67,7 +67,7 @@ Gets the unique identifier for this storage provider.
 get defaultBucket(): string | undefined;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:86](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L86)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:87](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L87)
 
 Gets the default bucket (container/directory) configured for the provider.
 
@@ -89,7 +89,7 @@ Gets the default bucket (container/directory) configured for the provider.
 createSignedUrl(request): Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:196](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L196)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:200](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L200)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
@@ -118,7 +118,7 @@ The generated signed URL.
 deleteObject(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:145](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L145)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:148](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L148)
 
 Deletes a blob object from the storage backend.
 
@@ -138,13 +138,42 @@ Deletes a blob object from the storage backend.
 
 ---
 
+### deleteObjectConditionally()?
+
+```ts
+deleteObjectConditionally ? request : Promise<void>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L140)
+
+Deletes the selected object only while its exact observed ETag still matches.
+
+A supplied resource identity must match the actual target before deletion.
+Client cancellation does not undo a mutation already accepted by the provider.
+
+#### Parameters
+
+| Parameter | Type                                                                       | Description                                                      |
+| --------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `request` | [`IBlobConditionalDeleteRequest`](Interface.IBlobConditionalDeleteRequest) | Exact ETag, optional immutable selector and cancellation budget. |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`deleteObjectConditionally`](Class.BlobStorageStrategyBase#deleteobjectconditionally)
+
+---
+
 ### downloadObject()
 
 ```ts
 downloadObject<TData>(request): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:123](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L123)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:125](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L125)
 
 Downloads a blob object from the storage backend.
 
@@ -172,13 +201,43 @@ The download result including payload and metadata.
 
 ---
 
+### inspectObjectHistory()?
+
+```ts
+inspectObjectHistory ? request : Promise<IBlobObjectHistoryResult>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:129](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L129)
+
+Observes one exact-key history page, including available versions, snapshots and soft deletion.
+
+Does not inspect container restoration, backups or other recovery systems.
+
+#### Parameters
+
+| Parameter | Type                                                               | Description                                      |
+| --------- | ------------------------------------------------------------------ | ------------------------------------------------ |
+| `request` | [`IBlobObjectHistoryRequest`](Interface.IBlobObjectHistoryRequest) | Exact key, bounded page and cancellation budget. |
+
+#### Returns
+
+`Promise`\<[`IBlobObjectHistoryResult`](Interface.IBlobObjectHistoryResult)\>
+
+Provider observations, never an implicit irreversible-deletion guarantee.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`inspectObjectHistory`](Class.BlobStorageStrategyBase#inspectobjecthistory)
+
+---
+
 ### listObjects()
 
 ```ts
 listObjects(request?): Promise<IBlobListResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:172](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L172)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:175](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L175)
 
 Lists objects of a bucket page by page.
 
@@ -210,7 +269,7 @@ One page of entries and the token for the next page.
 objectExists(request): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:158](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L158)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:161](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L161)
 
 Determines whether a blob object exists in the storage backend.
 
@@ -230,13 +289,44 @@ Determines whether a blob object exists in the storage backend.
 
 ---
 
+### supportsExecutionOptions()?
+
+```ts
+supportsExecutionOptions ? operation : boolean;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:61](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L61)
+
+Reports whether an existing operation honors explicit execution limits.
+
+Missing support must reject requested limits before provider I/O. Ordinary
+calls without limits retain their existing behavior.
+
+#### Parameters
+
+| Parameter   | Type                                                         | Description                                     |
+| ----------- | ------------------------------------------------------------ | ----------------------------------------------- |
+| `operation` | [`BlobExecutionOperation`](TypeAlias.BlobExecutionOperation) | Existing upload, download or listing operation. |
+
+#### Returns
+
+`boolean`
+
+Whether deadlines, cancellation and applicable byte limits are enforced.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`supportsExecutionOptions`](Class.BlobStorageStrategyBase#supportsexecutionoptions)
+
+---
+
 ### uploadObject()
 
 ```ts
 uploadObject(request): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:95](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L95)
+Defined in: [libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts:96](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/vercel/VercelBlobStorageStrategy.ts#L96)
 
 Uploads a blob object to the storage backend.
 

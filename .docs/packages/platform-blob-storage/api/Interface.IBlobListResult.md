@@ -6,7 +6,7 @@ editUrl: false
 
 # Interface: IBlobListResult
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:127](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L127)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:136](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L136)
 
 One page of a bucket listing.
 
@@ -18,7 +18,7 @@ One page of a bucket listing.
 continuationToken?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:131](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L131)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L140)
 
 Token to pass to the next call; absent when the listing is complete.
 
@@ -30,4 +30,4 @@ Token to pass to the next call; absent when the listing is complete.
 entries: IBlobListEntry[];
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:128](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L128)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:137](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L137)

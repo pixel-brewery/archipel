@@ -19,7 +19,12 @@ import type {
     IBlobUploadRequest,
     IBlobUploadResult,
 } from '../interfaces/IBlobProvider.js';
+import type { IBlobConditionalDeleteRequest } from '../interfaces/IBlobConditionalDeleteRequest.js';
+import type { IBlobObjectHistoryRequest } from '../interfaces/IBlobObjectHistoryRequest.js';
+import type { IBlobObjectHistoryResult } from '../interfaces/IBlobObjectHistoryResult.js';
+import type { BlobExecutionOperation } from '../interfaces/BlobExecutionOperation.js';
 import type { BlobStorageStrategyBase } from '../strategies/abstracts/BlobStorageStrategyBase.js';
+import { assertBlobExecutionSupport } from '../strategies/assertBlobExecutionSupport.js';
 import { BLOB_STORAGE_STRATEGY_TOKEN } from '../tokens/BlobStorageTokens.js';
 
 // #endregion
@@ -72,6 +77,7 @@ export class BlobService {
      * @returns The provider specific upload result.
      */
     public async uploadObject(request: IBlobUploadRequest): Promise<IBlobUploadResult> {
+        assertBlobExecutionSupport(this._storageStrategy, 'uploadObject', request.key, request.execution);
         let result: IBlobUploadResult;
 
         try {
@@ -97,6 +103,7 @@ export class BlobService {
      * @returns The provider specific upload result.
      */
     public async uploadVariant(originalId: string, label: string, request: IBlobUploadRequest): Promise<IBlobUploadResult> {
+        assertBlobExecutionSupport(this._storageStrategy, 'uploadObject', request.key, request.execution);
         let result: IBlobUploadResult;
 
         try {
@@ -120,6 +127,7 @@ export class BlobService {
      * @returns The downloaded data and related metadata.
      */
     public async downloadObject<TData>(request: IBlobDownloadRequest): Promise<IBlobDownloadResult<TData>> {
+        assertBlobExecutionSupport(this._storageStrategy, 'downloadObject', request.key, request.execution, request.maxBytes);
         try {
             return await this._storageStrategy.downloadObject<TData>(request);
         } catch (error: unknown) {
@@ -144,15 +152,7 @@ export class BlobService {
             }
         }
 
-        try {
-            await this._objectPersistence?.markAsDeleted(this._storageStrategy.providerId, this.resolveBucket(request.bucket), request.key, request.versionId);
-        } catch (error: unknown) {
-            this._logger.error(
-                `Blob object ${request.key} was deleted but its persistence record could not be updated. ` +
-                    'The record still marks an object that no longer exists.',
-                error,
-            );
-        }
+        await this.markAsDeleted(request);
     }
 
     /**
@@ -210,6 +210,7 @@ export class BlobService {
      * @returns One page of entries and the token for the next page.
      */
     public async listObjects(request: IBlobListRequest = {}): Promise<IBlobListResult> {
+        assertBlobExecutionSupport(this._storageStrategy, 'listObjects', request.prefix ?? '', request.execution);
         if (!this._storageStrategy.listObjects) {
             throw new BlobStorageUnsupportedOperationError(this._storageStrategy.providerId, 'listObjects', request.prefix ?? '');
         }
@@ -218,6 +219,57 @@ export class BlobService {
             return await this._storageStrategy.listObjects(request);
         } catch (error: unknown) {
             throw normalizeBlobStorageError(error, this._storageStrategy.providerId, 'listObjects', request.prefix ?? '');
+        }
+    }
+
+    /**
+     * Reads one exact-key page of versions, snapshots and soft-deletion observations.
+     *
+     * Unsupported providers and failed reads throw; neither becomes an empty successful page.
+     * Callers must follow continuation tokens and separately assess other recovery systems.
+     *
+     * @param request - Exact key, bounded page and cancellation budget.
+     * @returns One provider history page within the configured resource.
+     * @public
+     */
+    public async inspectObjectHistory(request: IBlobObjectHistoryRequest): Promise<IBlobObjectHistoryResult> {
+        if (!this._storageStrategy.inspectObjectHistory) {
+            throw new BlobStorageUnsupportedOperationError(this._storageStrategy.providerId, 'inspectObjectHistory', request.key);
+        }
+
+        try {
+            return await this._storageStrategy.inspectObjectHistory(request);
+        } catch (error: unknown) {
+            throw normalizeBlobStorageError(error, this._storageStrategy.providerId, 'inspectObjectHistory', request.key);
+        }
+    }
+
+    /**
+     * Deletes only the selected object that still has its exact observed strong ETag.
+     *
+     * Failed preconditions and unavailable objects throw without updating persistence.
+     * Deleting historical versions or snapshots does not release the base object's metadata.
+     * Base metadata uses only the optional generation-CAS hook and a verified resource identity.
+     * A successful provider deletion does not by itself prove that metadata was changed.
+     * Cancellation bounds client I/O, not a provider mutation already accepted remotely.
+     *
+     * @param request - Exact ETag, optional immutable selector and cancellation budget.
+     * @public
+     */
+    public async deleteObjectConditionally(request: IBlobConditionalDeleteRequest): Promise<void> {
+        if (!this._storageStrategy.deleteObjectConditionally) {
+            throw new BlobStorageUnsupportedOperationError(this._storageStrategy.providerId, 'deleteObjectConditionally', request.key);
+        }
+
+        const deletion = { ...request };
+        try {
+            await this._storageStrategy.deleteObjectConditionally(deletion);
+        } catch (error: unknown) {
+            throw normalizeBlobStorageError(error, this._storageStrategy.providerId, 'deleteObjectConditionally', deletion.key);
+        }
+
+        if (deletion.versionId === undefined && deletion.snapshotId === undefined) {
+            await this.markAsDeletedIfUnchanged(deletion);
         }
     }
 
@@ -232,6 +284,17 @@ export class BlobService {
      */
     public supports(operation: BlobOptionalOperation): boolean {
         return typeof this._storageStrategy[operation] === 'function';
+    }
+
+    /**
+     * Probes guaranteed execution options on an existing operation.
+     *
+     * @param operation - Upload, download or listing operation.
+     * @returns Whether the strategy enforces requested execution and byte limits.
+     * @public
+     */
+    public supportsExecutionOptions(operation: BlobExecutionOperation): boolean {
+        return this._storageStrategy.supportsExecutionOptions?.(operation) === true;
     }
 
     /**
@@ -296,16 +359,54 @@ export class BlobService {
         return this.objectExists({ key });
     }
 
+    private async markAsDeletedIfUnchanged(request: IBlobConditionalDeleteRequest): Promise<void> {
+        const hook = this._objectPersistence?.markAsDeletedIfUnchanged;
+        const bucket = this.resolveBucket(request.bucket);
+        const diagnostic = {
+            operation: 'blobObject.conditionalDeletePersistence',
+            providerId: this._storageStrategy.providerId,
+            providerDeletion: 'succeeded',
+        };
+
+        if (!hook || typeof request.resourceId !== 'string' || !request.resourceId || !bucket) {
+            this._logger.warn({ ...diagnostic, metadataUpdate: 'skipped-unverified' });
+            return;
+        }
+
+        try {
+            const changed = await hook.call(this._objectPersistence, {
+                providerId: this._storageStrategy.providerId,
+                resourceId: request.resourceId,
+                bucket,
+                key: request.key,
+                ifMatch: request.ifMatch,
+                versionId: request.versionId,
+                snapshotId: request.snapshotId,
+            });
+            if (!changed) {
+                this._logger.warn({ ...diagnostic, metadataUpdate: 'not-matched' });
+            }
+        } catch {
+            // Adapter errors may contain credentials or provider payloads; report only the safe outcome.
+            this._logger.error({ ...diagnostic, metadataUpdate: 'failed' });
+        }
+    }
+
+    private async markAsDeleted(request: IBlobDeleteRequest): Promise<void> {
+        try {
+            await this._objectPersistence?.markAsDeleted(this._storageStrategy.providerId, this.resolveBucket(request.bucket), request.key, request.versionId);
+        } catch {
+            this._logger.error({ operation: 'blobObject.deletePersistence', providerId: this._storageStrategy.providerId, result: 'failed' });
+        }
+    }
+
     private async persistObjectMetadata(result: IBlobUploadResult): Promise<boolean> {
         try {
             await this._objectPersistence?.createFromMetadata(result.metadata);
 
             return true;
-        } catch (error: unknown) {
-            this._logger.error(
-                `Blob object ${result.metadata.key} was stored but its metadata could not be persisted. ` + 'The object exists without a persistence record.',
-                error,
-            );
+        } catch {
+            this._logger.error({ operation: 'blobObject.uploadPersistence', providerId: this._storageStrategy.providerId, result: 'failed' });
 
             return false;
         }
@@ -316,12 +417,8 @@ export class BlobService {
             await this._variantPersistence?.createFromMetadata(originalId, label, result.metadata);
 
             return true;
-        } catch (error: unknown) {
-            this._logger.error(
-                `Blob variant ${label} of ${originalId} was stored but its metadata could not be persisted. ` +
-                    'The variant exists without a persistence record.',
-                error,
-            );
+        } catch {
+            this._logger.error({ operation: 'blobVariant.uploadPersistence', providerId: this._storageStrategy.providerId, result: 'failed' });
 
             return false;
         }

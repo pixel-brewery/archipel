@@ -6,7 +6,7 @@ editUrl: false
 
 # Class: LocalBlobStorageStrategy
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:35](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L35)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:36](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L36)
 
 Provides a blob storage strategy backed by the local filesystem.
 
@@ -22,7 +22,7 @@ Provides a blob storage strategy backed by the local filesystem.
 new LocalBlobStorageStrategy(configService): LocalBlobStorageStrategy;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:53](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L53)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:54](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L54)
 
 Initializes a new instance of the LocalBlobStorageStrategy class.
 
@@ -48,7 +48,7 @@ Initializes a new instance of the LocalBlobStorageStrategy class.
 readonly providerId: string = 'local';
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:72](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L72)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:73](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L73)
 
 Gets the unique identifier for this storage provider.
 
@@ -66,7 +66,7 @@ Gets the unique identifier for this storage provider.
 get defaultBucket(): string | undefined;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:75](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L75)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:76](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L76)
 
 Gets the default bucket (container/directory) configured for the provider.
 
@@ -88,7 +88,7 @@ Gets the default bucket (container/directory) configured for the provider.
 createSignedUrl ? request : Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:89](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L89)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:105](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L105)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
@@ -117,7 +117,7 @@ The generated signed URL.
 deleteObject(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:155](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L155)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:158](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L158)
 
 Deletes a blob object from the storage backend.
 
@@ -137,13 +137,42 @@ Deletes a blob object from the storage backend.
 
 ---
 
+### deleteObjectConditionally()?
+
+```ts
+deleteObjectConditionally ? request : Promise<void>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L140)
+
+Deletes the selected object only while its exact observed ETag still matches.
+
+A supplied resource identity must match the actual target before deletion.
+Client cancellation does not undo a mutation already accepted by the provider.
+
+#### Parameters
+
+| Parameter | Type                                                                       | Description                                                      |
+| --------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `request` | [`IBlobConditionalDeleteRequest`](Interface.IBlobConditionalDeleteRequest) | Exact ETag, optional immutable selector and cancellation budget. |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`deleteObjectConditionally`](Class.BlobStorageStrategyBase#deleteobjectconditionally)
+
+---
+
 ### downloadObject()
 
 ```ts
 downloadObject<TData>(request): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:117](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L117)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:119](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L119)
 
 Downloads a blob object from the storage backend.
 
@@ -171,13 +200,43 @@ The download result including payload and metadata.
 
 ---
 
+### inspectObjectHistory()?
+
+```ts
+inspectObjectHistory ? request : Promise<IBlobObjectHistoryResult>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:129](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L129)
+
+Observes one exact-key history page, including available versions, snapshots and soft deletion.
+
+Does not inspect container restoration, backups or other recovery systems.
+
+#### Parameters
+
+| Parameter | Type                                                               | Description                                      |
+| --------- | ------------------------------------------------------------------ | ------------------------------------------------ |
+| `request` | [`IBlobObjectHistoryRequest`](Interface.IBlobObjectHistoryRequest) | Exact key, bounded page and cancellation budget. |
+
+#### Returns
+
+`Promise`\<[`IBlobObjectHistoryResult`](Interface.IBlobObjectHistoryResult)\>
+
+Provider observations, never an implicit irreversible-deletion guarantee.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`inspectObjectHistory`](Class.BlobStorageStrategyBase#inspectobjecthistory)
+
+---
+
 ### listObjects()
 
 ```ts
 listObjects(request?): Promise<IBlobListResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:174](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L174)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:177](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L177)
 
 Lists objects of a bucket page by page.
 
@@ -209,7 +268,7 @@ One page of entries and the token for the next page.
 objectExists(request): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:165](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L165)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:168](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L168)
 
 Determines whether a blob object exists in the storage backend.
 
@@ -229,13 +288,44 @@ Determines whether a blob object exists in the storage backend.
 
 ---
 
+### supportsExecutionOptions()?
+
+```ts
+supportsExecutionOptions ? operation : boolean;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:61](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L61)
+
+Reports whether an existing operation honors explicit execution limits.
+
+Missing support must reject requested limits before provider I/O. Ordinary
+calls without limits retain their existing behavior.
+
+#### Parameters
+
+| Parameter   | Type                                                         | Description                                     |
+| ----------- | ------------------------------------------------------------ | ----------------------------------------------- |
+| `operation` | [`BlobExecutionOperation`](TypeAlias.BlobExecutionOperation) | Existing upload, download or listing operation. |
+
+#### Returns
+
+`boolean`
+
+Whether deadlines, cancellation and applicable byte limits are enforced.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`supportsExecutionOptions`](Class.BlobStorageStrategyBase#supportsexecutionoptions)
+
+---
+
 ### uploadObject()
 
 ```ts
 uploadObject(request): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:84](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L84)
+Defined in: [libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts:85](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/local/LocalBlobStorageStrategy.ts#L85)
 
 Uploads a blob object to the storage backend.
 

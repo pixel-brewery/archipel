@@ -6,7 +6,7 @@ editUrl: false
 
 # Interface: IBlobListRequest
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:94](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L94)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:101](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L101)
 
 Describes one page of a bucket listing.
 
@@ -18,7 +18,7 @@ Describes one page of a bucket listing.
 bucket?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:104](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L104)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:111](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L111)
 
 ---
 
@@ -28,9 +28,21 @@ Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:104](htt
 continuationToken?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:99](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L99)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:106](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L106)
 
 Continuation token of a previous page; omit to start at the beginning.
+
+---
+
+### execution?
+
+```ts
+execution?: IBlobExecutionOptions;
+```
+
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:113](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L113)
+
+Explicit guaranteed execution limits for this page, including SDK retries.
 
 ---
 
@@ -40,7 +52,7 @@ Continuation token of a previous page; omit to start at the beginning.
 maxKeys?: number;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:102](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L102)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:109](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L109)
 
 Upper bound of entries per page. Providers may return fewer.
 
@@ -52,6 +64,6 @@ Upper bound of entries per page. Providers may return fewer.
 prefix?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:96](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L96)
+Defined in: [libs/platform-blob-storage/src/interfaces/IBlobProvider.ts:103](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/interfaces/IBlobProvider.ts#L103)
 
 Restricts the listing to keys starting with this prefix.
