@@ -1,3 +1,4 @@
+// cspell:ignore versionid
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Logger } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
@@ -5,10 +6,12 @@ import { Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BlobStoragePreconditionFailedError } from '../../errors/BlobStoragePreconditionFailedError.js';
 import { BlobStorageUnavailableError } from '../../errors/BlobStorageUnavailableError.js';
+import { BlobStorageUnsupportedOperationError } from '../../errors/BlobStorageUnsupportedOperationError.js';
 import { AzureBlobStorageStrategy } from './AzureBlobStorageStrategy.js';
 import { AZURE_BLOB_CONNECTION_STRING, AZURE_BLOB_CONTAINER_NAME } from './env.js';
 
 const sdk = vi.hoisted(() => ({
+    packageMetadata: vi.fn<() => unknown>(),
     fromConnectionString: vi.fn(),
     getContainerClient: vi.fn(),
     getBlobClient: vi.fn(),
@@ -25,11 +28,26 @@ const sdk = vi.hoisted(() => ({
     next: vi.fn(),
     upload: vi.fn(),
     download: vi.fn(),
+    parseSasPermissions: vi.fn(),
+    signVersionedUrl: vi.fn(),
 }));
+
+vi.mock('node:module', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('node:module')>();
+    return {
+        ...actual,
+        createRequire: (filename: string | URL): NodeRequire =>
+            new Proxy(actual.createRequire(filename), {
+                apply: (load: NodeRequire, thisArg: unknown, args: unknown[]): unknown =>
+                    args[0] === '@azure/storage-blob/package.json' ? sdk.packageMetadata() : Reflect.apply(load, thisArg, args),
+            }),
+    };
+});
 
 vi.mock('@azure/storage-blob', () => ({
     BlobServiceClient: { fromConnectionString: sdk.fromConnectionString },
     BlockBlobClient: class {},
+    BlobSASPermissions: { parse: sdk.parseSasPermissions },
 }));
 
 describe('AzureBlobStorageStrategy', () => {
@@ -40,12 +58,13 @@ describe('AzureBlobStorageStrategy', () => {
 
     beforeEach(async () => {
         vi.resetAllMocks();
+        sdk.packageMetadata.mockReturnValue({ version: '12.34.0' });
         sdk.baseDelete.mockResolvedValue(undefined);
         sdk.versionDelete.mockResolvedValue(undefined);
         sdk.snapshotDelete.mockResolvedValue(undefined);
         sdk.baseExists.mockResolvedValue(true);
         sdk.versionExists.mockResolvedValue(false);
-        sdk.withVersion.mockReturnValue({ delete: sdk.versionDelete, exists: sdk.versionExists });
+        sdk.withVersion.mockReturnValue({ delete: sdk.versionDelete, exists: sdk.versionExists, generateSasUrl: sdk.signVersionedUrl });
         sdk.withSnapshot.mockReturnValue({ delete: sdk.snapshotDelete });
         sdk.getBlobClient.mockReturnValue({
             delete: sdk.baseDelete,
@@ -151,6 +170,65 @@ describe('AzureBlobStorageStrategy', () => {
         expect(sdk.baseDelete).not.toHaveBeenCalled();
     });
 
+    it.each(['delete', 'exists', 'conditional delete'] as const)(
+        'does not fall back to the base blob when an older SDK cannot select a version for %s',
+        async (operation) => {
+            // arrange
+            sdk.getBlobClient.mockReturnValueOnce({ delete: sdk.baseDelete, exists: sdk.baseExists });
+            const request = { key, versionId: 'older-version' };
+
+            // act
+            const result =
+                operation === 'delete'
+                    ? strategy.deleteObject(request)
+                    : operation === 'exists'
+                      ? strategy.objectExists(request)
+                      : strategy.deleteObjectConditionally({ ...request, ifMatch: '"0x8DBCE24D4341AC3"' });
+
+            // assert
+            await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+            expect(sdk.baseDelete).not.toHaveBeenCalled();
+            expect(sdk.baseExists).not.toHaveBeenCalled();
+        },
+    );
+
+    it('signs the selected version and returns its version-scoped URL', async () => {
+        // arrange
+        const versionId = '2023-10-16T08:49:37.8855337Z';
+        sdk.parseSasPermissions.mockReturnValueOnce({ read: true });
+        sdk.signVersionedUrl.mockResolvedValueOnce(`${resourceId}/${key}?versionid=${encodeURIComponent(versionId)}&sr=bv&sig=test-only`);
+
+        // act
+        const url = new URL(await strategy.createSignedUrl({ key, versionId }));
+
+        // assert
+        expect(url.searchParams.get('versionid')).toBe(versionId);
+        expect(url.searchParams.get('sr')).toBe('bv');
+        expect(sdk.withVersion).toHaveBeenCalledExactlyOnceWith(versionId);
+        expect(sdk.signVersionedUrl).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ permissions: { read: true } }));
+    });
+
+    it('rejects versioned signing when the selected client cannot sign the version', async () => {
+        // arrange
+        sdk.withVersion.mockReturnValueOnce({ exists: sdk.versionExists });
+
+        // act
+        const result = strategy.createSignedUrl({ key, versionId: 'older-version' });
+
+        // assert
+        await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        expect(sdk.signVersionedUrl).not.toHaveBeenCalled();
+    });
+
+    it('rejects versioned signing for an alternate bucket before provider access', async () => {
+        // act
+        const result = strategy.createSignedUrl({ key, bucket: 'other', versionId: 'older-version' });
+
+        // assert
+        await expect(result).rejects.toMatchObject({ code: 'BLOB_STORAGE_INVALID_REQUEST' });
+        expect(sdk.fromConnectionString).not.toHaveBeenCalled();
+    });
+
     it('observes only the exact key with version, snapshot and soft-deletion facts while retaining pagination', async () => {
         // arrange
         const deletedAt = new Date('2026-10-01T00:00:00.000Z');
@@ -229,6 +307,44 @@ describe('AzureBlobStorageStrategy', () => {
         expect(result.continuationToken).toBe('more');
     });
 
+    it('retains a deleted root’s observed version without claiming a live base or returning an unusable ETag', async () => {
+        // arrange
+        sdk.packageMetadata.mockReturnValueOnce({ version: '12.8.0' });
+        const versionId = '2023-10-16T08:49:37.8855337Z';
+        sdk.next.mockResolvedValueOnce({
+            done: false,
+            value: {
+                continuationToken: 'more',
+                segment: {
+                    blobItems: [
+                        { name: key, versionId, isCurrentVersion: true, hasVersionsOnly: true, properties: { etag: '0x8DBCE24D4341AC3' } },
+                        { name: key, hasVersionsOnly: true },
+                    ],
+                },
+            },
+        });
+
+        // act
+        const result = await strategy.inspectObjectHistory({ key });
+
+        // assert
+        expect(result.entries).toEqual([expect.objectContaining({ key, versionId, isCurrentVersion: false, deleted: false, etag: '"0x8DBCE24D4341AC3"' })]);
+        expect(result.continuationToken).toBe('more');
+    });
+
+    it.each(['12.0.0', '12.7.0', '12.8.0-beta.1'])('does not report incomplete object history with SDK %s', async (version) => {
+        // arrange
+        sdk.packageMetadata.mockReturnValueOnce({ version });
+
+        // act
+        const result = strategy.inspectObjectHistory({ key });
+
+        // assert
+        await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        expect(sdk.fromConnectionString).not.toHaveBeenCalled();
+        expect(sdk.listBlobsFlat).not.toHaveBeenCalled();
+    });
+
     it('does not convert a failed listing into successful absence', async () => {
         // arrange
         const failure = { statusCode: 403, code: 'AuthorizationPermissionMismatch' };
@@ -241,9 +357,9 @@ describe('AzureBlobStorageStrategy', () => {
         await expect(result).rejects.toBe(failure);
     });
 
-    it('reports the actual upload resource without authentication material or a falsely requested bucket', async () => {
+    it('reports the actual upload resource without authentication material for the configured bucket', async () => {
         // act
-        const result = await strategy.uploadObject({ key, body: Buffer.from('data'), bucket: 'ignored-alternate' });
+        const result = await strategy.uploadObject({ key, body: Buffer.from('data'), bucket: 'objects' });
 
         // assert
         expect(result.metadata).toMatchObject({
@@ -254,6 +370,16 @@ describe('AzureBlobStorageStrategy', () => {
             versionId: 'uploaded-version',
             etag: '"uploaded-etag"',
         });
+    });
+
+    it('keeps the legacy upload bucket alias without claiming a verified resource identity', async () => {
+        // act
+        const result = await strategy.uploadObject({ key, body: Buffer.from('data'), bucket: 'legacy-alias' });
+
+        // assert
+        expect(result.metadata.bucket).toBe('legacy-alias');
+        expect(result.metadata).not.toHaveProperty('resourceId');
+        expect(sdk.getContainerClient).toHaveBeenCalledExactlyOnceWith('objects');
     });
 
     it.each([{}, { versionId: 'older-version' }, { snapshotId: 'snapshot-time' }])(

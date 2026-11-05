@@ -1,13 +1,16 @@
 // #region Imports
 
+import type { BlobClient } from '@azure/storage-blob';
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Injectable, Logger } from '@nestjs/common';
+import { createRequire } from 'node:module';
 import { Readable } from 'node:stream';
 import type { BlobExecutionOperation } from '../../interfaces/BlobExecutionOperation.js';
 import type { IBlobExecutionOptions } from '../../interfaces/IBlobExecutionOptions.js';
 import { BlobStorageError } from '../../errors/BlobStorageError.js';
 import { BlobStoragePreconditionFailedError } from '../../errors/BlobStoragePreconditionFailedError.js';
 import { BlobStorageUnavailableError } from '../../errors/BlobStorageUnavailableError.js';
+import { BlobStorageUnsupportedOperationError } from '../../errors/BlobStorageUnsupportedOperationError.js';
 import type { IBlobConditionalDeleteRequest } from '../../interfaces/IBlobConditionalDeleteRequest.js';
 import type { IBlobObjectHistoryRequest } from '../../interfaces/IBlobObjectHistoryRequest.js';
 import type { IBlobObjectHistoryResult } from '../../interfaces/IBlobObjectHistoryResult.js';
@@ -114,10 +117,11 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
             });
             abortSignal?.throwIfAborted();
             this._logger.debug({ operation: 'blobObject.upload', providerId: this.providerId, result: 'succeeded' });
+            const bucket = request.bucket ?? this._containerName;
             const metadata: IBlobObjectMetadata = {
                 provider: this.providerId,
-                resourceId: this.resourceId(containerClient.url),
-                bucket: this._containerName,
+                ...(bucket === this._containerName ? { resourceId: this.resourceId(containerClient.url) } : {}),
+                bucket,
                 region: request.region,
                 key,
                 versionId: response.versionId,
@@ -169,24 +173,26 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async deleteObject(request: IBlobDeleteRequest): Promise<void> {
-        this.assertSelector(request.versionId, 'delete', request.key);
+        const { versionId } = request;
+        this.assertSelector(versionId, 'delete', request.key);
         const containerClient = await this.getContainerClient();
         const key = this.normalizeKey(request.key);
         const baseClient = containerClient.getBlobClient(key);
-        const blobClient = request.versionId !== undefined ? baseClient.withVersion(request.versionId) : baseClient;
+        const blobClient = versionId !== undefined ? this.selectVersion(baseClient, versionId, 'delete', key) : baseClient;
 
-        await blobClient.delete(request.versionId !== undefined ? undefined : { deleteSnapshots: 'include' });
+        await blobClient.delete(versionId !== undefined ? undefined : { deleteSnapshots: 'include' });
 
         this._logger.debug({ operation: 'blobObject.delete', providerId: this.providerId, result: 'succeeded' });
     }
 
     /** @inheritdoc */
     public async objectExists(request: IBlobExistsRequest): Promise<boolean> {
-        this.assertSelector(request.versionId, 'exists', request.key);
+        const { versionId } = request;
+        this.assertSelector(versionId, 'exists', request.key);
         const containerClient = await this.getContainerClient();
         const key = this.normalizeKey(request.key);
         const baseClient = containerClient.getBlobClient(key);
-        const blobClient = request.versionId !== undefined ? baseClient.withVersion(request.versionId) : baseClient;
+        const blobClient = versionId !== undefined ? this.selectVersion(baseClient, versionId, 'exists', key) : baseClient;
 
         return blobClient.exists();
     }
@@ -244,6 +250,9 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
         try {
             abortSignal.throwIfAborted();
+            if (!this.hasHistorySdk()) {
+                throw new BlobStorageUnsupportedOperationError(this.providerId, operation, request.key);
+            }
             const containerClient = await this.getContainerClient();
             abortSignal.throwIfAborted();
             const iterator = containerClient
@@ -265,14 +274,14 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
                 resourceId: this.resourceId(containerClient.url),
                 bucket: this._containerName,
                 entries: entries
-                    .filter((item) => item.name === request.key)
+                    .filter((item) => item.name === request.key && (!item.hasVersionsOnly || item.versionId || item.snapshot))
                     .map((item) => ({
                         key: item.name,
                         versionId: item.versionId,
                         snapshotId: item.snapshot || undefined,
-                        isCurrentVersion: item.isCurrentVersion,
-                        deleted: item.deleted,
-                        etag: item.properties.etag,
+                        isCurrentVersion: item.hasVersionsOnly ? false : item.isCurrentVersion,
+                        deleted: item.deleted === true,
+                        etag: this.historyEtag(item.properties.etag),
                         deletedAt: item.properties.deletedOn,
                         remainingRetentionDays: item.properties.remainingRetentionDays,
                     })),
@@ -313,7 +322,7 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
             const baseClient = containerClient.getBlobClient(request.key);
             const selectedClient =
                 request.versionId !== undefined
-                    ? baseClient.withVersion(request.versionId)
+                    ? this.selectVersion(baseClient, request.versionId, operation, request.key)
                     : request.snapshotId !== undefined
                       ? baseClient.withSnapshot(request.snapshotId)
                       : baseClient;
@@ -334,26 +343,39 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public override async createSignedUrl(request: IBlobSignedUrlRequest): Promise<string> {
-        const { BlobSASPermissions, generateBlobSASQueryParameters, StorageSharedKeyCredential } = await this.loadSdk();
+        const operation = 'createSignedUrl';
+        const { versionId } = request;
+        this.assertSelector(versionId, operation, request.key);
+        if (versionId !== undefined) this.assertTarget(request, operation);
         const key = this.normalizeKey(request.key);
+        const sdk = await this.loadSdk();
         const expiresInSeconds = Math.min(Math.max(request.expiresInSeconds ?? 3600, 60), 604_800);
-
-        const { accountName, accountKey } = this.parseConnectionString();
-        const credential = new StorageSharedKeyCredential(accountName, accountKey);
-
         const startsOn = new Date();
         const expiresOn = new Date(startsOn.getTime() + expiresInSeconds * 1000);
 
-        const sasToken = generateBlobSASQueryParameters(
-            {
-                containerName: request.bucket ?? this._containerName,
-                blobName: key,
-                permissions: BlobSASPermissions.parse('r'),
-                startsOn,
-                expiresOn,
-            },
-            credential,
-        ).toString();
+        if (versionId !== undefined) {
+            const containerClient = await this.getContainerClient();
+            const versionClient = this.selectVersion(containerClient.getBlobClient(key), versionId, operation, key);
+            if (typeof versionClient.generateSasUrl !== 'function') {
+                throw new BlobStorageUnsupportedOperationError(this.providerId, operation, key);
+            }
+            return versionClient.generateSasUrl({ permissions: sdk.BlobSASPermissions.parse('r'), startsOn, expiresOn });
+        }
+
+        const { accountName, accountKey } = this.parseConnectionString();
+        const credential = new sdk.StorageSharedKeyCredential(accountName, accountKey);
+        const sasToken = sdk
+            .generateBlobSASQueryParameters(
+                {
+                    containerName: request.bucket ?? this._containerName,
+                    blobName: key,
+                    permissions: sdk.BlobSASPermissions.parse('r'),
+                    startsOn,
+                    expiresOn,
+                },
+                credential,
+            )
+            .toString();
 
         const containerClient = await this.getContainerClient();
         const blobClient = containerClient.getBlobClient(key);
@@ -386,6 +408,32 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
         if (selector !== undefined && (typeof selector !== 'string' || !selector.trim())) {
             throw this.invalidRequest(operation, key);
         }
+    }
+
+    private selectVersion(client: BlobClient, versionId: string, operation: string, key: string): BlobClient {
+        if (typeof client.withVersion !== 'function') {
+            throw new BlobStorageUnsupportedOperationError(this.providerId, operation, key);
+        }
+        return client.withVersion(versionId);
+    }
+
+    private hasHistorySdk(): boolean {
+        // Older SDKs silently omit deleted blobs with retained versions from the listing.
+        try {
+            const metadata: unknown = createRequire(import.meta.url)('@azure/storage-blob/package.json');
+            if (typeof metadata !== 'object' || metadata === null || !('version' in metadata) || typeof metadata.version !== 'string') return false;
+            const release = /^(\d+)\.(\d+)\.\d+(?:\+[\dA-Za-z.-]+)?$/.exec(metadata.version);
+            if (!release) return false;
+
+            const major = Number(release[1]);
+            return major > 12 || (major === 12 && Number(release[2]) >= 8);
+        } catch {
+            return false;
+        }
+    }
+
+    private historyEtag(etag: string | undefined): string | undefined {
+        return etag !== undefined && /^0x[\da-f]+$/i.test(etag) ? `"${etag}"` : etag;
     }
 
     private requestSignal(timeoutMs: number | undefined, abortSignal: AbortSignal | undefined, operation: string, key: string): AbortSignal {

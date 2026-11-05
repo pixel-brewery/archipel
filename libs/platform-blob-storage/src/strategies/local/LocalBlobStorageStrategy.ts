@@ -22,6 +22,7 @@ import {
     type IBlobUploadResult,
 } from '../../interfaces/IBlobProvider.js';
 import { BlobStorageStrategyBase } from '../abstracts/BlobStorageStrategyBase.js';
+import { assertBlobExecutionSupport } from '../assertBlobExecutionSupport.js';
 import { LOCAL_BLOB_BASE_PATH, LOCAL_BLOB_BUCKET } from './env.js';
 
 // #endregion
@@ -82,6 +83,7 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async uploadObject(request: IBlobUploadRequest): Promise<IBlobUploadResult> {
+        assertBlobExecutionSupport(this, 'uploadObject', request.key, request.execution);
         const key = this.normalizeKey(request.key);
         const filePath = this.resolveFilePath(key, request.bucket);
 
@@ -115,6 +117,7 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public async downloadObject<TData>(request: IBlobDownloadRequest): Promise<IBlobDownloadResult<TData>> {
+        assertBlobExecutionSupport(this, 'downloadObject', request.key, request.execution, request.maxBytes);
         const key = this.normalizeKey(request.key);
         const filePath = this.resolveFilePath(key, request.bucket);
 
@@ -172,6 +175,7 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public override async listObjects(request: IBlobListRequest = {}): Promise<IBlobListResult> {
+        assertBlobExecutionSupport(this, 'listObjects', request.prefix ?? '', request.execution);
         const root = this.resolveFilePath('', request.bucket);
         const maxKeys = Math.min(Math.max(request.maxKeys ?? 1000, 1), 5000);
         const collected: IBlobListEntry[] = [];

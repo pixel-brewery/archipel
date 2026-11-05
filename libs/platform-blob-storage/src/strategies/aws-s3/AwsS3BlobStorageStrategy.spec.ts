@@ -4,6 +4,7 @@ import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Logger } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BlobStorageUnsupportedOperationError } from '../../errors/BlobStorageUnsupportedOperationError.js';
 import { AwsS3BlobStorageStrategy } from './AwsS3BlobStorageStrategy.js';
 import { AWS_S3_BUCKET, AWS_S3_REGION } from './env.js';
 
@@ -15,6 +16,12 @@ vi.mock('@aws-sdk/client-s3', () => ({
         public readonly send = sdk.send;
     },
     PutObjectCommand: class {
+        public constructor(public readonly input: Record<string, unknown>) {}
+    },
+    GetObjectCommand: class {
+        public constructor(public readonly input: Record<string, unknown>) {}
+    },
+    ListObjectsV2Command: class {
         public constructor(public readonly input: Record<string, unknown>) {}
     },
     DeleteObjectCommand: class {
@@ -60,5 +67,20 @@ describe('AwsS3BlobStorageStrategy', () => {
         expect(debug).toHaveBeenCalledExactlyOnceWith({ operation: `blobObject.${operation}`, providerId: 'aws-s3', result: 'succeeded' });
         for (const privateValue of [key, 'private-bucket-name', 'private-content', 'sensitive-metadata'])
             expect(JSON.stringify(debug.mock.calls)).not.toContain(privateValue);
+    });
+
+    it.each([
+        [
+            'upload deadline',
+            (adapter: AwsS3BlobStorageStrategy) => adapter.uploadObject({ key: 'records/object', body: Buffer.from('data'), execution: { timeoutMs: 10 } }),
+        ],
+        ['download deadline', (adapter: AwsS3BlobStorageStrategy) => adapter.downloadObject({ key: 'records/object', execution: { timeoutMs: 10 } })],
+        ['download byte limit', (adapter: AwsS3BlobStorageStrategy) => adapter.downloadObject({ key: 'records/object', maxBytes: 0 })],
+        ['listing deadline', (adapter: AwsS3BlobStorageStrategy) => adapter.listObjects({ prefix: 'records/', execution: { timeoutMs: 10 } })],
+    ] as const)('rejects an explicit %s before contacting S3', async (_limit, invoke) => {
+        const result = invoke(strategy);
+
+        await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        expect(sdk.send).not.toHaveBeenCalled();
     });
 });

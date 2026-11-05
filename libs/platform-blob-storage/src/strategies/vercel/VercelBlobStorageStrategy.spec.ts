@@ -3,7 +3,8 @@
 import type { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import type { HttpService } from '@nestjs/axios';
 import { of } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BlobStorageUnsupportedOperationError } from '../../errors/BlobStorageUnsupportedOperationError.js';
 import { BlobDownloadResponseTypes } from '../../interfaces/IBlobProvider.js';
 import { VERCEL_BLOB_BUCKET, VERCEL_BLOB_PUBLIC_URL, VERCEL_BLOB_READ_WRITE_TOKEN, VERCEL_BLOB_REGION, VERCEL_BLOB_URL } from './env.js';
 import { VercelBlobStorageStrategy } from './VercelBlobStorageStrategy.js';
@@ -14,6 +15,7 @@ describe('VercelBlobStorageStrategy', () => {
     // #region Fields
 
     let get: ReturnType<typeof vi.fn>;
+    let put: ReturnType<typeof vi.fn>;
     let strategy: VercelBlobStorageStrategy;
 
     // #endregion
@@ -21,6 +23,7 @@ describe('VercelBlobStorageStrategy', () => {
     // #region Methods
 
     beforeEach(() => {
+        put = vi.fn();
         get = vi.fn().mockReturnValue(
             of({
                 data: Buffer.from('data'),
@@ -41,7 +44,21 @@ describe('VercelBlobStorageStrategy', () => {
             }),
         };
 
-        strategy = new VercelBlobStorageStrategy({ get } as unknown as HttpService, configService as unknown as ConfigService);
+        strategy = new VercelBlobStorageStrategy({ get, put } as unknown as HttpService, configService as unknown as ConfigService);
+    });
+
+    afterEach(() => vi.restoreAllMocks());
+
+    it.each([
+        ['an upload deadline', (client: VercelBlobStorageStrategy) => client.uploadObject({ key: 'report.pdf', body: Buffer.alloc(0), execution: {} })],
+        ['a download byte limit', (client: VercelBlobStorageStrategy) => client.downloadObject({ key: 'report.pdf', maxBytes: 0 })],
+        ['a listing deadline', (client: VercelBlobStorageStrategy) => client.listObjects({ execution: {} })],
+    ] as const)('rejects %s before issuing any HTTP request', async (_limit, execute) => {
+        const result = execute(strategy);
+
+        await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        expect(get).not.toHaveBeenCalled();
+        expect(put).not.toHaveBeenCalled();
     });
 
     describe('downloadObject', () => {
