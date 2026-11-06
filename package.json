@@ -5,7 +5,15 @@
     "keywords": [
         "backend",
         "nestjs",
+        "typescript",
+        "nodejs",
         "libraries",
+        "provider-agnostic",
+        "prisma",
+        "authentication",
+        "observability",
+        "ai-agents",
+        "mcp",
         "monorepo",
         "nx"
     ],

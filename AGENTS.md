@@ -22,6 +22,12 @@ Archipel is an Nx monorepo of reusable, provider-agnostic **NestJS platform libr
 - Preserve recovery evidence before cleanup. Remove temporary branches and worktrees only after proving their commits or exact contents are integrated; keep permanent integration branches, and account for stashes instead of hiding unfinished work there.
 - Manual releases, deployments, package publication, history rewriting, visibility changes and credential changes require separate owner authorization. Existing workflows triggered by an authorized source merge remain part of normal delivery.
 
+## Issue Tracking
+
+- Use the [Archipel GitHub project board](https://github.com/orgs/pixel-brewery/projects/10) for follow-up tickets and their status. File authorized Archipel follow-ups as issues in `pixel-brewery/archipel` and add each issue to the board explicitly.
+- Search the board and the repository's open and closed issues for the same work before creating a ticket. Update the existing issue when it covers the work. Keep the backlog on GitHub.
+- Read the board's current `Status` options through GitHub Projects before assigning a status. After recording or updating a ticket, verify that it appears on the board exactly once with the intended status.
+
 ## Release Authority
 
 - The human repository owner `RueDeRennes` controls release policy and has authorized continuous publication through the maintained GitHub Actions release workflow. A verified source merge into `main` requests a patch release for both fixed-version groups.
