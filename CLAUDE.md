@@ -7,7 +7,7 @@ rules there instead of maintaining a separate Claude Code copy.
 
 ## Claude Code specifics
 
-- Read and apply root `AGENTS.md` and `.agents/skills/archipel-architect/SKILL.md` at the start of every repository task, including delegated subagent tasks, even when the skill was not explicitly mentioned. The project skill derives from the pinned `.agents/skills/architecture/SKILL.md` base: read that base first, then select the relevant common and Archipel-specific references through the project router.
+- Read and apply root `AGENTS.md` and `.agents/skills/archipel-architect/SKILL.md` at the start of every repository task, including delegated subagent tasks, even when the skill was not explicitly mentioned. The project skill derives from the pinned `.agents/skills/architect/SKILL.md` base: read that base first, then select the relevant common and Archipel-specific references through the project router.
 - Use Claude Code's native subagents to maximize independent parallel work as required by the shared architect workflow. Keep delegated scope, edit ownership, dependencies and verification explicit; integrate all required results before declaring completion.
 - Keep `.agents/skills/archipel-architect/` as the maintained skill source. Relative references resolve there; no manually maintained Claude-specific copy is required. Follow `AGENTS.md` for workspace, external-write and release authority.
 

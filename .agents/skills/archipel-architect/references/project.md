@@ -1,6 +1,6 @@
 # Archipel project contract
 
-Read for every task with `AGENTS.md` and [shared workflow](../../architecture/references/common/workflow.md). The architect is mandatory even when not named. It derives from the pinned Architecture base; this file and the local domain references apply its foundations to Archipel.
+Read for every task with `AGENTS.md` and [shared workflow](../../architect/references/common/workflow.md). The architect is mandatory even when not named. It derives from the pinned Architecture base; this file and the local domain references apply its foundations to Archipel.
 
 ## Environment
 

@@ -6,4 +6,5 @@
 .angular
 
 # Preserve the exact content hash of the installed Architecture dependency.
-/.agents/skills/architecture/
+/.agents/skills/architect/
+/skills-lock.json
