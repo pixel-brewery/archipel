@@ -1,3 +1,7 @@
+## 0.1.40 (2026-11-09)
+
+This was a version bump only for prisma-generator-json-schema to align it with other projects, there were no code changes.
+
 ## 0.1.39 (2026-11-05)
 
 ### 🚀 Features
