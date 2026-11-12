@@ -137,11 +137,13 @@ git clone https://github.com/pixel-brewery/archipel.git
 cd archipel
 corepack enable
 yarn install --immutable
-yarn verify
+yarn run verify
 ```
 
-`yarn verify` runs the configured agent, formatting, workflow, lint, test, spelling,
-documentation, build and ESM-package checks. For focused work, use the owning Nx project:
+Run `yarn run verify` before committing or pushing. It formats the workspace and runs
+the agent, public-source, workflow, lint, test, spelling, documentation, build and
+ESM-package checks. GitHub Actions uses `yarn run verify:ci` to validate the committed
+formatting and run the same checks. For focused work, use the owning Nx project:
 
 ```sh
 yarn nx run platform-configuration:test --parallel=1 --maxWorkers=1

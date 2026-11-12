@@ -10,7 +10,7 @@ export default {
         },
     ],
     dictionaries: ['cspell.words'],
-    ignorePaths: ['node_modules', '/cspell.words.txt', '/cspell.config.mjs', '/.agents/skills/architecture/**'],
+    ignorePaths: ['node_modules', '/cspell.words.txt', '/cspell.config.mjs', '/.agents/skills/architect/**'],
     overrides: [
         {
             filename: 'libs/platform-openapi/assets/swagger.css',

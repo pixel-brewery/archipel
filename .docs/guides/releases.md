@@ -170,9 +170,11 @@ bot automation deliberately remain inactive.
 
 ## Verification and recovery
 
-`yarn verify` runs the architecture-dependency check, formatting check, CI and
-packaging regressions, lint, all library and tool unit tests, spelling, generated
-API docs, complete builds and ESM/package checks. It uses one local task worker.
+Run `yarn run verify` before committing or pushing to format the workspace and run
+the architecture-dependency check, CI and packaging regressions, lint, all library
+and tool unit tests, spelling, generated API docs, complete builds and ESM/package
+checks. It uses one local task worker. GitHub Actions calls `yarn run verify:ci` to
+check committed formatting and run the same checks.
 `yarn docs:build` verifies the static documentation application separately.
 
 The same verification includes `yarn public:check`, which rejects excluded private
