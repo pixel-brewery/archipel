@@ -1,3 +1,13 @@
+## 0.1.46 (2026-11-12)
+
+### 🩹 Fixes
+
+- **ci:** verify Dependabot updates once per pull request ([3659c3b](https://github.com/pixel-brewery/archipel/commit/3659c3b))
+
+### ❤️ Thank You
+
+- RueDeRennes @RueDeRennes
+
 ## 0.1.45 (2026-11-12)
 
 ### 🩹 Fixes
