@@ -1,3 +1,13 @@
+## 0.1.45 (2026-11-12)
+
+### 🩹 Fixes
+
+- **ci:** use native Dependabot rebases ([f907815](https://github.com/pixel-brewery/archipel/commit/f907815))
+
+### ❤️ Thank You
+
+- RueDeRennes @RueDeRennes
+
 ## 0.1.44 (2026-11-12)
 
 ### 🩹 Fixes
