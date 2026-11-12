@@ -4,14 +4,14 @@
     "private": true,
     "executors": "./executors.json",
     "dependencies": {
-        "@nx/devkit": "^24.0.5",
+        "@nx/devkit": "^24.0.6",
         "gray-matter": "4.0.3",
-        "prettier": "3.9.10",
+        "prettier": "3.10.1",
         "typedoc": "0.28.20",
         "typedoc-plugin-markdown": "4.14.1"
     },
     "devDependencies": {
-        "nx": "24.0.5",
+        "nx": "24.0.6",
         "typescript": "6.0.3"
     }
 }

@@ -76,7 +76,7 @@ jobs:
               run: yarn install --immutable
 
             - name: Verify all source, tooling, documentation, and ESM packages
-              run: yarn verify
+              run: yarn verify:ci
 
             - name: Require reproducible checked-in output
               run: |

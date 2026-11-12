@@ -72,7 +72,7 @@ Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceToolDefinitio
 ### execute()?
 
 ```ts
-execute ? (input, context) : TOutput | Promise<TOutput>;
+execute ? (input, context) : TOutput | (Promise<TOutput>);
 ```
 
 Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceToolDefinition.ts:27](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceToolDefinition.ts#L27)
