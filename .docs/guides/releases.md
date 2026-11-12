@@ -100,11 +100,12 @@ GitHub Actions integration `15368`, with strict current-base checking:
 
 The verification workflow also emits a stable `Quality Gate` after the complete
 platform matrix. It always runs and succeeds only when every platform succeeds;
-failed, cancelled or skipped verification fails the gate. Pushes to non-main
-branches, pull requests, merge-queue groups and manual verification run the same
-checks. Main releases call this same reusable workflow for the exact prepared
-candidate, including the gate, before publication. The gate does not publish or
-need source checkout, dependencies or repository permissions.
+failed, cancelled or skipped verification fails the gate. Pull requests,
+merge-queue groups, manual verification and pushes to branches outside `main`
+and `dependabot/**` run the same checks. Dependabot gets its required checks
+from the pull request run. Main releases call this same reusable workflow for
+the exact prepared candidate, including the gate, before publication. The gate
+does not publish or need source checkout, dependencies or repository permissions.
 
 The checked-in protection payload includes all four contexts. Configure the live
 rule only after the workflow revision is published and each required context is
