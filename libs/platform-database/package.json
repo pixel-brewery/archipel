@@ -81,8 +81,8 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.3.2",
-        "@nestjs/core": "12.3.2",
+        "@nestjs/common": "12.4.0",
+        "@nestjs/core": "12.4.0",
         "@nestjs/terminus": "12.1.0",
         "@prisma/client": "7.10.1",
         "@types/pg": "^8.23.1",
