@@ -1,8 +1,6 @@
 name: Verify
 
 on:
-    push:
-        branches-ignore: [main, 'dependabot/**']
     pull_request:
     merge_group:
     workflow_dispatch:
