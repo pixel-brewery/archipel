@@ -132,7 +132,7 @@
         "@pixel-brewery/archipel-platform-caching": "0.1.38",
         "@pixel-brewery/archipel-platform-configuration": "0.1.38",
         "@pixel-brewery/archipel-platform-core": "0.1.38",
-        "tslib": "2.8.1"
+        "tslib": "2.9.1"
     },
     "peerDependencies": {
         "@nestjs/common": "^12.0.0",
@@ -210,26 +210,26 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.3.2",
-        "@nestjs/core": "12.3.2",
+        "@nestjs/common": "12.4.2",
+        "@nestjs/core": "12.4.2",
         "@opentelemetry/api": "1.10.0",
-        "@opentelemetry/context-async-hooks": "3.0.0",
-        "@opentelemetry/core": "3.0.0",
-        "@opentelemetry/exporter-metrics-otlp-grpc": "0.300.0",
-        "@opentelemetry/exporter-metrics-otlp-http": "0.300.0",
-        "@opentelemetry/exporter-prometheus": "0.300.0",
-        "@opentelemetry/exporter-trace-otlp-http": "0.300.0",
-        "@opentelemetry/instrumentation": "0.300.0",
-        "@opentelemetry/instrumentation-express": "0.72.0",
-        "@opentelemetry/instrumentation-http": "0.300.0",
-        "@opentelemetry/resources": "3.0.0",
-        "@opentelemetry/sdk-metrics": "3.0.0",
-        "@opentelemetry/sdk-trace": "3.0.0",
-        "@opentelemetry/semantic-conventions": "1.43.0",
-        "@vercel/functions": "3.10.5",
+        "@opentelemetry/context-async-hooks": "3.1.1",
+        "@opentelemetry/core": "3.1.1",
+        "@opentelemetry/exporter-metrics-otlp-grpc": "0.301.1",
+        "@opentelemetry/exporter-metrics-otlp-http": "0.301.1",
+        "@opentelemetry/exporter-prometheus": "0.301.1",
+        "@opentelemetry/exporter-trace-otlp-http": "0.301.1",
+        "@opentelemetry/instrumentation": "0.301.1",
+        "@opentelemetry/instrumentation-express": "0.73.0",
+        "@opentelemetry/instrumentation-http": "0.301.1",
+        "@opentelemetry/resources": "3.1.1",
+        "@opentelemetry/sdk-metrics": "3.1.1",
+        "@opentelemetry/sdk-trace": "3.1.1",
+        "@opentelemetry/semantic-conventions": "1.45.0",
+        "@vercel/functions": "3.11.1",
         "reflect-metadata": "0.2.2",
         "rxjs": "7.8.2",
-        "vitest": "5.0.5"
+        "vitest": "5.1.0"
     },
     "archipel": {
         "category": "Operations"
