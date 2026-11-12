@@ -42,16 +42,16 @@ After rechecking the public repository and current main revision, it atomically
 pushes the prepared main commit and both tags. It uploads only the verified
 archives, verifies every exact public registry version and downloaded archive,
 and creates one GitHub Release per group. Publication requests the documentation
-workflow and refreshes remaining Dependabot branches explicitly because the
-metadata commit contains `[skip ci]`.
+workflow explicitly because the metadata commit contains `[skip ci]`.
 
 Native-token Dependabot merges do not produce another push-triggered workflow.
 The trusted merge helper therefore dispatches the release workflow explicitly
 after a verified merge. It accepts only a native bot PR from this repository,
 the canonical current PR workflow attempt, the unchanged tested head and all
-three successful platform jobs and the successful `Quality Gate`. The refresh helper requests one native
-Dependabot rebase per outdated PR and main revision. Neither privileged helper
-checks out PR code or installs PR dependencies.
+three successful platform jobs and the successful `Quality Gate`. The merge and
+release-request jobs run trusted code from `main`. Dependabot checks open PRs
+during scheduled updates and when it detects conflicts after a push to the
+target branch.
 
 The successful merge job retains `merged` and `merge_sha` outputs. A separate
 release-request job uses that exact source, so a failed request can be retried
@@ -59,8 +59,7 @@ without attempting to merge an already merged PR. It verifies the immutable
 public repository, `main`, and the active release workflow's identity. A newer
 main revision supersedes the old request; an existing release attempt for the
 same source is retained regardless of its outcome. Recover a failed release in
-its original run instead of preparing a second candidate. The follow-up also
-refreshes remaining dependency PRs, including after a failed request.
+its original run instead of preparing a second candidate.
 
 Automatic requests dispatch `release.yml` on `main` with `specifier: patch` and
 `source_sha` equal to the merge commit. The release preflight rejects the run if

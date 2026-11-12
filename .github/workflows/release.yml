@@ -154,7 +154,6 @@ jobs:
                   repositories: ${{ github.event.repository.name }}
                   permission-contents: write
             - name: Atomically push the verified metadata commit and both tags
-              id: push
               env:
                   GH_TOKEN: ${{ github.token }}
                   RELEASE_PUSH_TOKEN: ${{ steps.release-app-token.outputs.token }}
@@ -177,10 +176,3 @@ jobs:
               env:
                   GH_TOKEN: ${{ github.token }}
               run: gh workflow run docs.yml --repo "$GITHUB_REPOSITORY" --ref main
-            # The metadata commit intentionally contains [skip ci]. Refresh explicitly,
-            # including after a partial registry upload so remaining bot PRs do not stall.
-            - name: Refresh remaining Dependabot branches
-              if: always() && steps.push.outcome == 'success'
-              env:
-                  GH_TOKEN: ${{ github.token }}
-              run: gh workflow run rebase-dependabot.yml --repo "$GITHUB_REPOSITORY" --ref main
