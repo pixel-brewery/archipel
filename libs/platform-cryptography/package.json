@@ -60,7 +60,7 @@
         "bcrypt": ">=5.0.0"
     },
     "devDependencies": {
-        "@nestjs/common": "12.3.2",
+        "@nestjs/common": "12.4.0",
         "@types/bcrypt": "6.0.0",
         "bcrypt": "6.0.0",
         "reflect-metadata": "0.2.2",

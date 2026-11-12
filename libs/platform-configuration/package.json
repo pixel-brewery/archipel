@@ -59,7 +59,7 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.3.2",
+        "@nestjs/common": "12.4.0",
         "dotenv": "18.0.8",
         "reflect-metadata": "0.2.2",
         "rxjs": "7.8.2",

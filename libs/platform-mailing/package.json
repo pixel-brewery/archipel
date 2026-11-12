@@ -168,8 +168,8 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.3.2",
-        "@nestjs/core": "12.3.2",
+        "@nestjs/common": "12.4.0",
+        "@nestjs/core": "12.4.0",
         "@nestjs/terminus": "12.1.0",
         "@sendgrid/mail": "8.1.6",
         "form-data": "4.0.6",
