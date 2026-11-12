@@ -1,3 +1,13 @@
+## 0.1.47 (2026-11-12)
+
+### 🔥 Performance
+
+- **ci:** avoid duplicate verification for pull requests ([397ad08](https://github.com/pixel-brewery/archipel/commit/397ad08))
+
+### ❤️ Thank You
+
+- RueDeRennes @RueDeRennes
+
 ## 0.1.46 (2026-11-12)
 
 ### 🩹 Fixes
