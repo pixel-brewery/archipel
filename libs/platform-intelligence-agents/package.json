@@ -71,7 +71,7 @@
         "@nestjs/testing": "12.3.2",
         "@pixel-brewery/archipel-platform-configuration": "^0.1.40",
         "@pixel-brewery/archipel-platform-mcp": "^0.1.40",
-        "vitest": "5.0.5",
+        "vitest": "5.1.0",
         "zod": "4.6.7"
     },
     "homepage": "https://pixel-brewery.github.io/archipel/",
