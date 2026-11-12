@@ -15,7 +15,7 @@ Image payload for templates.
 ### data
 
 ```ts
-data: string | Buffer<ArrayBufferLike>;
+data: string | (Buffer<ArrayBufferLike>);
 ```
 
 Defined in: [libs/platform-documents/src/interfaces/IImagePayload.ts:12](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-documents/src/interfaces/IImagePayload.ts#L12)
