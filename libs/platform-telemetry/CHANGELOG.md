@@ -1,3 +1,13 @@
+## 0.1.44 (2026-11-12)
+
+### 🩹 Fixes
+
+- correct type notation for data and execute properties in documentation ([0391166](https://github.com/pixel-brewery/archipel/commit/0391166))
+
+### ❤️ Thank You
+
+- RueDeRennes @RueDeRennes
+
 ## 0.1.43 (2026-11-12)
 
 This was a version bump only for platform-telemetry to align it with other projects, there were no code changes.
