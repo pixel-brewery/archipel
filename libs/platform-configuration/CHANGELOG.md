@@ -1,3 +1,7 @@
+## 0.1.48 (2026-11-13)
+
+This was a version bump only for platform-configuration to align it with other projects, there were no code changes.
+
 ## 0.1.47 (2026-11-12)
 
 ### 🔥 Performance
