@@ -90,6 +90,8 @@
                 "{workspaceRoot}/.prettierrc",
                 "{workspaceRoot}/.prettierignore",
                 "{workspaceRoot}/package.json",
+                "{workspaceRoot}/tsconfig.base.json",
+                "{workspaceRoot}/yarn.lock",
                 "{workspaceRoot}/infra/nx-plugins/package.json"
             ],
             "outputs": ["{workspaceRoot}/.docs/packages/{projectName}/api"]

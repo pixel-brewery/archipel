@@ -1,6 +1,6 @@
 {
-    "total": 1088,
-    "byKind": { "variable": 291, "class": 319, "type-alias": 83, "function": 122, "other": 2, "interface": 270, "namespace": 1 },
+    "total": 1096,
+    "byKind": { "variable": 291, "class": 320, "type-alias": 84, "function": 122, "other": 2, "interface": 276, "namespace": 1 },
     "byPackage": {
         "platform-esigning": 52,
         "platform-intelligence-agents": 34,
@@ -13,7 +13,7 @@
         "platform-bootstrap": 50,
         "platform-logging": 8,
         "platform-core": 72,
-        "platform-blob-storage": 53,
+        "platform-blob-storage": 61,
         "platform-feature-flags": 29,
         "platform-queue": 31,
         "platform-cryptography": 16,
@@ -1372,6 +1372,17 @@
             "link": "/packages/platform-blob-storage/api/Variable.BlobDownloadResponseTypes"
         },
         {
+            "id": "platform-blob-storage:type-alias:blobexecutionoperation",
+            "name": "BlobExecutionOperation",
+            "kind": "type-alias",
+            "kindLabel": "Type Alias",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Type Alias: BlobExecutionOperation",
+            "description": "type BlobExecutionOperation = 'uploadObject' | 'downloadObject' | 'listObjects';",
+            "link": "/packages/platform-blob-storage/api/TypeAlias.BlobExecutionOperation"
+        },
+        {
             "id": "platform-blob-storage:class:blobhealthindicator",
             "name": "BlobHealthIndicator",
             "kind": "class",
@@ -1480,6 +1491,17 @@
             "title": "Class: BlobStorageError",
             "description": "Describes a provider-independent blob storage operation failure.",
             "link": "/packages/platform-blob-storage/api/Class.BlobStorageError"
+        },
+        {
+            "id": "platform-blob-storage:class:blobstoragepreconditionfailederror",
+            "name": "BlobStoragePreconditionFailedError",
+            "kind": "class",
+            "kindLabel": "Class",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Class: BlobStoragePreconditionFailedError",
+            "description": "The selected object no longer meets the caller's conditional deletion guard.",
+            "link": "/packages/platform-blob-storage/api/Class.BlobStoragePreconditionFailedError"
         },
         {
             "id": "platform-blob-storage:class:blobstoragestrategybase",
@@ -4056,6 +4078,28 @@
             "link": "/packages/platform-cryptography/api/Interface.IBcryptOptions"
         },
         {
+            "id": "platform-blob-storage:interface:iblobconditionaldeleterequest",
+            "name": "IBlobConditionalDeleteRequest",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobConditionalDeleteRequest",
+            "description": "Deletes only the object that still has the exact observed strong ETag.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobConditionalDeleteRequest"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobconditionaldeletionpersistencerequest",
+            "name": "IBlobConditionalDeletionPersistenceRequest",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobConditionalDeletionPersistenceRequest",
+            "description": "Identifies the exact generation whose conditional provider deletion succeeded.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobConditionalDeletionPersistenceRequest"
+        },
+        {
             "id": "platform-blob-storage:interface:iblobdeleterequest",
             "name": "IBlobDeleteRequest",
             "kind": "interface",
@@ -4087,6 +4131,17 @@
             "title": "Interface: IBlobDownloadResult\\<TData\\>",
             "description": "No description provided.",
             "link": "/packages/platform-blob-storage/api/Interface.IBlobDownloadResult"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobexecutionoptions",
+            "name": "IBlobExecutionOptions",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobExecutionOptions",
+            "description": "Requests a provider-enforced deadline and optional caller cancellation.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobExecutionOptions"
         },
         {
             "id": "platform-blob-storage:interface:iblobexistsrequest",
@@ -4142,6 +4197,39 @@
             "title": "Interface: IBlobModuleOptions",
             "description": "No description provided.",
             "link": "/packages/platform-blob-storage/api/Interface.IBlobModuleOptions"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobobjecthistoryentry",
+            "name": "IBlobObjectHistoryEntry",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobObjectHistoryEntry",
+            "description": "One current, versioned, snapshot or soft-deleted object observed by the provider.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobObjectHistoryEntry"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobobjecthistoryrequest",
+            "name": "IBlobObjectHistoryRequest",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobObjectHistoryRequest",
+            "description": "Reads one bounded page of provider history for an exact canonical object key.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobObjectHistoryRequest"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobobjecthistoryresult",
+            "name": "IBlobObjectHistoryResult",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobObjectHistoryResult",
+            "description": "One exact-key history page within the active provider's configured resource.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobObjectHistoryResult"
         },
         {
             "id": "platform-blob-storage:interface:iblobobjectmetadata",

@@ -92,7 +92,11 @@ afterEach(() => {
 describe('verifyReleaseCandidate', { timeout: 30_000 }, () => {
     it('accepts exactly one metadata-only child with both fixed tags and all 28 versioned manifests', () => {
         // Arrange
-        const value = fixture();
+        const value = fixture((repository) => {
+            const directory = join(repository, '.docs/public/api');
+            mkdirSync(directory, { recursive: true });
+            writeFileSync(join(directory, 'api-index.json'), '{"total":0}\n');
+        });
         // Act
         const candidate = verifyReleaseCandidate(value.artifact, { sourceCommit: value.sourceCommit });
         // Assert

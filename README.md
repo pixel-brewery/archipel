@@ -140,10 +140,12 @@ yarn install --immutable
 yarn run verify
 ```
 
-Run `yarn run verify` before committing or pushing. It formats the workspace and runs
-the agent, public-source, workflow, lint, test, spelling, documentation, build and
-ESM-package checks. GitHub Actions uses `yarn run verify:ci` to validate the committed
-formatting and run the same checks. For focused work, use the owning Nx project:
+Run `yarn run verify` before committing or pushing. It generates the Prisma client and
+documentation artifacts, builds the documentation site, formats the workspace and runs
+the agent, public-source, workflow, lint, test, spelling, build, type and package checks.
+Commit the refreshed API references and search index with your changes. GitHub Actions
+uses `yarn run verify:ci` to check formatting and run the same verification. For focused
+work, use the owning Nx project:
 
 ```sh
 yarn nx run platform-configuration:test --parallel=1 --maxWorkers=1

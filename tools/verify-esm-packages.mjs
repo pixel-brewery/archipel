@@ -1,8 +1,10 @@
 // #region Imports
 
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { parseArgs } from 'node:util';
 
 // #endregion
 
@@ -13,12 +15,12 @@ const runtimeExtensions = ['.js', '.mjs', '.json', '.node', '.wasm'];
 /**
  * Checks source ESM contracts, built entry points, package metadata, and the copied MCP documentation corpus.
  *
- * @param options Optional workspace root for the read-only check.
+ * @param options Optional workspace root and package archive inventory check.
  * @returns The verified package count after every source and build contract succeeds.
  * @throws When any package is incomplete or contains incompatible ESM output.
  * @internal
  */
-export async function verifyEsmPackages({ root = workspaceRoot } = {}) {
+export async function verifyEsmPackages({ root = workspaceRoot, pack = false } = {}) {
     const ts = (await import('typescript')).default;
     const packageRoots = ['libs', 'tools'].flatMap((parent) =>
         fs
@@ -87,6 +89,7 @@ export async function verifyEsmPackages({ root = workspaceRoot } = {}) {
             if (!license.includes('MIT License') || !license.includes('Permission is hereby granted'))
                 throw new Error('The built MIT license notice is missing or incomplete.');
             if (license !== fs.readFileSync(path.join(root, 'LICENSE'), 'utf8')) throw new Error('The built MIT license differs from the repository notice.');
+            if (pack) verifyPackageArchive(built, outputRoot);
         } catch (error) {
             errors.push(`dist/${relativeRoot}: ${error.message}`);
         }
@@ -99,7 +102,9 @@ export async function verifyEsmPackages({ root = workspaceRoot } = {}) {
         }
     }
     if (errors.length) throw new Error(`ESM verification failed with ${errors.length} error(s):\n${errors.map((error) => `- ${error}`).join('\n')}`);
-    process.stdout.write(`Verified ${packageRoots.length} ESM packages, built entry points, and MIT license notices.\n`);
+    process.stdout.write(
+        `Verified ${packageRoots.length} ESM packages, built entry points, and MIT license notices${pack ? ', including packed file inventories' : ''}.\n`,
+    );
     return packageRoots.length;
 }
 
@@ -133,6 +138,23 @@ export function verifyPackedFileList(manifest, files) {
     for (const target of requiredFiles(manifest)) {
         if (!inventory.has(target)) throw new Error(`The archive is missing installed package file: ${target}.`);
     }
+}
+
+function verifyPackageArchive(manifest, packageRoot) {
+    const args = ['pack', '--dry-run', '--ignore-scripts', '--json'];
+    const options = { cwd: packageRoot, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024, timeout: 120_000 };
+    const output =
+        process.platform === 'win32'
+            ? execFileSync(process.env.ComSpec ?? 'cmd.exe', ['/d', '/s', '/c', `npm ${args.join(' ')}`], options)
+            : execFileSync('npm', args, options);
+    const [packed, extra] = JSON.parse(output);
+    if (!packed || extra || packed.name !== manifest.name || packed.version !== manifest.version || !Array.isArray(packed.files)) {
+        throw new Error('Packing did not confirm the built package identity and file inventory.');
+    }
+    verifyPackedFileList(
+        manifest,
+        packed.files.map(({ path: filename }) => filename),
+    );
 }
 
 function verifyMcpDocumentation(root, outputRoot, errors) {
@@ -235,7 +257,8 @@ function walkFiles(root, extensions) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
     try {
-        await verifyEsmPackages();
+        const { values } = parseArgs({ options: { pack: { type: 'boolean' } } });
+        await verifyEsmPackages({ pack: values.pack });
     } catch (error) {
         process.stderr.write(`${error instanceof Error ? error.message : 'ESM verification failed.'}\n`);
         process.exitCode = 1;

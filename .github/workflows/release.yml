@@ -82,7 +82,7 @@ jobs:
                   git config user.name 'github-actions[bot]'
                   git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
                   node .github/scripts/prepareReleaseVersions.mjs
-                  yarn docs
+                  yarn nx run docs:generate-api-overview --parallel=1 --skip-nx-cache
                   yarn prettier --write package.json 'libs/*/package.json' 'tools/*/package.json' '**/CHANGELOG.md' '.docs/packages/*/api/**/*.md'
                   node .github/scripts/prepareReleaseCandidate.mjs --directory "$RUNNER_TEMP/archipel-candidate"
             - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
