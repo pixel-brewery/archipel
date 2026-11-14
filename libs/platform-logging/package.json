@@ -1,6 +1,6 @@
 {
     "name": "@pixel-brewery/archipel-platform-logging",
-    "version": "0.1.48",
+    "version": "0.1.49",
     "description": "Configurable logging module for NestJS applications with log-level management.",
     "type": "module",
     "main": "./src/index.js",
@@ -33,7 +33,7 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@pixel-brewery/archipel-platform-configuration": "0.1.48",
+        "@pixel-brewery/archipel-platform-configuration": "0.1.49",
         "tslib": "2.9.1"
     },
     "peerDependencies": {

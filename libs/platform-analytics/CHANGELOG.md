@@ -1,3 +1,13 @@
+## 0.1.49 (2026-11-14)
+
+### 🩹 Fixes
+
+- **ci:** make verify regenerate and check release outputs ([#48](https://github.com/pixel-brewery/archipel/pull/48))
+
+### ❤️ Thank You
+
+- André Wehlert @RueDeRennes
+
 ## 0.1.48 (2026-11-13)
 
 This was a version bump only for platform-analytics to align it with other projects, there were no code changes.
