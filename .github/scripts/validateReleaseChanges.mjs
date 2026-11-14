@@ -32,7 +32,12 @@ export function validateReleaseChanges(candidate, target) {
             if (item && after.version !== item.version) throw new Error('Prepared package version does not match its release group.');
             if (!isDeepStrictEqual(withoutVersions(before), withoutVersions(after)))
                 throw new Error('A release manifest changed fields outside version metadata.');
-        } else if (filename !== 'yarn.lock' && !changelogs.has(filename) && !/^\.docs\/packages\/platform-[a-z0-9-]+\/api\/.+\.md$/u.test(filename))
+        } else if (
+            filename !== 'yarn.lock' &&
+            filename !== '.docs/public/api/api-index.json' &&
+            !changelogs.has(filename) &&
+            !/^\.docs\/packages\/platform-[a-z0-9-]+\/api\/.+\.md$/u.test(filename)
+        )
             throw new Error(`Release preparation changed a non-metadata file: ${filename}`);
     }
 }

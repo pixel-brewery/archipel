@@ -86,6 +86,14 @@ describe('built package ESM verification', () => {
         expect(count).toBe(1);
     });
 
+    it('rejects a built export that the package would omit from its archive', async () => {
+        // Arrange
+        built({ files: ['src/index.js', 'src/index.d.ts'] });
+
+        // Act and assert
+        await expect(verifyEsmPackages({ root, pack: true })).rejects.toThrow('The archive is missing installed package file: src/provider/index.d.ts.');
+    });
+
     it.each(['src/index.js', 'src/index.d.ts', 'src/provider/index.js', 'src/provider/index.d.ts', 'LICENSE'])(
         'rejects an incomplete built package missing %s',
         async (file) => {
