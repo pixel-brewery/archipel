@@ -16,15 +16,17 @@ const packagesData = loadPackagesAtBuildTime(docsRoot, configDirectory);
 const virtualModuleId = 'virtual:packages-data';
 const resolvedVirtualModuleId = '\0' + virtualModuleId;
 
+const base = '/archipel/';
+
 export default defineConfig({
     title: 'Archipel API Docs',
     description: 'API-first documentation for Archipel platform libraries and integrations',
 
     srcDir: docsRoot,
-    base: '/archipel/',
+    base,
     cleanUrls: false,
     lastUpdated: false,
-    appearance: 'dark',
+    appearance: true,
 
     // Vite plugin to provide packages data as a virtual module
     vite: {
@@ -47,7 +49,8 @@ export default defineConfig({
     },
 
     head: [
-        ['meta', { name: 'theme-color', content: '#ff2975' }],
+        ['meta', { name: 'theme-color', content: '#f8fbf9' }],
+        ['link', { rel: 'icon', type: 'image/png', sizes: '160x160', href: base + 'brand/mark.png' }],
         ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
         ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
         [
@@ -60,7 +63,7 @@ export default defineConfig({
     ],
 
     themeConfig: {
-        logo: undefined,
+        logo: { src: '/brand/mark.png', alt: '' },
         siteTitle: 'Archipel',
 
         nav: [
