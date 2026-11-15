@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress';
 import packagesData from 'virtual:packages-data';
-import workspacePackage from '../../../../../../package.json' with { type: 'json' };
 
 // Packages are loaded at BUILD TIME from libs/platform-{name}/package.json.
 // Add a new library with package.json and it appears automatically.
@@ -13,79 +12,20 @@ const packages = packagesData.packages.map((pkg) => ({
 }));
 
 const packageCount = packagesData.count;
-const projectVersions = {
-    node: workspacePackage.engines.node,
-    yarn: workspacePackage.packageManager.replace(/^yarn@/, '').split('+')[0],
-    nx: workspacePackage.devDependencies.nx,
-    nest: workspacePackage.dependencies['@nestjs/core'],
-};
-const projectShields = [
-    {
-        label: 'GitHub Packages',
-        href: 'https://github.com/orgs/pixel-brewery/packages',
-        image: 'https://img.shields.io/badge/registry-GitHub%20Packages-181717?style=flat-square&logo=github&logoColor=white',
-    },
-    {
-        label: 'GitHub Actions CI',
-        href: 'https://github.com/pixel-brewery/archipel/actions/workflows/ci.yml',
-        image: 'https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white',
-    },
-    {
-        label: 'MIT License',
-        href: 'https://github.com/pixel-brewery/archipel/blob/main/LICENSE',
-        image: 'https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square',
-    },
-    {
-        label: `Node.js ${projectVersions.node}`,
-        href: 'https://nodejs.org/',
-        image: `https://img.shields.io/badge/node-${encodeURIComponent(projectVersions.node)}-339933?style=flat-square&logo=nodedotjs&logoColor=white`,
-    },
-    {
-        label: `Yarn ${projectVersions.yarn}`,
-        href: 'https://yarnpkg.com/',
-        image: `https://img.shields.io/badge/yarn-${encodeURIComponent(projectVersions.yarn)}-2C8EBB?style=flat-square&logo=yarn&logoColor=white`,
-    },
-    {
-        label: `Nx ${projectVersions.nx}`,
-        href: 'https://nx.dev/',
-        image: `https://img.shields.io/badge/Nx-${encodeURIComponent(projectVersions.nx)}-143055?style=flat-square&logo=nx&logoColor=white`,
-    },
-    {
-        label: `NestJS ${projectVersions.nest}`,
-        href: 'https://nestjs.com/',
-        image: `https://img.shields.io/badge/NestJS-${encodeURIComponent(projectVersions.nest)}-E0234E?style=flat-square&logo=nestjs&logoColor=white`,
-    },
-];
 </script>
 
 <template>
     <div class="archipel-home">
-        <!-- Hero -->
-        <section class="hero">
-            <div class="hero-glow"></div>
+        <section class="hero" aria-labelledby="home-title">
             <div class="hero-content">
-                <div class="hero-badge">Open Source Framework</div>
-                <h1 class="hero-title">
-                    <span class="hero-title-gradient">Archipel Platform</span>
-                </h1>
-                <p class="hero-tagline">Enterprise-grade NestJS backend framework libraries designed for high-performance monorepos and microservices.</p>
-                <div class="hero-shields" aria-label="Project metadata">
-                    <a
-                        v-for="shield in projectShields"
-                        :key="shield.label"
-                        :href="shield.href"
-                        :aria-label="shield.label"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img :src="shield.image" :alt="shield.label" />
-                    </a>
-                </div>
+                <h1 id="home-title" class="hero-title">A foundation for NestJS applications</h1>
+                <p class="hero-tagline">Build backend services with modular packages for authentication, data, observability and more.</p>
                 <div class="hero-actions">
                     <a :href="withBase('/guides/')" class="btn btn-primary">Get Started</a>
                     <a :href="withBase('/packages/')" class="btn btn-secondary">View Packages</a>
                 </div>
             </div>
+            <img class="hero-art" :src="withBase('/brand/hero.webp')" alt="" width="1820" height="694" fetchpriority="high" />
         </section>
 
         <!-- Package registry -->
@@ -184,156 +124,116 @@ const projectShields = [
 /* ─── Hero ─── */
 .hero {
     position: relative;
-    display: flex;
-    flex-direction: column;
+    isolation: isolate;
+    display: grid;
     align-items: center;
-    text-align: center;
-    padding: 80px 0 60px;
-    overflow: visible;
-}
-
-.hero-glow {
-    position: absolute;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 700px;
-    height: 500px;
-    background: radial-gradient(ellipse, rgba(255, 20, 147, 0.15) 0%, rgba(255, 77, 184, 0.06) 40%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-.dark .hero-glow {
-    background: radial-gradient(ellipse, rgba(255, 20, 147, 0.25) 0%, rgba(255, 77, 184, 0.1) 40%, transparent 70%);
+    min-height: clamp(24rem, 39vw, 29rem);
+    margin: 1.75rem 0 2.85rem;
+    overflow: hidden;
+    border: 1px solid var(--archipel-border-subtle);
+    border-radius: 1.25rem;
+    background: #f0f5ef;
 }
 
 .hero-content {
-    position: relative;
-    z-index: 1;
+    width: 50%;
+    padding: clamp(1.8rem, 4.25vw, 4rem);
 }
 
-.hero-badge {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 4px 14px;
-    border-radius: 20px;
-    background: var(--vp-c-brand-soft);
-    color: var(--vp-c-brand-1);
-    border: 1px solid rgba(255, 20, 147, 0.2);
-    margin-bottom: 24px;
+.hero-art {
+    position: absolute;
+    inset: 50% 0 auto;
+    z-index: -1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: translateY(-50%);
+    mask-image: linear-gradient(transparent, black 12%, black 88%, transparent);
 }
 
 .hero-title {
+    max-width: 14ch;
+    margin: 0;
+    color: #182f2b;
     font-family: var(--archipel-font-display);
-    font-size: 3.5rem;
+    font-size: clamp(2.55rem, 5.35vw, 4.4rem);
     font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-    margin: 0 0 20px;
-}
-
-.hero-title-gradient {
-    background: linear-gradient(135deg, #ff1493 0%, #ff4db8 50%, #ff86d6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    letter-spacing: -0.055em;
+    line-height: 1.04;
+    text-wrap: balance;
 }
 
 .hero-tagline {
+    max-width: 35ch;
+    margin: 1.25rem 0 0;
+    color: #3f554f;
     font-size: 1.125rem;
     line-height: 1.6;
-    color: var(--archipel-text-muted);
-    max-width: 560px;
-    margin: 0 auto 32px;
-}
-
-.hero-shields {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 6px;
-    max-width: 760px;
-    margin: 0 auto 32px;
-}
-
-.hero-shields a {
-    display: inline-flex;
-    border-radius: 3px;
-    transition:
-        transform 0.15s ease,
-        opacity 0.15s ease;
-}
-
-.hero-shields a:hover {
-    opacity: 0.85;
-    transform: translateY(-1px);
-}
-
-.hero-shields img {
-    display: block;
-    height: 20px;
 }
 
 .hero-actions {
     display: flex;
     gap: 12px;
-    justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 32px;
+    margin-top: 1.6rem;
 }
 
 .btn {
     display: inline-flex;
     align-items: center;
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.55rem 1.05rem;
+    border: 1px solid #176361;
+    border-radius: 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 650;
     text-decoration: none;
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
+}
+
+.btn:focus-visible {
+    outline: 3px solid #176361;
+    outline-offset: 4px;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #ff1493, #ff4db8);
+    background: #176361;
     color: #fff;
-    box-shadow: 0 2px 12px rgba(255, 20, 147, 0.3);
 }
 
 .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.4);
+    background: #206e6b;
+    color: #fff;
 }
 
 .btn-secondary {
-    background: transparent;
-    color: var(--archipel-text);
-    border: 1px solid var(--archipel-border);
+    background: #fff;
+    color: #176361;
 }
 
 .btn-secondary:hover {
-    border-color: #ff1493;
-    background: var(--vp-c-brand-soft);
+    background: #f0f5ef;
+    color: #176361;
 }
 
-.hero-code {
-    display: inline-block;
-    background: var(--vp-code-bg);
-    border: 1px solid var(--archipel-border-subtle);
-    border-radius: 8px;
-    padding: 8px 20px;
-}
+@media (max-width: 58rem) {
+    .hero {
+        min-height: 0;
+    }
 
-.hero-code code {
-    font-family: var(--vp-font-family-mono);
-    font-size: 0.85rem;
-    color: var(--archipel-text-muted);
+    .hero-content {
+        width: 100%;
+        padding-bottom: 0;
+    }
+
+    .hero-art {
+        position: static;
+        height: clamp(11rem, 39vw, 20rem);
+        transform: none;
+        object-fit: cover;
+        object-position: right center;
+        mask-image: linear-gradient(transparent, black 18%);
+    }
 }
 
 /* ─── Package registry ─── */
@@ -344,13 +244,13 @@ const projectShields = [
     gap: 32px;
     padding: 28px 32px;
     margin: 0 0 32px;
-    border: 1px solid rgba(255, 20, 147, 0.25);
+    border: 1px solid rgb(var(--brand-rgb) / 0.25);
     border-radius: 12px;
-    background: linear-gradient(135deg, var(--archipel-bg-alt) 0%, rgba(255, 20, 147, 0.06) 100%);
+    background: linear-gradient(135deg, var(--archipel-bg-alt) 0%, rgb(var(--brand-rgb) / 0.06) 100%);
 }
 
 .dark .registry-card {
-    background: linear-gradient(135deg, var(--archipel-bg-elevated) 0%, rgba(255, 20, 147, 0.1) 100%);
+    background: linear-gradient(135deg, var(--archipel-bg-elevated) 0%, rgb(var(--brand-rgb) / 0.1) 100%);
 }
 
 .registry-eyebrow {
@@ -496,8 +396,8 @@ const projectShields = [
 }
 
 .package-card:hover {
-    border-color: rgba(255, 20, 147, 0.3);
-    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.08);
+    border-color: rgb(var(--brand-rgb) / 0.3);
+    box-shadow: 0 4px 20px rgb(var(--brand-rgb) / 0.08);
     transform: translateY(-2px);
 }
 
@@ -506,7 +406,7 @@ const projectShields = [
 }
 
 .dark .package-card:hover {
-    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.15);
+    box-shadow: 0 4px 20px rgb(var(--brand-rgb) / 0.15);
 }
 
 .package-card-header {
@@ -518,12 +418,12 @@ const projectShields = [
 }
 
 .package-card--featured {
-    border-color: rgba(255, 20, 147, 0.4);
-    background: linear-gradient(135deg, var(--archipel-bg-alt) 0%, rgba(255, 20, 147, 0.05) 100%);
+    border-color: rgb(var(--brand-rgb) / 0.4);
+    background: linear-gradient(135deg, var(--archipel-bg-alt) 0%, rgb(var(--brand-rgb) / 0.05) 100%);
 }
 
 .dark .package-card--featured {
-    background: linear-gradient(135deg, var(--archipel-bg-elevated) 0%, rgba(255, 20, 147, 0.08) 100%);
+    background: linear-gradient(135deg, var(--archipel-bg-elevated) 0%, rgb(var(--brand-rgb) / 0.08) 100%);
 }
 
 .package-badge {
@@ -531,9 +431,9 @@ const projectShields = [
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #ff1493;
-    background: rgba(255, 20, 147, 0.1);
-    border: 1px solid rgba(255, 20, 147, 0.2);
+    color: var(--vp-c-brand-1);
+    background: rgb(var(--brand-rgb) / 0.1);
+    border: 1px solid rgb(var(--brand-rgb) / 0.2);
     padding: 2px 8px;
     border-radius: 20px;
 }
@@ -606,10 +506,6 @@ const projectShields = [
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.25rem;
-    }
-
     .registry-card {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -626,8 +522,8 @@ const projectShields = [
 }
 
 @media (max-width: 480px) {
-    .hero-title {
-        font-size: 1.75rem;
+    .hero-content {
+        padding-inline: 1.3rem;
     }
 
     .hero-tagline {
