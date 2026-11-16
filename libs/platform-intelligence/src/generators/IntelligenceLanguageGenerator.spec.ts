@@ -130,6 +130,56 @@ describe('IntelligenceLanguageGenerator tool resolution', () => {
         expect(getSubmittedToolNames()).toEqual(['inline']);
     });
 
+    it('should submit call-local provider tools natively and include them in active tool selection', async () => {
+        // arrange
+        registry.register(createTool('registered'));
+        const nativeDefinition = { type: 'provider', id: 'openai.web_search', args: {} };
+
+        // act
+        await generator.generateText(
+            { prompt: 'Search the web.' },
+            {
+                includeRegisteredTools: false,
+                tools: { inline: createToolDefinition('inline') },
+                providerTools: { web_search: { kind: 'provider-tool', nativeDefinition } },
+                activeToolNames: ['inline', 'web_search'],
+            },
+        );
+
+        // assert
+        expect(getSubmittedToolNames()).toEqual(['inline', 'web_search']);
+        expect(getSubmittedTools()['web_search']).toBe(nativeDefinition);
+    });
+
+    it('should reject a provider tool that repeats a call-local tool name before calling the provider', async () => {
+        // act
+        const action = generator.generateText(
+            { prompt: 'Search the web.' },
+            {
+                tools: { web_search: createToolDefinition('web_search') },
+                providerTools: { web_search: { kind: 'provider-tool', nativeDefinition: {} } },
+            },
+        );
+
+        // assert
+        await expect(action).rejects.toBeInstanceOf(IntelligenceValidationError);
+        expect(sdk.generateText).not.toHaveBeenCalled();
+    });
+
+    it('should reject an application function passed as provider tool before calling the provider', async () => {
+        // act
+        const action = generator.generateText(
+            { prompt: 'Search the web.' },
+            {
+                providerTools: { web_search: createToolDefinition('web_search') as never },
+            },
+        );
+
+        // assert
+        await expect(action).rejects.toBeInstanceOf(IntelligenceValidationError);
+        expect(sdk.generateText).not.toHaveBeenCalled();
+    });
+
     it('should treat excluded registered tools as unavailable active tools', async () => {
         // arrange
         registry.register(createTool('registered'));
@@ -261,6 +311,11 @@ describe('IntelligenceLanguageGenerator tool resolution', () => {
         }
 
         return Object.keys(settings['tools']);
+    }
+
+    function getSubmittedTools(): Readonly<Record<string, unknown>> {
+        const settings = sdk.generateText.mock.calls[0]?.[0] as unknown;
+        return isRecord(settings) && isRecord(settings['tools']) ? settings['tools'] : {};
     }
 
     function getSubmittedMiddleware(): {

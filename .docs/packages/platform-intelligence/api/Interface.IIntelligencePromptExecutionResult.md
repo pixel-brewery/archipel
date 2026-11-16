@@ -6,7 +6,7 @@ editUrl: false
 
 # Interface: IIntelligencePromptExecutionResult\<TOutput, TMetadata\>
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:14](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L14)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:15](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L15)
 
 Normalized result of an intelligence prompt execution.
 
@@ -25,7 +25,7 @@ Normalized result of an intelligence prompt execution.
 readonly effectivePolicy: IIntelligencePromptEffectivePolicy;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:31](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L31)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:37](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L37)
 
 ---
 
@@ -35,7 +35,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly finishReason: string;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:29](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L29)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:30](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L30)
 
 ---
 
@@ -45,7 +45,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly metadata: TMetadata | undefined;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:32](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L32)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:38](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L38)
 
 ---
 
@@ -55,7 +55,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly model: string;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:21](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L21)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:22](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L22)
 
 ---
 
@@ -65,7 +65,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly output: TOutput;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:17](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L17)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:18](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L18)
 
 ---
 
@@ -75,7 +75,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly promptName: string;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:18](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L18)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:19](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L19)
 
 ---
 
@@ -85,7 +85,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly promptVersion: number;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:19](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L19)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:20](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L20)
 
 ---
 
@@ -95,7 +95,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly provider: string;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:20](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L20)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:21](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L21)
 
 ---
 
@@ -105,7 +105,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly reasoningText?: string;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:28](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L28)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:29](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L29)
 
 ---
 
@@ -115,7 +115,25 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly requestedPolicy: IIntelligencePromptExecutionPolicy;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:30](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L30)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:36](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L36)
+
+---
+
+### sources?
+
+```ts
+readonly sources?: readonly {
+  id?: string;
+  title?: string;
+  type: string;
+  url?: string;
+}[];
+```
+
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:35](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L35)
+
+Sources the provider cited for the generated output, for example web results of a provider-owned search.
+Empty when the provider reported none.
 
 ---
 
@@ -125,7 +143,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly stepUsage?: readonly (IIntelligenceUsage | null)[];
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:27](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L27)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:28](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L28)
 
 Usage of each provider call in execution order; `usage` is their sum. See
 `IIntelligenceLanguageCompletion.stepUsage`.
@@ -138,4 +156,4 @@ Usage of each provider call in execution order; `usage` is their sum. See
 readonly usage: IIntelligenceUsage | null;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:22](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L22)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:23](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L23)

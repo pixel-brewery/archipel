@@ -91,6 +91,27 @@ describe('IntelligencePromptExecutor', () => {
         expect(languageGenerator.generateObject).toHaveBeenCalledWith(expect.any(Object), definition.outputSchema, {});
     });
 
+    it('should return the sources the provider cited for an object prompt', async () => {
+        const definition = intelligencePrompt({
+            name: 'researched-object',
+            version: 1,
+            mode: 'object',
+            inputSchema: z.object({ name: z.string() }),
+            outputSchema: z.object({ greeting: z.string() }),
+            system: () => 'Return an object.',
+            messages: ({ input }) => [{ role: 'user', content: input.name }],
+        });
+        const { executor, languageGenerator } = createExecutor(['textInput', 'textOutput', 'structuredOutput']);
+        languageGenerator.generateObject.mockResolvedValueOnce({
+            ...createCompletion({ greeting: 'Hello Ada' }),
+            sources: [{ type: 'url', url: 'https://example.com/ada', title: 'Ada' }],
+        });
+
+        const result = await executor.execute(definition.with({ name: 'Ada' }));
+
+        expect(result.sources).toEqual([{ type: 'url', url: 'https://example.com/ada', title: 'Ada' }]);
+    });
+
     it('should reject invalid prompt input before a provider call', async () => {
         const definition = intelligencePrompt({
             name: 'invalid',

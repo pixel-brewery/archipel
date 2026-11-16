@@ -1,5 +1,6 @@
 export { createGrokCodeExecutionTool } from './createGrokCodeExecutionTool.js';
 export { createGrokFileSearchTool } from './createGrokFileSearchTool.js';
+export { createGrokImageGenerationTool } from './createGrokImageGenerationTool.js';
 export { createGrokMcpServerTool } from './createGrokMcpServerTool.js';
 export { createGrokViewImageTool } from './createGrokViewImageTool.js';
 export { createGrokViewXVideoTool } from './createGrokViewXVideoTool.js';

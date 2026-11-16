@@ -6,7 +6,7 @@ editUrl: false
 
 # Interface: IIntelligenceLanguageGenerationOptions
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:19](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L19)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:20](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L20)
 
 Provider-neutral language generation controls.
 
@@ -38,7 +38,7 @@ Caller-driven cancellation signal.
 readonly activeToolNames?: readonly string[];
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:43](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L43)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:53](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L53)
 
 Names of the composed tools that are available to this call.
 
@@ -55,7 +55,7 @@ and names unavailable after registry/local composition are rejected with
 readonly beforeProviderCall?: (event) => void | Promise<void>;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:66](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L66)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:76](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L76)
 
 Authoritative guard invoked after native prompt/tool preparation and
 immediately before every provider attempt.
@@ -81,7 +81,7 @@ hook is suitable for durable fencing; `onStepStart` is telemetry only.
 readonly deferredToolLoading?: IIntelligenceDeferredToolLoadingOptions;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:57](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L57)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:67](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L67)
 
 Exposes the composed tool catalog on demand instead of sending every full
 tool contract with each provider request.
@@ -119,7 +119,7 @@ Additional outbound request headers.
 readonly includeRegisteredTools?: boolean;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:34](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L34)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:44](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L44)
 
 Includes tools from the application-wide registry in this call.
 
@@ -134,7 +134,7 @@ supplied through [tools](#tools).
 readonly maxOutputTokens?: number;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:24](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L24)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:25](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L25)
 
 ---
 
@@ -144,7 +144,7 @@ Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGener
 readonly maxRetries?: number;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:25](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L25)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:26](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L26)
 
 ---
 
@@ -154,7 +154,7 @@ Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGener
 readonly maxSteps?: number;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:58](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L58)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:68](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L68)
 
 ---
 
@@ -180,7 +180,7 @@ Optional provider/model override.
 readonly onStepStart?: (event) => void | Promise<void>;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:67](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L67)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:77](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L77)
 
 #### Parameters
 
@@ -200,7 +200,7 @@ Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGener
 readonly onToolExecutionEnd?: (event) => void | Promise<void>;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:69](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L69)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:79](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L79)
 
 #### Parameters
 
@@ -220,7 +220,7 @@ Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGener
 readonly onToolExecutionStart?: (event) => void | Promise<void>;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:68](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L68)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:78](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L78)
 
 #### Parameters
 
@@ -250,6 +250,23 @@ Optional provider-specific settings.
 
 ---
 
+### providerTools?
+
+```ts
+readonly providerTools?: Readonly<Record<string, IIntelligenceProviderToolDefinition>>;
+```
+
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:36](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L36)
+
+Provider-owned tools available to this call only, keyed by tool name.
+
+Use the `tool` of a registration from a provider `/tools` subpath, for example
+`createOpenAIWebSearchTool()`. The provider executes these tools itself; they never run application code.
+Names must not repeat a name supplied through [tools](#tools); such a call is rejected with
+`IntelligenceValidationError`. They take part in [activeToolNames](#activetoolnames) like every other composed tool.
+
+---
+
 ### requestId?
 
 ```ts
@@ -272,7 +289,7 @@ Correlation identifier included in structured Archipel logs.
 readonly temperature?: number;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:22](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L22)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:23](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L23)
 
 ---
 
@@ -298,7 +315,7 @@ Total provider-operation timeout in milliseconds.
 readonly toolChoice?: IntelligenceToolChoice;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:27](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L27)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:37](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L37)
 
 ---
 
@@ -308,7 +325,7 @@ Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGener
 readonly tools?: Readonly<Record<string, IIntelligenceToolDefinition<unknown, unknown>>>;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:26](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L26)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:27](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L27)
 
 ---
 
@@ -318,4 +335,4 @@ Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGener
 readonly topP?: number;
 ```
 
-Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:23](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L23)
+Defined in: [libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts:24](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/contracts/IIntelligenceLanguageGenerationOptions.ts#L24)

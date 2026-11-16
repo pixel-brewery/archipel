@@ -8,6 +8,7 @@ import type { IIntelligenceToolExecutionEndEvent } from './IIntelligenceToolExec
 import type { IIntelligenceToolExecutionStartEvent } from './IIntelligenceToolExecutionStartEvent.js';
 import type { IntelligenceToolChoice } from './IntelligenceToolChoice.js';
 import type { IntelligenceToolSet } from './IntelligenceToolSet.js';
+import type { IIntelligenceProviderToolDefinition } from '../providers/IIntelligenceProviderToolDefinition.js';
 
 // #endregion
 
@@ -24,6 +25,15 @@ export interface IIntelligenceLanguageGenerationOptions extends IIntelligenceReq
     readonly maxOutputTokens?: number;
     readonly maxRetries?: number;
     readonly tools?: IntelligenceToolSet;
+    /**
+     * Provider-owned tools available to this call only, keyed by tool name.
+     *
+     * Use the `tool` of a registration from a provider `/tools` subpath, for example
+     * `createOpenAIWebSearchTool()`. The provider executes these tools itself; they never run application code.
+     * Names must not repeat a name supplied through {@link tools}; such a call is rejected with
+     * `IntelligenceValidationError`. They take part in {@link activeToolNames} like every other composed tool.
+     */
+    readonly providerTools?: Readonly<Record<string, IIntelligenceProviderToolDefinition>>;
     readonly toolChoice?: IntelligenceToolChoice;
     /**
      * Includes tools from the application-wide registry in this call.

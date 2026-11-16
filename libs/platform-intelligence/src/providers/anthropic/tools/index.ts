@@ -7,6 +7,7 @@ export { createAnthropicCodeExecution20260120Tool } from './createAnthropicCodeE
 export { createAnthropicComputer20241022Tool } from './createAnthropicComputer20241022Tool.js';
 export { createAnthropicComputer20250124Tool } from './createAnthropicComputer20250124Tool.js';
 export { createAnthropicComputer20251124Tool } from './createAnthropicComputer20251124Tool.js';
+export { createAnthropicComputerToolset20260801Tool } from './createAnthropicComputerToolset20260801Tool.js';
 export { createAnthropicMemory20250818Tool } from './createAnthropicMemory20250818Tool.js';
 export { createAnthropicTextEditor20241022Tool } from './createAnthropicTextEditor20241022Tool.js';
 export { createAnthropicTextEditor20250124Tool } from './createAnthropicTextEditor20250124Tool.js';
@@ -16,5 +17,7 @@ export { createAnthropicToolSearchBM2520251119Tool } from './createAnthropicTool
 export { createAnthropicToolSearchRegex20251119Tool } from './createAnthropicToolSearchRegex20251119Tool.js';
 export { createAnthropicWebFetch20250910Tool } from './createAnthropicWebFetch20250910Tool.js';
 export { createAnthropicWebFetch20260209Tool } from './createAnthropicWebFetch20260209Tool.js';
+export { createAnthropicWebFetch20260318Tool } from './createAnthropicWebFetch20260318Tool.js';
 export { createAnthropicWebSearch20250305Tool } from './createAnthropicWebSearch20250305Tool.js';
 export { createAnthropicWebSearch20260209Tool } from './createAnthropicWebSearch20260209Tool.js';
+export { createAnthropicWebSearch20260318Tool } from './createAnthropicWebSearch20260318Tool.js';
