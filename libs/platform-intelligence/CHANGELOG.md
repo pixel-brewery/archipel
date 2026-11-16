@@ -1,3 +1,7 @@
+## 0.1.52 (2026-11-16)
+
+This was a version bump only for platform-intelligence to align it with other projects, there were no code changes.
+
 ## 0.1.51 (2026-11-16)
 
 This was a version bump only for platform-intelligence to align it with other projects, there were no code changes.
