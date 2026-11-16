@@ -143,7 +143,7 @@
         "bullmq": "^6.7.5",
         "compression": "^1.8.2",
         "conventional-changelog-atom": "^5.1.0",
-        "cspell": "10.4.1",
+        "cspell": "10.5.0",
         "dd-trace": "^6.24.0",
         "docusign-esign": "10.1.0",
         "eslint": "10.14.0",
