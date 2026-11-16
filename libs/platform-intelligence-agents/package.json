@@ -67,8 +67,8 @@
     },
     "devDependencies": {
         "@ai-sdk/provider": "4.0.37",
-        "@nestjs/common": "12.4.2",
-        "@nestjs/testing": "12.4.2",
+        "@nestjs/common": "12.5.0",
+        "@nestjs/testing": "12.5.0",
         "@pixel-brewery/archipel-platform-configuration": "^0.1.50",
         "@pixel-brewery/archipel-platform-mcp": "^0.1.50",
         "vitest": "5.1.0",
