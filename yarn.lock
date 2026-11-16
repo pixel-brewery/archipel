@@ -6273,16 +6273,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/exporter-trace-otlp-http@npm:0.301.1":
-  version: 0.301.1
-  resolution: "@opentelemetry/exporter-trace-otlp-http@npm:0.301.1"
+"@opentelemetry/exporter-trace-otlp-http@npm:0.301.2":
+  version: 0.301.2
+  resolution: "@opentelemetry/exporter-trace-otlp-http@npm:0.301.2"
   dependencies:
-    "@opentelemetry/otlp-exporter-base": "npm:0.301.1"
-    "@opentelemetry/otlp-transformer": "npm:0.301.1"
+    "@opentelemetry/otlp-exporter-base": "npm:0.301.2"
+    "@opentelemetry/otlp-transformer": "npm:0.301.2"
     "@opentelemetry/sdk-trace": "npm:3.1.1"
   peerDependencies:
     "@opentelemetry/api": ^1.10.0
-  checksum: 10c0/f5f77a9cf7e5b7fe80bb799128ffad6229345451fb65984527854bfc18482f43c541170702db54debf9fb50a752ea4b4cb76845df5b8fd0c023db1d5168b5f7a
+  checksum: 10c0/0da9c3623778b4b0e6aa1051df846a616201972f00ee43a4a5b43fe8a8a21703044ada7d157fd103b22615ef1da7079cfea6c6086ccbb06f8f2e48242bc208b4
   languageName: node
   linkType: hard
 
@@ -8293,7 +8293,7 @@ __metadata:
     "@opentelemetry/exporter-metrics-otlp-grpc": "npm:0.301.2"
     "@opentelemetry/exporter-metrics-otlp-http": "npm:0.301.1"
     "@opentelemetry/exporter-prometheus": "npm:0.301.1"
-    "@opentelemetry/exporter-trace-otlp-http": "npm:0.301.1"
+    "@opentelemetry/exporter-trace-otlp-http": "npm:0.301.2"
     "@opentelemetry/instrumentation": "npm:0.301.1"
     "@opentelemetry/instrumentation-express": "npm:0.73.0"
     "@opentelemetry/instrumentation-http": "npm:0.301.1"
