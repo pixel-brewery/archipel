@@ -166,6 +166,10 @@ loops, also expose `stepUsage` with the usage of each call in execution order;
 with long-context rates above an input-token threshold, must be priced per
 entry.
 
+Prompt execution also exposes the `toolCalls` reported by the language result,
+including provider-executed tools. Each call carries its ID and name. Citations
+are available separately as `sources`.
+
 Archipel deliberately does not assign monetary prices or application billing
 units. Consumers persist and price the normalized usage according to their own
 provider, model, currency, entitlement, and audit policies.

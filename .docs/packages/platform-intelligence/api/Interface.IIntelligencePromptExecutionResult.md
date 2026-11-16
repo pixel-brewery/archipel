@@ -25,7 +25,7 @@ Normalized result of an intelligence prompt execution.
 readonly effectivePolicy: IIntelligencePromptEffectivePolicy;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:37](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L37)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:42](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L42)
 
 ---
 
@@ -45,7 +45,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly metadata: TMetadata | undefined;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:38](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L38)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:43](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L43)
 
 ---
 
@@ -115,7 +115,7 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 readonly requestedPolicy: IIntelligencePromptExecutionPolicy;
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:36](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L36)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:41](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L41)
 
 ---
 
@@ -130,7 +130,7 @@ readonly sources?: readonly {
 }[];
 ```
 
-Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:35](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L35)
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:40](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L40)
 
 Sources the provider cited for the generated output, for example web results of a provider-owned search.
 Empty when the provider reported none.
@@ -147,6 +147,19 @@ Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecution
 
 Usage of each provider call in execution order; `usage` is their sum. See
 `IIntelligenceLanguageCompletion.stepUsage`.
+
+---
+
+### toolCalls?
+
+```ts
+readonly toolCalls?: readonly IIntelligenceToolCall[];
+```
+
+Defined in: [libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts:35](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/prompts/IIntelligencePromptExecutionResult.ts#L35)
+
+Tool calls reported across the execution, including calls executed by the provider.
+An empty array means the provider reported no calls.
 
 ---
 

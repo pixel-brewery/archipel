@@ -91,7 +91,7 @@ describe('IntelligencePromptExecutor', () => {
         expect(languageGenerator.generateObject).toHaveBeenCalledWith(expect.any(Object), definition.outputSchema, {});
     });
 
-    it('should return the sources the provider cited for an object prompt', async () => {
+    it('should return tool calls and sources reported for an object prompt', async () => {
         const definition = intelligencePrompt({
             name: 'researched-object',
             version: 1,
@@ -105,11 +105,13 @@ describe('IntelligencePromptExecutor', () => {
         languageGenerator.generateObject.mockResolvedValueOnce({
             ...createCompletion({ greeting: 'Hello Ada' }),
             sources: [{ type: 'url', url: 'https://example.com/ada', title: 'Ada' }],
+            toolCalls: [{ toolCallId: 'search-1', toolName: 'web_search', input: {} }],
         });
 
         const result = await executor.execute(definition.with({ name: 'Ada' }));
 
         expect(result.sources).toEqual([{ type: 'url', url: 'https://example.com/ada', title: 'Ada' }]);
+        expect(result.toolCalls).toEqual([{ toolCallId: 'search-1', toolName: 'web_search', input: {} }]);
     });
 
     it('should reject invalid prompt input before a provider call', async () => {

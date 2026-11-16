@@ -400,6 +400,10 @@ document indexes. Neither contract leaks provider model types.
 
 ## Usage Contract
 
+Structured and text prompt results expose `toolCalls` from the language completion. This includes tools the model
+provider executed. Use tool call IDs to count executions across generation steps. Provider citations are reported
+separately in `sources`.
+
 Capability results expose `IIntelligenceUsage` whenever the provider reports
 usage. The provider-neutral contract carries input, output, total, cache-read,
 cache-write, reasoning, and text/image/audio modality counters. A `null`

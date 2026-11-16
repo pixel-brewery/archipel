@@ -29,6 +29,11 @@ export interface IIntelligencePromptExecutionResult<TOutput, TMetadata = undefin
     readonly reasoningText?: string;
     readonly finishReason: string;
     /**
+     * Tool calls reported across the execution, including calls executed by the provider.
+     * An empty array means the provider reported no calls.
+     */
+    readonly toolCalls?: IIntelligenceLanguageCompletion<unknown>['toolCalls'];
+    /**
      * Sources the provider cited for the generated output, for example web results of a provider-owned search.
      * Empty when the provider reported none.
      */
