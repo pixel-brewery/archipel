@@ -15,6 +15,15 @@ import type {
     IBlobUploadRequest,
     IBlobUploadResult,
 } from '../../interfaces/IBlobProvider.js';
+import type {
+    IBlobMultipartAbortRequest,
+    IBlobMultipartCompleteRequest,
+    IBlobMultipartPart,
+    IBlobMultipartPartRequest,
+    IBlobMultipartUpload,
+    IBlobMultipartUploadLimits,
+    IBlobMultipartUploadStartRequest,
+} from '../../interfaces/IBlobMultipartUpload.js';
 import { BlobStorageStrategyBase } from '../abstracts/BlobStorageStrategyBase.js';
 import { assertBlobExecutionSupport } from '../assertBlobExecutionSupport.js';
 import { AWS_S3_ACCESS_KEY_ID, AWS_S3_BUCKET, AWS_S3_ENDPOINT, AWS_S3_REGION, AWS_S3_SECRET_ACCESS_KEY } from './env.js';
@@ -79,6 +88,17 @@ export class AwsS3BlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public readonly providerId: string = 'aws-s3';
+
+    /**
+     * S3 multipart limits: parts of 5 MiB to 5 GiB except the last, at most 10,000 parts.
+     *
+     * @public
+     */
+    public override readonly multipartUploadLimits: IBlobMultipartUploadLimits = {
+        minimumPartBytes: 5 * 1024 * 1024,
+        maximumPartBytes: 5 * 1024 * 1024 * 1024,
+        maximumParts: 10_000,
+    };
 
     /** @inheritdoc */
     public get defaultBucket(): string {
@@ -214,6 +234,108 @@ export class AwsS3BlobStorageStrategy extends BlobStorageStrategyBase {
         });
 
         return getSignedUrl(client, command, { expiresIn });
+    }
+
+    /** @inheritdoc */
+    public override async createMultipartUpload(request: IBlobMultipartUploadStartRequest): Promise<IBlobMultipartUpload> {
+        const { CreateMultipartUploadCommand } = await this.loadSdk();
+        const client = await this.getClient();
+        const key = this.normalizeKey(request.key);
+        const contentType = request.contentType ?? 'application/octet-stream';
+        const response = await client.send(
+            new CreateMultipartUploadCommand({
+                Bucket: request.bucket ?? this._bucket,
+                Key: key,
+                ContentType: contentType,
+                ContentDisposition: request.contentDisposition,
+                Metadata: request.metadata,
+            }),
+        );
+        if (!response.UploadId) {
+            throw new Error('S3 did not return a multipart upload identifier.');
+        }
+
+        return {
+            provider: this.providerId,
+            key,
+            ...(request.bucket !== undefined ? { bucket: request.bucket } : {}),
+            uploadId: response.UploadId,
+            contentType,
+            ...(request.contentDisposition !== undefined ? { contentDisposition: request.contentDisposition } : {}),
+            ...(request.metadata !== undefined ? { metadata: { ...request.metadata } } : {}),
+            ...(request.ownerUserId !== undefined ? { ownerUserId: request.ownerUserId } : {}),
+        };
+    }
+
+    /** @inheritdoc */
+    public override async uploadMultipartPart(request: IBlobMultipartPartRequest): Promise<IBlobMultipartPart> {
+        const { UploadPartCommand } = await this.loadSdk();
+        const client = await this.getClient();
+        const { upload } = request;
+        const response = await client.send(
+            new UploadPartCommand({
+                Bucket: upload.bucket ?? this._bucket,
+                Key: upload.key,
+                UploadId: upload.uploadId,
+                PartNumber: request.partNumber,
+                Body: request.body,
+                ContentLength: request.body.length,
+            }),
+        );
+        if (!response.ETag) {
+            throw new Error('S3 did not return a part receipt.');
+        }
+
+        return { partNumber: request.partNumber, token: response.ETag, size: request.body.length };
+    }
+
+    /** @inheritdoc */
+    public override async completeMultipartUpload(request: IBlobMultipartCompleteRequest): Promise<IBlobUploadResult> {
+        const { CompleteMultipartUploadCommand } = await this.loadSdk();
+        const client = await this.getClient();
+        const { upload } = request;
+        const parts = [...request.parts].sort((left, right) => left.partNumber - right.partNumber);
+        const bucket = upload.bucket ?? this._bucket;
+        const response = await client.send(
+            new CompleteMultipartUploadCommand({
+                Bucket: bucket,
+                Key: upload.key,
+                UploadId: upload.uploadId,
+                MultipartUpload: { Parts: parts.map((part) => ({ PartNumber: part.partNumber, ETag: part.token })) },
+            }),
+        );
+        this._logger.debug({ operation: 'blobObject.completeMultipartUpload', providerId: this.providerId, result: 'succeeded' });
+
+        return {
+            metadata: {
+                provider: this.providerId,
+                bucket,
+                region: this._region,
+                key: upload.key,
+                versionId: response.VersionId,
+                size: parts.reduce((total, part) => total + part.size, 0),
+                contentType: upload.contentType,
+                etag: response.ETag,
+                ...(upload.metadata !== undefined ? { metadata: { ...upload.metadata } } : {}),
+                isLatest: true,
+                ownerUserId: upload.ownerUserId,
+            },
+            rawResponse: response,
+        };
+    }
+
+    /** @inheritdoc */
+    public override async abortMultipartUpload(request: IBlobMultipartAbortRequest): Promise<void> {
+        const { AbortMultipartUploadCommand } = await this.loadSdk();
+        const client = await this.getClient();
+        const { upload } = request;
+        try {
+            await client.send(new AbortMultipartUploadCommand({ Bucket: upload.bucket ?? this._bucket, Key: upload.key, UploadId: upload.uploadId }));
+        } catch (error: unknown) {
+            if ((error as { name?: unknown } | null)?.name !== 'NoSuchUpload') {
+                throw error;
+            }
+        }
     }
 
     // #endregion

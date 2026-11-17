@@ -43,6 +43,22 @@ Initializes a new instance of the VercelBlobStorageStrategy class.
 
 ## Properties
 
+### multipartUploadLimits?
+
+```ts
+readonly multipartUploadLimits?: IBlobMultipartUploadLimits;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:51](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L51)
+
+Gets the part limits of multipart uploads; present exactly when the strategy implements them.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`multipartUploadLimits`](Class.BlobStorageStrategyBase#multipartuploadlimits)
+
+---
+
 ### providerId
 
 ```ts
@@ -82,6 +98,95 @@ Gets the default bucket (container/directory) configured for the provider.
 [`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`defaultBucket`](Class.BlobStorageStrategyBase#defaultbucket)
 
 ## Methods
+
+### abortMultipartUpload()?
+
+```ts
+abortMultipartUpload ? request : Promise<void>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:198](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L198)
+
+Abandons a multipart upload and releases the parts the provider still holds.
+
+Aborting an unknown, completed or already aborted upload succeeds without effect and never
+removes a completed object.
+
+#### Parameters
+
+| Parameter | Type                                                                 | Description                      |
+| --------- | -------------------------------------------------------------------- | -------------------------------- |
+| `request` | [`IBlobMultipartAbortRequest`](Interface.IBlobMultipartAbortRequest) | Handle of the upload to abandon. |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`abortMultipartUpload`](Class.BlobStorageStrategyBase#abortmultipartupload)
+
+---
+
+### completeMultipartUpload()?
+
+```ts
+completeMultipartUpload ? request : Promise<IBlobUploadResult>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:187](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L187)
+
+Joins the uploaded parts in ascending part order and publishes the object under its key.
+
+#### Parameters
+
+| Parameter | Type                                                                       | Description                            |
+| --------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| `request` | [`IBlobMultipartCompleteRequest`](Interface.IBlobMultipartCompleteRequest) | Handle and the receipts of every part. |
+
+#### Returns
+
+`Promise`\<[`IBlobUploadResult`](Interface.IBlobUploadResult)\>
+
+Metadata of the completed object.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`completeMultipartUpload`](Class.BlobStorageStrategyBase#completemultipartupload)
+
+---
+
+### createMultipartUpload()?
+
+```ts
+createMultipartUpload ? request : Promise<IBlobMultipartUpload>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:169](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L169)
+
+Starts an upload whose content is transferred in separately uploaded parts.
+
+A strategy that implements this operation implements all multipart operations and
+[BlobStorageStrategyBase.multipartUploadLimits](Class.BlobStorageStrategyBase#multipartuploadlimits). The returned handle can be persisted and
+continued in another process. Nothing is visible under the key before completion.
+
+#### Parameters
+
+| Parameter | Type                                                                             | Description                                         |
+| --------- | -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `request` | [`IBlobMultipartUploadStartRequest`](Interface.IBlobMultipartUploadStartRequest) | Target key and the headers of the completed object. |
+
+#### Returns
+
+`Promise`\<[`IBlobMultipartUpload`](Interface.IBlobMultipartUpload)\>
+
+Serializable handle of the started upload.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`createMultipartUpload`](Class.BlobStorageStrategyBase#createmultipartupload)
+
+---
 
 ### createSignedUrl()
 
@@ -144,7 +249,7 @@ Deletes a blob object from the storage backend.
 deleteObjectConditionally ? request : Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L140)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:156](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L156)
 
 Deletes the selected object only while its exact observed ETag still matches.
 
@@ -207,7 +312,7 @@ The download result including payload and metadata.
 inspectObjectHistory ? request : Promise<IBlobObjectHistoryResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:129](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L129)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:145](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L145)
 
 Observes one exact-key history page, including available versions, snapshots and soft deletion.
 
@@ -295,7 +400,7 @@ Determines whether a blob object exists in the storage backend.
 supportsExecutionOptions ? operation : boolean;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:61](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L61)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:77](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L77)
 
 Reports whether an existing operation honors explicit execution limits.
 
@@ -317,6 +422,34 @@ Whether deadlines, cancellation and applicable byte limits are enforced.
 #### Inherited from
 
 [`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`supportsExecutionOptions`](Class.BlobStorageStrategyBase#supportsexecutionoptions)
+
+---
+
+### uploadMultipartPart()?
+
+```ts
+uploadMultipartPart ? request : Promise<IBlobMultipartPart>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:178](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L178)
+
+Uploads one part of a started multipart upload.
+
+#### Parameters
+
+| Parameter | Type                                                               | Description                                  |
+| --------- | ------------------------------------------------------------------ | -------------------------------------------- |
+| `request` | [`IBlobMultipartPartRequest`](Interface.IBlobMultipartPartRequest) | Handle, part number and content of the part. |
+
+#### Returns
+
+`Promise`\<[`IBlobMultipartPart`](Interface.IBlobMultipartPart)\>
+
+Receipt that completes the upload together with the other parts.
+
+#### Inherited from
+
+[`BlobStorageStrategyBase`](Class.BlobStorageStrategyBase).[`uploadMultipartPart`](Class.BlobStorageStrategyBase#uploadmultipartpart)
 
 ---
 

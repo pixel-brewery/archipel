@@ -27,6 +27,22 @@ vi.mock('@aws-sdk/client-s3', () => ({
     DeleteObjectCommand: class {
         public constructor(public readonly input: Record<string, unknown>) {}
     },
+    CreateMultipartUploadCommand: class {
+        public readonly name = 'CreateMultipartUploadCommand';
+        public constructor(public readonly input: Record<string, unknown>) {}
+    },
+    UploadPartCommand: class {
+        public readonly name = 'UploadPartCommand';
+        public constructor(public readonly input: Record<string, unknown>) {}
+    },
+    CompleteMultipartUploadCommand: class {
+        public readonly name = 'CompleteMultipartUploadCommand';
+        public constructor(public readonly input: Record<string, unknown>) {}
+    },
+    AbortMultipartUploadCommand: class {
+        public readonly name = 'AbortMultipartUploadCommand';
+        public constructor(public readonly input: Record<string, unknown>) {}
+    },
 }));
 
 describe('AwsS3BlobStorageStrategy', () => {
@@ -82,5 +98,54 @@ describe('AwsS3BlobStorageStrategy', () => {
 
         await expect(result).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
         expect(sdk.send).not.toHaveBeenCalled();
+    });
+
+    describe('multipart uploads', () => {
+        it('uses the native S3 multipart commands with the headers fixed at start', async () => {
+            sdk.send.mockImplementation(async (command: { name: string; input: Record<string, unknown> }) =>
+                command.name === 'CreateMultipartUploadCommand'
+                    ? { UploadId: 'native-upload' }
+                    : command.name === 'UploadPartCommand'
+                      ? { ETag: `"etag-${String(command.input['PartNumber'])}"` }
+                      : { ETag: '"completed"', VersionId: 'completed-version' },
+            );
+
+            const upload = await strategy.createMultipartUpload({
+                key: 'exports/archive.zip',
+                contentType: 'application/zip',
+                contentDisposition: 'attachment',
+            });
+            const second = await strategy.uploadMultipartPart({ upload, partNumber: 2, body: Buffer.from('b') });
+            const first = await strategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('a') });
+            const result = await strategy.completeMultipartUpload({ upload, parts: [second, first] });
+
+            const inputs = sdk.send.mock.calls.map(([command]) => command as { name: string; input: Record<string, unknown> });
+            expect(inputs[0]).toMatchObject({
+                name: 'CreateMultipartUploadCommand',
+                input: { Bucket: 'private-bucket-name', Key: 'exports/archive.zip', ContentType: 'application/zip', ContentDisposition: 'attachment' },
+            });
+            expect(inputs[3]).toMatchObject({
+                name: 'CompleteMultipartUploadCommand',
+                input: {
+                    UploadId: 'native-upload',
+                    MultipartUpload: {
+                        Parts: [
+                            { PartNumber: 1, ETag: '"etag-1"' },
+                            { PartNumber: 2, ETag: '"etag-2"' },
+                        ],
+                    },
+                },
+            });
+            expect(result.metadata).toMatchObject({ provider: 'aws-s3', size: 2, etag: '"completed"', versionId: 'completed-version' });
+        });
+
+        it('treats aborting an unknown upload as released and propagates other failures', async () => {
+            const upload = { provider: 'aws-s3', key: 'exports/archive.zip', uploadId: 'native-upload', contentType: 'application/zip' };
+            sdk.send.mockRejectedValueOnce(Object.assign(new Error('missing'), { name: 'NoSuchUpload' }));
+            await expect(strategy.abortMultipartUpload({ upload })).resolves.toBeUndefined();
+
+            sdk.send.mockRejectedValueOnce(Object.assign(new Error('denied'), { name: 'AccessDenied' }));
+            await expect(strategy.abortMultipartUpload({ upload })).rejects.toThrow('denied');
+        });
     });
 });

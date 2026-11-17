@@ -183,6 +183,47 @@ For Azure, passing `versionId` scopes both the existence check and the signed UR
 
 ---
 
+## Uploading Large Objects in Parts
+
+Large objects can be built across several processes or scheduled runs. Start the upload once, persist the returned handle and every part receipt, and complete the upload when the last part is stored. Nothing is visible under the key before completion.
+
+```typescript
+import { BlobOptionalOperation } from '@pixel-brewery/archipel-platform-blob-storage';
+
+if (!this._blobService.supports(BlobOptionalOperation.MultipartUpload)) {
+    // Fall back to a single uploadObject call.
+}
+
+const limits = this._blobService.multipartUploadLimits!;
+const upload = await this._blobService.createMultipartUpload({
+    key: 'exports/archive.zip',
+    contentType: 'application/zip',
+    contentDisposition: 'attachment; filename="archive.zip"',
+});
+
+// Possibly in another process, with the persisted handle:
+const part = await this._blobService.uploadMultipartPart({ upload, partNumber: 1, body: chunk });
+
+// After the last part:
+await this._blobService.completeMultipartUpload({ upload, parts: [part /* , ...every receipt */] });
+```
+
+- Content type, disposition and metadata are fixed at start, because some providers accept them only then.
+- Every part except the one with the highest part number must reach `limits.minimumPartBytes`; no part may exceed `maximumPartBytes`, and part numbers range from 1 to `maximumParts`. Buffer smaller output until a part reaches the minimum.
+- Uploading the same part number again replaces that part. Completion joins the parts in ascending part order.
+- `abortMultipartUpload` releases the parts. Aborting an unknown or completed upload succeeds without effect and never removes a completed object.
+- The handle and receipts are serializable and contain no credentials.
+
+| Strategy | Minimum part      | Maximum part | Parts  | Abort                                                           |
+| -------- | ----------------- | ------------ | ------ | --------------------------------------------------------------- |
+| Azure    | none              | 4000 MiB     | 50,000 | No deletion; Azure discards uncommitted blocks after seven days |
+| AWS S3   | 5 MiB except last | 5 GiB        | 10,000 | Native abort                                                    |
+| Local    | none              | 512 MiB      | 10,000 | Removes the staged parts                                        |
+
+Vercel and the empty strategy do not support multipart uploads and report `false` from the probe.
+
+---
+
 ## Deleting Files
 
 ```typescript

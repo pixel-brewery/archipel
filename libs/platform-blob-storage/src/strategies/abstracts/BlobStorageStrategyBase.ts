@@ -13,6 +13,15 @@ import type { IBlobConditionalDeleteRequest } from '../../interfaces/IBlobCondit
 import type { IBlobObjectHistoryRequest } from '../../interfaces/IBlobObjectHistoryRequest.js';
 import type { IBlobObjectHistoryResult } from '../../interfaces/IBlobObjectHistoryResult.js';
 import type { BlobExecutionOperation } from '../../interfaces/BlobExecutionOperation.js';
+import type {
+    IBlobMultipartAbortRequest,
+    IBlobMultipartCompleteRequest,
+    IBlobMultipartPart,
+    IBlobMultipartPartRequest,
+    IBlobMultipartUpload,
+    IBlobMultipartUploadLimits,
+    IBlobMultipartUploadStartRequest,
+} from '../../interfaces/IBlobMultipartUpload.js';
 
 /**
  * Abstract base class for blob storage strategies.
@@ -33,6 +42,13 @@ export abstract class BlobStorageStrategyBase {
      * Gets the default bucket (container/directory) configured for the provider.
      */
     public abstract readonly defaultBucket?: string;
+
+    /**
+     * Gets the part limits of multipart uploads; present exactly when the strategy implements them.
+     *
+     * @public
+     */
+    public readonly multipartUploadLimits?: IBlobMultipartUploadLimits;
 
     // #endregion
 
@@ -138,6 +154,48 @@ export abstract class BlobStorageStrategyBase {
      * @public
      */
     public deleteObjectConditionally?(request: IBlobConditionalDeleteRequest): Promise<void>;
+
+    /**
+     * Starts an upload whose content is transferred in separately uploaded parts.
+     *
+     * A strategy that implements this operation implements all multipart operations and
+     * {@link BlobStorageStrategyBase.multipartUploadLimits}. The returned handle can be persisted and
+     * continued in another process. Nothing is visible under the key before completion.
+     *
+     * @param request - Target key and the headers of the completed object.
+     * @returns Serializable handle of the started upload.
+     * @public
+     */
+    public createMultipartUpload?(request: IBlobMultipartUploadStartRequest): Promise<IBlobMultipartUpload>;
+
+    /**
+     * Uploads one part of a started multipart upload.
+     *
+     * @param request - Handle, part number and content of the part.
+     * @returns Receipt that completes the upload together with the other parts.
+     * @public
+     */
+    public uploadMultipartPart?(request: IBlobMultipartPartRequest): Promise<IBlobMultipartPart>;
+
+    /**
+     * Joins the uploaded parts in ascending part order and publishes the object under its key.
+     *
+     * @param request - Handle and the receipts of every part.
+     * @returns Metadata of the completed object.
+     * @public
+     */
+    public completeMultipartUpload?(request: IBlobMultipartCompleteRequest): Promise<IBlobUploadResult>;
+
+    /**
+     * Abandons a multipart upload and releases the parts the provider still holds.
+     *
+     * Aborting an unknown, completed or already aborted upload succeeds without effect and never
+     * removes a completed object.
+     *
+     * @param request - Handle of the upload to abandon.
+     * @public
+     */
+    public abortMultipartUpload?(request: IBlobMultipartAbortRequest): Promise<void>;
 
     // #endregion
 }

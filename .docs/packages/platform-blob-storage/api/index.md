@@ -43,6 +43,13 @@ editUrl: false
 | [IBlobListRequest](Interface.IBlobListRequest)                                                     | Describes one page of a bucket listing.                                           |
 | [IBlobListResult](Interface.IBlobListResult)                                                       | One page of a bucket listing.                                                     |
 | [IBlobModuleOptions](Interface.IBlobModuleOptions)                                                 | -                                                                                 |
+| [IBlobMultipartAbortRequest](Interface.IBlobMultipartAbortRequest)                                 | Abandons a multipart upload and releases the parts the provider still holds.      |
+| [IBlobMultipartCompleteRequest](Interface.IBlobMultipartCompleteRequest)                           | Completes a multipart upload from the receipts of its parts.                      |
+| [IBlobMultipartPart](Interface.IBlobMultipartPart)                                                 | Serializable receipt of one uploaded part, required to complete the upload.       |
+| [IBlobMultipartPartRequest](Interface.IBlobMultipartPartRequest)                                   | Uploads one part of a started multipart upload.                                   |
+| [IBlobMultipartUpload](Interface.IBlobMultipartUpload)                                             | Serializable handle of a started multipart upload.                                |
+| [IBlobMultipartUploadLimits](Interface.IBlobMultipartUploadLimits)                                 | Provider limits a multipart upload must respect.                                  |
+| [IBlobMultipartUploadStartRequest](Interface.IBlobMultipartUploadStartRequest)                     | Starts an object upload that is transferred in separately uploaded parts.         |
 | [IBlobObjectHistoryEntry](Interface.IBlobObjectHistoryEntry)                                       | One current, versioned, snapshot or soft-deleted object observed by the provider. |
 | [IBlobObjectHistoryRequest](Interface.IBlobObjectHistoryRequest)                                   | Reads one bounded page of provider history for an exact canonical object key.     |
 | [IBlobObjectHistoryResult](Interface.IBlobObjectHistoryResult)                                     | One exact-key history page within the active provider's configured resource.      |

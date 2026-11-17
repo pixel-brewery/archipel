@@ -603,3 +603,126 @@ describe('BlobService', () => {
         });
     });
 });
+
+describe('BlobService multipart uploads', () => {
+    const limits = { minimumPartBytes: 4, maximumPartBytes: 8, maximumParts: 3 };
+    const upload = { provider: 'azure', key: 'exports/archive.zip', uploadId: 'upload-1', contentType: 'application/zip' };
+    const completed: IBlobUploadResult = {
+        metadata: { provider: 'azure', bucket: 'objects', key: upload.key, size: 6, contentType: 'application/zip', isLatest: true },
+    };
+
+    function createService(persistence: Partial<BlobObjectPersistenceBase> | null = null) {
+        const strategy = {
+            providerId: 'azure',
+            defaultBucket: 'objects',
+            multipartUploadLimits: limits,
+            createMultipartUpload: vi.fn().mockResolvedValue(upload),
+            uploadMultipartPart: vi.fn(async (request: { partNumber: number; body: Buffer }) => ({
+                partNumber: request.partNumber,
+                token: `t${request.partNumber}`,
+                size: request.body.length,
+            })),
+            completeMultipartUpload: vi.fn().mockResolvedValue(completed),
+            abortMultipartUpload: vi.fn().mockResolvedValue(undefined),
+        };
+        const service = new BlobService(strategy as unknown as BlobStorageStrategyBase, persistence as BlobObjectPersistenceBase | null, null);
+        return { service, strategy };
+    }
+
+    it('reports the provider limits only when every multipart operation is available', () => {
+        expect(createService().service.multipartUploadLimits).toEqual(limits);
+        expect(createService().service.supports(BlobOptionalOperation.MultipartUpload)).toBe(true);
+
+        const unsupported = new BlobService({ providerId: 'vercel', uploadObject: vi.fn() } as unknown as BlobStorageStrategyBase, null, null);
+        expect(unsupported.multipartUploadLimits).toBeUndefined();
+        expect(unsupported.supports(BlobOptionalOperation.MultipartUpload)).toBe(false);
+    });
+
+    it('rejects every multipart operation on a provider without multipart support', async () => {
+        const service = new BlobService({ providerId: 'vercel', uploadObject: vi.fn() } as unknown as BlobStorageStrategyBase, null, null);
+
+        await expect(service.createMultipartUpload({ key: upload.key })).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+        await expect(service.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('abcd') })).rejects.toBeInstanceOf(
+            BlobStorageUnsupportedOperationError,
+        );
+        await expect(service.completeMultipartUpload({ upload, parts: [{ partNumber: 1, token: 't1', size: 4 }] })).rejects.toBeInstanceOf(
+            BlobStorageUnsupportedOperationError,
+        );
+        await expect(service.abortMultipartUpload({ upload })).rejects.toBeInstanceOf(BlobStorageUnsupportedOperationError);
+    });
+
+    it.each([
+        ['a part number below one', { partNumber: 0, body: Buffer.from('abcd') }],
+        ['a part number above the provider maximum', { partNumber: 4, body: Buffer.from('abcd') }],
+        ['an empty part', { partNumber: 1, body: Buffer.alloc(0) }],
+        ['a part above the provider maximum size', { partNumber: 1, body: Buffer.alloc(9) }],
+    ])('rejects %s before provider I/O', async (_case, part) => {
+        const { service, strategy } = createService();
+
+        await expect(service.uploadMultipartPart({ upload, ...part })).rejects.toMatchObject({ code: 'BLOB_STORAGE_INVALID_REQUEST' });
+        expect(strategy.uploadMultipartPart).not.toHaveBeenCalled();
+    });
+
+    it('rejects a handle of another provider before provider I/O', async () => {
+        const { service, strategy } = createService();
+
+        await expect(
+            service.uploadMultipartPart({ upload: { ...upload, provider: 'aws-s3' }, partNumber: 1, body: Buffer.from('abcd') }),
+        ).rejects.toBeInstanceOf(BlobStorageError);
+        await expect(service.abortMultipartUpload({ upload: { ...upload, uploadId: '' } })).rejects.toBeInstanceOf(BlobStorageError);
+        expect(strategy.uploadMultipartPart).not.toHaveBeenCalled();
+        expect(strategy.abortMultipartUpload).not.toHaveBeenCalled();
+    });
+
+    it.each([
+        ['no parts', []],
+        [
+            'a duplicated part number',
+            [
+                { partNumber: 1, token: 't1', size: 4 },
+                { partNumber: 1, token: 't1', size: 4 },
+            ],
+        ],
+        [
+            'a non-final part below the provider minimum',
+            [
+                { partNumber: 1, token: 't1', size: 3 },
+                { partNumber: 2, token: 't2', size: 4 },
+            ],
+        ],
+        ['a part without receipt', [{ partNumber: 1, token: '', size: 4 }]],
+    ])('rejects completing with %s before provider I/O', async (_case, parts) => {
+        const { service, strategy } = createService();
+
+        await expect(service.completeMultipartUpload({ upload, parts })).rejects.toMatchObject({ code: 'BLOB_STORAGE_INVALID_REQUEST' });
+        expect(strategy.completeMultipartUpload).not.toHaveBeenCalled();
+    });
+
+    it('completes parts in ascending order, accepts a small final part and records the object', async () => {
+        const persistence = { createFromMetadata: vi.fn().mockResolvedValue({ id: 'blob-1' }) };
+        const { service, strategy } = createService(persistence);
+        const parts = [
+            { partNumber: 2, token: 't2', size: 2 },
+            { partNumber: 1, token: 't1', size: 4 },
+        ];
+
+        const result = await service.completeMultipartUpload({ upload, parts });
+
+        expect(strategy.completeMultipartUpload).toHaveBeenCalledWith({
+            upload,
+            parts: [
+                { partNumber: 1, token: 't1', size: 4 },
+                { partNumber: 2, token: 't2', size: 2 },
+            ],
+        });
+        expect(persistence.createFromMetadata).toHaveBeenCalledWith(completed.metadata);
+        expect(result.metadataPersisted).toBe(true);
+    });
+
+    it('treats aborting an upload the provider no longer knows as already released', async () => {
+        const { service, strategy } = createService();
+        strategy.abortMultipartUpload.mockRejectedValue(new BlobObjectNotFoundError('azure', 'abortMultipartUpload', upload.key));
+
+        await expect(service.abortMultipartUpload({ upload })).resolves.toBeUndefined();
+    });
+});

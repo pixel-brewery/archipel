@@ -3,6 +3,7 @@
 import type { BlobClient } from '@azure/storage-blob';
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Injectable, Logger } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { Readable } from 'node:stream';
 import type { BlobExecutionOperation } from '../../interfaces/BlobExecutionOperation.js';
@@ -12,6 +13,15 @@ import { BlobStoragePreconditionFailedError } from '../../errors/BlobStoragePrec
 import { BlobStorageUnavailableError } from '../../errors/BlobStorageUnavailableError.js';
 import { BlobStorageUnsupportedOperationError } from '../../errors/BlobStorageUnsupportedOperationError.js';
 import type { IBlobConditionalDeleteRequest } from '../../interfaces/IBlobConditionalDeleteRequest.js';
+import type {
+    IBlobMultipartAbortRequest,
+    IBlobMultipartCompleteRequest,
+    IBlobMultipartPart,
+    IBlobMultipartPartRequest,
+    IBlobMultipartUpload,
+    IBlobMultipartUploadLimits,
+    IBlobMultipartUploadStartRequest,
+} from '../../interfaces/IBlobMultipartUpload.js';
 import type { IBlobObjectHistoryRequest } from '../../interfaces/IBlobObjectHistoryRequest.js';
 import type { IBlobObjectHistoryResult } from '../../interfaces/IBlobObjectHistoryResult.js';
 import type {
@@ -82,6 +92,17 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public readonly providerId: string = 'azure';
+
+    /**
+     * Block blob limits: blocks of up to 4000 MiB, at most 50,000 committed blocks, no minimum size.
+     *
+     * @public
+     */
+    public override readonly multipartUploadLimits: IBlobMultipartUploadLimits = {
+        minimumPartBytes: 1,
+        maximumPartBytes: 4000 * 1024 * 1024,
+        maximumParts: 50_000,
+    };
 
     /** @inheritdoc */
     public get defaultBucket(): string {
@@ -381,6 +402,106 @@ export class AzureBlobStorageStrategy extends BlobStorageStrategyBase {
         const blobClient = containerClient.getBlobClient(key);
 
         return `${blobClient.url}?${sasToken}`;
+    }
+
+    /**
+     * Starts a block blob upload. Azure keeps staged blocks per blob name, so the handle only reserves
+     * a block-identifier namespace and performs no provider I/O.
+     *
+     * @public
+     */
+    public override async createMultipartUpload(request: IBlobMultipartUploadStartRequest): Promise<IBlobMultipartUpload> {
+        const operation = 'createMultipartUpload';
+        this.assertTarget({ key: this.normalizeKey(request.key), bucket: request.bucket }, operation);
+        const key = this.normalizeKey(request.key);
+
+        return {
+            provider: this.providerId,
+            key,
+            ...(request.bucket !== undefined ? { bucket: request.bucket } : {}),
+            uploadId: randomUUID(),
+            contentType: request.contentType ?? 'application/octet-stream',
+            ...(request.contentDisposition !== undefined ? { contentDisposition: request.contentDisposition } : {}),
+            ...(request.metadata !== undefined ? { metadata: { ...request.metadata } } : {}),
+            ...(request.ownerUserId !== undefined ? { ownerUserId: request.ownerUserId } : {}),
+        };
+    }
+
+    /**
+     * Stages one uncommitted block; it stays invisible until the block list is committed.
+     *
+     * @public
+     */
+    public override async uploadMultipartPart(request: IBlobMultipartPartRequest): Promise<IBlobMultipartPart> {
+        const { upload } = request;
+        this.assertTarget(upload, 'uploadMultipartPart');
+        const containerClient = await this.getContainerClient();
+        const blockId = this.blockId(upload.uploadId, request.partNumber);
+        await containerClient.getBlockBlobClient(upload.key).stageBlock(blockId, request.body, request.body.length);
+        this._logger.debug({ operation: 'blobObject.uploadMultipartPart', providerId: this.providerId, result: 'succeeded' });
+
+        return { partNumber: request.partNumber, token: blockId, size: request.body.length };
+    }
+
+    /**
+     * Commits the staged blocks in ascending part order with the headers fixed at start.
+     *
+     * @public
+     */
+    public override async completeMultipartUpload(request: IBlobMultipartCompleteRequest): Promise<IBlobUploadResult> {
+        const { upload } = request;
+        const operation = 'completeMultipartUpload';
+        this.assertTarget(upload, operation);
+        const parts = [...request.parts].sort((left, right) => left.partNumber - right.partNumber);
+        if (parts.some((part) => part.token !== this.blockId(upload.uploadId, part.partNumber))) {
+            throw this.invalidRequest(operation, upload.key);
+        }
+        const containerClient = await this.getContainerClient();
+        const response = await containerClient.getBlockBlobClient(upload.key).commitBlockList(
+            parts.map((part) => part.token),
+            {
+                blobHTTPHeaders: {
+                    blobContentType: upload.contentType,
+                    ...(upload.contentDisposition !== undefined ? { blobContentDisposition: upload.contentDisposition } : {}),
+                },
+                ...(upload.metadata !== undefined ? { metadata: { ...upload.metadata } } : {}),
+            },
+        );
+        this._logger.debug({ operation: 'blobObject.completeMultipartUpload', providerId: this.providerId, result: 'succeeded' });
+        const bucket = upload.bucket ?? this._containerName;
+
+        return {
+            metadata: {
+                provider: this.providerId,
+                ...(bucket === this._containerName ? { resourceId: this.resourceId(containerClient.url) } : {}),
+                bucket,
+                key: upload.key,
+                versionId: response.versionId,
+                size: parts.reduce((total, part) => total + part.size, 0),
+                contentType: upload.contentType,
+                etag: response.etag,
+                ...(upload.metadata !== undefined ? { metadata: { ...upload.metadata } } : {}),
+                isLatest: true,
+                ownerUserId: upload.ownerUserId,
+            },
+            rawResponse: response,
+        };
+    }
+
+    /**
+     * Azure offers no operation that discards uncommitted blocks without touching a committed blob of
+     * the same name; it discards them itself after seven days. Aborting therefore never deletes data.
+     *
+     * @public
+     */
+    public override async abortMultipartUpload(request: IBlobMultipartAbortRequest): Promise<void> {
+        this.assertTarget(request.upload, 'abortMultipartUpload');
+        this._logger.debug({ operation: 'blobObject.abortMultipartUpload', providerId: this.providerId, result: 'released-by-provider-expiry' });
+    }
+
+    private blockId(uploadId: string, partNumber: number): string {
+        // Block identifiers of one blob must share their length; the padded part number guarantees it.
+        return Buffer.from(`${uploadId}:${partNumber.toString().padStart(5, '0')}`, 'utf8').toString('base64');
     }
 
     private assertTarget(request: { readonly key: string; readonly bucket?: string }, operation: string): void {
