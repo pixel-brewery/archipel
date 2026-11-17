@@ -1,3 +1,13 @@
+## 0.1.54 (2026-11-17)
+
+### 🚀 Features
+
+- **blob-storage:** add resumable multipart uploads ([#56](https://github.com/pixel-brewery/archipel/pull/56))
+
+### ❤️ Thank You
+
+- André Wehlert @RueDeRennes
+
 ## 0.1.53 (2026-11-17)
 
 ### 🚀 Features
