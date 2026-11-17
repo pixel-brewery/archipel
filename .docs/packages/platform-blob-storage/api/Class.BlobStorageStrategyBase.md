@@ -6,7 +6,7 @@ editUrl: false
 
 # Abstract Class: BlobStorageStrategyBase
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:24](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L24)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:33](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L33)
 
 Abstract base class for blob storage strategies.
 Every concrete provider (AWS S3, Azure, Vercel, Local, etc.) must extend this class.
@@ -28,7 +28,7 @@ Serves as both the type contract and the NestJS DI token type reference.
 protected new BlobStorageStrategyBase(): BlobStorageStrategyBase;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:42](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L42)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:58](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L58)
 
 #### Returns
 
@@ -42,9 +42,21 @@ Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStra
 abstract readonly defaultBucket?: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:35](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L35)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:44](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L44)
 
 Gets the default bucket (container/directory) configured for the provider.
+
+---
+
+### multipartUploadLimits?
+
+```ts
+readonly multipartUploadLimits?: IBlobMultipartUploadLimits;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:51](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L51)
+
+Gets the part limits of multipart uploads; present exactly when the strategy implements them.
 
 ---
 
@@ -54,11 +66,88 @@ Gets the default bucket (container/directory) configured for the provider.
 abstract readonly providerId: string;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:30](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L30)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:39](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L39)
 
 Gets the unique identifier for this storage provider.
 
 ## Methods
+
+### abortMultipartUpload()?
+
+```ts
+abortMultipartUpload ? request : Promise<void>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:198](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L198)
+
+Abandons a multipart upload and releases the parts the provider still holds.
+
+Aborting an unknown, completed or already aborted upload succeeds without effect and never
+removes a completed object.
+
+#### Parameters
+
+| Parameter | Type                                                                 | Description                      |
+| --------- | -------------------------------------------------------------------- | -------------------------------- |
+| `request` | [`IBlobMultipartAbortRequest`](Interface.IBlobMultipartAbortRequest) | Handle of the upload to abandon. |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+---
+
+### completeMultipartUpload()?
+
+```ts
+completeMultipartUpload ? request : Promise<IBlobUploadResult>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:187](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L187)
+
+Joins the uploaded parts in ascending part order and publishes the object under its key.
+
+#### Parameters
+
+| Parameter | Type                                                                       | Description                            |
+| --------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| `request` | [`IBlobMultipartCompleteRequest`](Interface.IBlobMultipartCompleteRequest) | Handle and the receipts of every part. |
+
+#### Returns
+
+`Promise`\<[`IBlobUploadResult`](Interface.IBlobUploadResult)\>
+
+Metadata of the completed object.
+
+---
+
+### createMultipartUpload()?
+
+```ts
+createMultipartUpload ? request : Promise<IBlobMultipartUpload>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:169](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L169)
+
+Starts an upload whose content is transferred in separately uploaded parts.
+
+A strategy that implements this operation implements all multipart operations and
+[BlobStorageStrategyBase.multipartUploadLimits](#multipartuploadlimits). The returned handle can be persisted and
+continued in another process. Nothing is visible under the key before completion.
+
+#### Parameters
+
+| Parameter | Type                                                                             | Description                                         |
+| --------- | -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `request` | [`IBlobMultipartUploadStartRequest`](Interface.IBlobMultipartUploadStartRequest) | Target key and the headers of the completed object. |
+
+#### Returns
+
+`Promise`\<[`IBlobMultipartUpload`](Interface.IBlobMultipartUpload)\>
+
+Serializable handle of the started upload.
+
+---
 
 ### createSignedUrl()?
 
@@ -66,7 +155,7 @@ Gets the unique identifier for this storage provider.
 createSignedUrl ? request : Promise<string>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:105](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L105)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:121](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L121)
 
 Creates a signed URL for the specified blob object.
 Not all providers support this operation.
@@ -91,7 +180,7 @@ The generated signed URL.
 abstract deleteObject(request): Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:87](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L87)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:103](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L103)
 
 Deletes a blob object from the storage backend.
 
@@ -113,7 +202,7 @@ Deletes a blob object from the storage backend.
 deleteObjectConditionally ? request : Promise<void>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:140](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L140)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:156](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L156)
 
 Deletes the selected object only while its exact observed ETag still matches.
 
@@ -138,7 +227,7 @@ Client cancellation does not undo a mutation already accepted by the provider.
 abstract downloadObject<TData>(request): Promise<IBlobDownloadResult<TData>>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:79](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L79)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:95](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L95)
 
 Downloads a blob object from the storage backend.
 
@@ -168,7 +257,7 @@ The download result including payload and metadata.
 inspectObjectHistory ? request : Promise<IBlobObjectHistoryResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:129](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L129)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:145](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L145)
 
 Observes one exact-key history page, including available versions, snapshots and soft deletion.
 
@@ -194,7 +283,7 @@ Provider observations, never an implicit irreversible-deletion guarantee.
 listObjects ? request : Promise<IBlobListResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:118](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L118)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:134](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L134)
 
 Lists objects of a bucket page by page.
 
@@ -222,7 +311,7 @@ One page of entries and the token for the next page.
 abstract objectExists(request): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:95](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L95)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:111](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L111)
 
 Determines whether a blob object exists in the storage backend.
 
@@ -244,7 +333,7 @@ Determines whether a blob object exists in the storage backend.
 supportsExecutionOptions ? operation : boolean;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:61](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L61)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:77](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L77)
 
 Reports whether an existing operation honors explicit execution limits.
 
@@ -265,13 +354,37 @@ Whether deadlines, cancellation and applicable byte limits are enforced.
 
 ---
 
+### uploadMultipartPart()?
+
+```ts
+uploadMultipartPart ? request : Promise<IBlobMultipartPart>;
+```
+
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:178](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L178)
+
+Uploads one part of a started multipart upload.
+
+#### Parameters
+
+| Parameter | Type                                                               | Description                                  |
+| --------- | ------------------------------------------------------------------ | -------------------------------------------- |
+| `request` | [`IBlobMultipartPartRequest`](Interface.IBlobMultipartPartRequest) | Handle, part number and content of the part. |
+
+#### Returns
+
+`Promise`\<[`IBlobMultipartPart`](Interface.IBlobMultipartPart)\>
+
+Receipt that completes the upload together with the other parts.
+
+---
+
 ### uploadObject()
 
 ```ts
 abstract uploadObject(request): Promise<IBlobUploadResult>;
 ```
 
-Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:70](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L70)
+Defined in: [libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts:86](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-blob-storage/src/strategies/abstracts/BlobStorageStrategyBase.ts#L86)
 
 Uploads a blob object to the storage backend.
 

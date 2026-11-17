@@ -1,6 +1,6 @@
 {
-    "total": 1103,
-    "byKind": { "variable": 291, "class": 320, "type-alias": 84, "function": 128, "other": 2, "interface": 277, "namespace": 1 },
+    "total": 1110,
+    "byKind": { "variable": 291, "class": 320, "type-alias": 84, "function": 128, "other": 2, "interface": 284, "namespace": 1 },
     "byPackage": {
         "platform-esigning": 52,
         "platform-intelligence-agents": 34,
@@ -13,7 +13,7 @@
         "platform-bootstrap": 50,
         "platform-logging": 8,
         "platform-core": 72,
-        "platform-blob-storage": 61,
+        "platform-blob-storage": 68,
         "platform-feature-flags": 29,
         "platform-queue": 31,
         "platform-cryptography": 16,
@@ -4263,6 +4263,83 @@
             "title": "Interface: IBlobModuleOptions",
             "description": "No description provided.",
             "link": "/packages/platform-blob-storage/api/Interface.IBlobModuleOptions"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobmultipartabortrequest",
+            "name": "IBlobMultipartAbortRequest",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobMultipartAbortRequest",
+            "description": "Abandons a multipart upload and releases the parts the provider still holds.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobMultipartAbortRequest"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobmultipartcompleterequest",
+            "name": "IBlobMultipartCompleteRequest",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobMultipartCompleteRequest",
+            "description": "Completes a multipart upload from the receipts of its parts.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobMultipartCompleteRequest"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobmultipartpart",
+            "name": "IBlobMultipartPart",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobMultipartPart",
+            "description": "Serializable receipt of one uploaded part, required to complete the upload.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobMultipartPart"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobmultipartpartrequest",
+            "name": "IBlobMultipartPartRequest",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobMultipartPartRequest",
+            "description": "Uploads one part of a started multipart upload.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobMultipartPartRequest"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobmultipartupload",
+            "name": "IBlobMultipartUpload",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobMultipartUpload",
+            "description": "Serializable handle of a started multipart upload.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobMultipartUpload"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobmultipartuploadlimits",
+            "name": "IBlobMultipartUploadLimits",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobMultipartUploadLimits",
+            "description": "Provider limits a multipart upload must respect.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobMultipartUploadLimits"
+        },
+        {
+            "id": "platform-blob-storage:interface:iblobmultipartuploadstartrequest",
+            "name": "IBlobMultipartUploadStartRequest",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-blob-storage",
+            "packageSlug": "platform-blob-storage",
+            "title": "Interface: IBlobMultipartUploadStartRequest",
+            "description": "Starts an object upload that is transferred in separately uploaded parts.",
+            "link": "/packages/platform-blob-storage/api/Interface.IBlobMultipartUploadStartRequest"
         },
         {
             "id": "platform-blob-storage:interface:iblobobjecthistoryentry",

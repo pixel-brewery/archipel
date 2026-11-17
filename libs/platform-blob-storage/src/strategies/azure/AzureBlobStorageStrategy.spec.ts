@@ -735,4 +735,62 @@ describe('AzureBlobStorageStrategy', () => {
         await expect(result).rejects.toMatchObject({ code: 'BLOB_STORAGE_INVALID_REQUEST' });
         expect(sdk.fromConnectionString).not.toHaveBeenCalled();
     });
+
+    describe('multipart uploads', () => {
+        it('stages blocks under one identifier namespace and commits them in part order with the start headers', async () => {
+            const stageBlock = vi.fn().mockResolvedValue({});
+            const commitBlockList = vi.fn().mockResolvedValue({ etag: '"committed"', versionId: 'committed-version' });
+            sdk.getBlockBlobClient.mockReturnValue({ stageBlock, commitBlockList });
+
+            const upload = await strategy.createMultipartUpload({
+                key: 'exports/archive.zip',
+                contentType: 'application/zip',
+                contentDisposition: 'attachment; filename="archive.zip"',
+                metadata: { purpose: 'export' },
+            });
+            expect(sdk.fromConnectionString).not.toHaveBeenCalled();
+            const second = await strategy.uploadMultipartPart({ upload, partNumber: 2, body: Buffer.from('bb') });
+            const first = await strategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('aaaa') });
+            const result = await strategy.completeMultipartUpload({ upload, parts: [second, first] });
+
+            expect(first.token).not.toBe(second.token);
+            expect(Buffer.from(first.token, 'base64').length).toBe(Buffer.from(second.token, 'base64').length);
+            expect(stageBlock).toHaveBeenCalledWith(first.token, Buffer.from('aaaa'), 4);
+            expect(commitBlockList).toHaveBeenCalledWith([first.token, second.token], {
+                blobHTTPHeaders: { blobContentType: 'application/zip', blobContentDisposition: 'attachment; filename="archive.zip"' },
+                metadata: { purpose: 'export' },
+            });
+            expect(result.metadata).toMatchObject({
+                provider: 'azure',
+                key: 'exports/archive.zip',
+                size: 6,
+                etag: '"committed"',
+                versionId: 'committed-version',
+            });
+        });
+
+        it('rejects a receipt that was not issued for this upload before committing', async () => {
+            const commitBlockList = vi.fn();
+            sdk.getBlockBlobClient.mockReturnValue({ stageBlock: vi.fn(), commitBlockList });
+            const upload = await strategy.createMultipartUpload({ key: 'exports/archive.zip' });
+            const other = await strategy.createMultipartUpload({ key: 'exports/archive.zip' });
+
+            const result = strategy.completeMultipartUpload({
+                upload,
+                parts: [{ partNumber: 1, token: Buffer.from(`${other.uploadId}:00001`).toString('base64'), size: 1 }],
+            });
+
+            await expect(result).rejects.toMatchObject({ code: 'BLOB_STORAGE_INVALID_REQUEST' });
+            expect(commitBlockList).not.toHaveBeenCalled();
+        });
+
+        it('aborts without deleting anything because Azure expires uncommitted blocks itself', async () => {
+            const upload = await strategy.createMultipartUpload({ key: 'exports/archive.zip' });
+
+            await strategy.abortMultipartUpload({ upload });
+
+            expect(sdk.baseDelete).not.toHaveBeenCalled();
+            expect(sdk.fromConnectionString).not.toHaveBeenCalled();
+        });
+    });
 });

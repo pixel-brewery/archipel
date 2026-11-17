@@ -84,6 +84,8 @@ export const BlobOptionalOperation = {
     ListObjects: 'listObjects',
     InspectObjectHistory: 'inspectObjectHistory',
     DeleteObjectConditionally: 'deleteObjectConditionally',
+    /** Covers starting, continuing, completing and aborting uploads in parts. */
+    MultipartUpload: 'createMultipartUpload',
 } as const;
 
 /**

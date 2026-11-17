@@ -44,6 +44,15 @@ export {
 export type { IBlobConditionalDeleteRequest } from './interfaces/IBlobConditionalDeleteRequest.js';
 export type { BlobExecutionOperation } from './interfaces/BlobExecutionOperation.js';
 export type { IBlobExecutionOptions } from './interfaces/IBlobExecutionOptions.js';
+export type {
+    IBlobMultipartAbortRequest,
+    IBlobMultipartCompleteRequest,
+    IBlobMultipartPart,
+    IBlobMultipartPartRequest,
+    IBlobMultipartUpload,
+    IBlobMultipartUploadLimits,
+    IBlobMultipartUploadStartRequest,
+} from './interfaces/IBlobMultipartUpload.js';
 export type { IBlobConditionalDeletionPersistenceRequest } from './interfaces/IBlobConditionalDeletionPersistenceRequest.js';
 export type { IBlobObjectHistoryEntry } from './interfaces/IBlobObjectHistoryEntry.js';
 export type { IBlobObjectHistoryRequest } from './interfaces/IBlobObjectHistoryRequest.js';

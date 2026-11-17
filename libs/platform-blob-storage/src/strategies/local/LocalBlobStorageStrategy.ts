@@ -2,12 +2,13 @@
 
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { Injectable, Logger } from '@nestjs/common';
-import { createHash } from 'node:crypto';
-import { createReadStream } from 'node:fs';
+import { createHash, randomUUID } from 'node:crypto';
+import { createReadStream, createWriteStream } from 'node:fs';
 import type { Dirent } from 'node:fs';
-import { mkdir, readdir, readFile, stat, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rename, rm, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
 import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import {
     BlobDownloadResponseTypes,
     type IBlobDeleteRequest,
@@ -21,6 +22,15 @@ import {
     type IBlobUploadRequest,
     type IBlobUploadResult,
 } from '../../interfaces/IBlobProvider.js';
+import type {
+    IBlobMultipartAbortRequest,
+    IBlobMultipartCompleteRequest,
+    IBlobMultipartPart,
+    IBlobMultipartPartRequest,
+    IBlobMultipartUpload,
+    IBlobMultipartUploadLimits,
+    IBlobMultipartUploadStartRequest,
+} from '../../interfaces/IBlobMultipartUpload.js';
 import { BlobStorageStrategyBase } from '../abstracts/BlobStorageStrategyBase.js';
 import { assertBlobExecutionSupport } from '../assertBlobExecutionSupport.js';
 import { LOCAL_BLOB_BASE_PATH, LOCAL_BLOB_BUCKET } from './env.js';
@@ -35,6 +45,10 @@ import { LOCAL_BLOB_BASE_PATH, LOCAL_BLOB_BUCKET } from './env.js';
 @Injectable()
 export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
     // #region Fields
+
+    /** Reserved directory below the base path that holds the parts of unfinished multipart uploads. */
+    private static readonly MULTIPART_DIRECTORY = '.archipel-multipart';
+    private static readonly UPLOAD_ID_PATTERN = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/;
 
     private readonly _logger = new Logger(LocalBlobStorageStrategy.name);
     private readonly _basePath: string;
@@ -71,6 +85,13 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
 
     /** @inheritdoc */
     public readonly providerId: string = 'local';
+
+    /** @inheritdoc */
+    public override readonly multipartUploadLimits: IBlobMultipartUploadLimits = {
+        minimumPartBytes: 1,
+        maximumPartBytes: 512 * 1024 * 1024,
+        maximumParts: 10_000,
+    };
 
     /** @inheritdoc */
     public get defaultBucket(): string | undefined {
@@ -194,6 +215,77 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
         };
     }
 
+    /** @inheritdoc */
+    public override async createMultipartUpload(request: IBlobMultipartUploadStartRequest): Promise<IBlobMultipartUpload> {
+        const key = this.normalizeKey(request.key);
+        this.resolveFilePath(key, request.bucket);
+        const uploadId = randomUUID();
+        await mkdir(this.resolveMultipartDirectory(uploadId), { recursive: true });
+
+        return {
+            provider: this.providerId,
+            key,
+            ...(request.bucket !== undefined ? { bucket: request.bucket } : {}),
+            uploadId,
+            contentType: request.contentType ?? 'application/octet-stream',
+            ...(request.contentDisposition !== undefined ? { contentDisposition: request.contentDisposition } : {}),
+            ...(request.metadata !== undefined ? { metadata: { ...request.metadata } } : {}),
+            ...(request.ownerUserId !== undefined ? { ownerUserId: request.ownerUserId } : {}),
+        };
+    }
+
+    /** @inheritdoc */
+    public override async uploadMultipartPart(request: IBlobMultipartPartRequest): Promise<IBlobMultipartPart> {
+        const directory = this.resolveMultipartDirectory(request.upload.uploadId);
+        await stat(directory);
+        await writeFile(join(directory, this.partFileName(request.partNumber)), request.body);
+
+        return { partNumber: request.partNumber, token: this.computeEtag(request.body), size: request.body.length };
+    }
+
+    /** @inheritdoc */
+    public override async completeMultipartUpload(request: IBlobMultipartCompleteRequest): Promise<IBlobUploadResult> {
+        const { upload } = request;
+        const key = this.normalizeKey(upload.key);
+        const filePath = this.resolveFilePath(key, upload.bucket);
+        const directory = this.resolveMultipartDirectory(upload.uploadId);
+        const parts = [...request.parts].sort((left, right) => left.partNumber - right.partNumber);
+        const temporaryPath = `${filePath}.${upload.uploadId}.partial`;
+        const hash = createHash('md5');
+
+        await mkdir(dirname(filePath), { recursive: true });
+        try {
+            const output = createWriteStream(temporaryPath);
+            await pipeline(Readable.from(this.readParts(directory, parts, hash)), output);
+            await rename(temporaryPath, filePath);
+        } catch (error: unknown) {
+            await rm(temporaryPath, { force: true });
+            throw error;
+        }
+        await rm(directory, { recursive: true, force: true });
+
+        const fileStats = await stat(filePath);
+
+        return {
+            metadata: {
+                provider: this.providerId,
+                bucket: upload.bucket ?? this._bucket,
+                key,
+                size: fileStats.size,
+                contentType: upload.contentType,
+                etag: `"${hash.digest('hex')}"`,
+                ...(upload.metadata !== undefined ? { metadata: { ...upload.metadata } } : {}),
+                isLatest: true,
+                ownerUserId: upload.ownerUserId,
+            },
+        };
+    }
+
+    /** @inheritdoc */
+    public override async abortMultipartUpload(request: IBlobMultipartAbortRequest): Promise<void> {
+        await rm(this.resolveMultipartDirectory(request.upload.uploadId), { recursive: true, force: true });
+    }
+
     // #endregion
 
     // #region Helpers
@@ -210,6 +302,10 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
         for (const entry of entries) {
             const key = relative ? `${relative}/${entry.name}` : entry.name;
 
+            if (!relative && directory === this._resolvedBasePath && entry.name === LocalBlobStorageStrategy.MULTIPART_DIRECTORY) {
+                continue;
+            }
+
             if (entry.isDirectory()) {
                 await this.collectFiles(join(directory, entry.name), key, prefix, collected);
                 continue;
@@ -222,6 +318,29 @@ export class LocalBlobStorageStrategy extends BlobStorageStrategyBase {
             const fileStats = await stat(join(directory, entry.name));
             collected.push({ key, size: fileStats.size, lastModified: fileStats.mtime });
         }
+    }
+
+    private async *readParts(directory: string, parts: readonly IBlobMultipartPart[], hash: ReturnType<typeof createHash>): AsyncGenerator<Buffer> {
+        for (const part of parts) {
+            const content = await readFile(join(directory, this.partFileName(part.partNumber)));
+            if (content.length !== part.size || this.computeEtag(content) !== part.token) {
+                throw new Error(`Multipart upload part ${part.partNumber} does not match its receipt.`);
+            }
+            hash.update(content);
+            yield content;
+        }
+    }
+
+    private resolveMultipartDirectory(uploadId: string): string {
+        if (!LocalBlobStorageStrategy.UPLOAD_ID_PATTERN.test(uploadId)) {
+            throw new Error('Invalid multipart upload identifier.');
+        }
+
+        return join(this._resolvedBasePath, LocalBlobStorageStrategy.MULTIPART_DIRECTORY, uploadId);
+    }
+
+    private partFileName(partNumber: number): string {
+        return `${partNumber.toString().padStart(5, '0')}.part`;
     }
 
     private resolveFilePath(key: string, bucket?: string): string {

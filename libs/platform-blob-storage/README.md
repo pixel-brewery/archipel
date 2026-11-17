@@ -11,6 +11,7 @@ Blob storage abstraction for file uploads and asset management.
 - **AWS S3 resilient downloads** — Graceful handling of JSON parse errors during `downloadObject` (returns raw body on parse failure)
 - **Path traversal prevention** — Automatic key normalization strips `..`, `\`, leading slashes, and rejects control characters
 - **Signed URLs** — Time-limited pre-signed URLs for direct client access
+- **Multipart uploads** — Resumable uploads in parts across processes for Azure, AWS S3 and the local filesystem, probed with `supports(BlobOptionalOperation.MultipartUpload)`; handle and part receipts are serializable
 - **Object listing** — Paged enumeration by prefix across Vercel, Azure, AWS S3 and the local filesystem, for reconciling your own bookkeeping against actual storage
 - **Capability probing** — `supports(BlobOptionalOperation.InspectObjectHistory)` and the other optional operation keys tell you what the configured provider can do before you attempt it
 - **Explicit execution limits** — Existing upload, download and listing requests optionally require provider-enforced deadlines and caller cancellation. Azure supports them; downloads also abort at a requested byte limit. Unsupported strategies fail before I/O instead of ignoring limits.

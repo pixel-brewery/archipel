@@ -149,4 +149,59 @@ describe('LocalBlobStorageStrategy', () => {
             expect(result.continuationToken).toBeUndefined();
         });
     });
+
+    describe('multipart uploads', () => {
+        it('joins parts uploaded out of order into one object and removes the parts', async () => {
+            const upload = await strategy.createMultipartUpload({ key: 'exports/archive.zip', contentType: 'application/zip' });
+            const second = await strategy.uploadMultipartPart({ upload, partNumber: 2, body: Buffer.from('world') });
+            const first = await strategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('hello ') });
+
+            const result = await strategy.completeMultipartUpload({ upload, parts: [second, first] });
+            const download = await strategy.downloadObject<Buffer>({ key: 'exports/archive.zip' });
+
+            expect(download.data.toString('utf8')).toBe('hello world');
+            expect(result.metadata).toMatchObject({ provider: 'local', key: 'exports/archive.zip', size: 11, contentType: 'application/zip' });
+            await expect(readdir(join(basePath, '.archipel-multipart'))).resolves.toEqual([]);
+        });
+
+        it('continues an upload from its persisted handle in another strategy instance', async () => {
+            const upload = await strategy.createMultipartUpload({ key: 'exports/resumed.zip' });
+            const first = await strategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('a') });
+            const restored = JSON.parse(JSON.stringify({ upload, first })) as { upload: typeof upload; first: typeof first };
+            const second = await strategy.uploadMultipartPart({ upload: restored.upload, partNumber: 2, body: Buffer.from('b') });
+
+            await strategy.completeMultipartUpload({ upload: restored.upload, parts: [restored.first, second] });
+
+            await expect(strategy.downloadObject<Buffer>({ key: 'exports/resumed.zip' })).resolves.toMatchObject({ contentLength: 2 });
+        });
+
+        it('rejects a part whose content no longer matches its receipt and publishes nothing', async () => {
+            const upload = await strategy.createMultipartUpload({ key: 'exports/tampered.zip' });
+            const part = await strategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('original') });
+            await strategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('replaced') });
+
+            await expect(strategy.completeMultipartUpload({ upload, parts: [part] })).rejects.toThrow('does not match its receipt');
+            await expect(strategy.objectExists({ key: 'exports/tampered.zip' })).rejects.toMatchObject({ code: 'ENOENT' });
+        });
+
+        it('hides unfinished parts from listings and removes them on abort', async () => {
+            const rootStrategy = new LocalBlobStorageStrategy({ get: () => basePath, tryGet: () => '' } as unknown as ConfigService);
+            const upload = await rootStrategy.createMultipartUpload({ key: 'exports/aborted.zip' });
+            await rootStrategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('part') });
+
+            await expect(rootStrategy.listObjects()).resolves.toMatchObject({ entries: [] });
+            await rootStrategy.abortMultipartUpload({ upload });
+            await rootStrategy.abortMultipartUpload({ upload });
+
+            await expect(readdir(join(basePath, '.archipel-multipart'))).resolves.toEqual([]);
+        });
+
+        it('rejects an upload identifier that could leave the multipart directory', async () => {
+            const upload = { provider: 'local', key: 'exports/archive.zip', uploadId: '../../escape', contentType: 'application/zip' };
+
+            await expect(strategy.uploadMultipartPart({ upload, partNumber: 1, body: Buffer.from('x') })).rejects.toThrow(
+                'Invalid multipart upload identifier.',
+            );
+        });
+    });
 });

@@ -4,6 +4,7 @@ import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { BlobObjectPersistenceBase } from '../abstracts/BlobObjectPersistenceBase.js';
 import { BlobVariantPersistenceBase } from '../abstracts/BlobVariantPersistenceBase.js';
 import { BlobObjectNotFoundError } from '../errors/BlobObjectNotFoundError.js';
+import { BlobStorageError } from '../errors/BlobStorageError.js';
 import { BlobStorageUnsupportedOperationError } from '../errors/BlobStorageUnsupportedOperationError.js';
 import { normalizeBlobStorageError } from '../errors/normalizeBlobStorageError.js';
 import { BlobOptionalOperation } from '../interfaces/IBlobProvider.js';
@@ -23,11 +24,28 @@ import type { IBlobConditionalDeleteRequest } from '../interfaces/IBlobCondition
 import type { IBlobObjectHistoryRequest } from '../interfaces/IBlobObjectHistoryRequest.js';
 import type { IBlobObjectHistoryResult } from '../interfaces/IBlobObjectHistoryResult.js';
 import type { BlobExecutionOperation } from '../interfaces/BlobExecutionOperation.js';
+import type {
+    IBlobMultipartAbortRequest,
+    IBlobMultipartCompleteRequest,
+    IBlobMultipartPart,
+    IBlobMultipartPartRequest,
+    IBlobMultipartUpload,
+    IBlobMultipartUploadLimits,
+    IBlobMultipartUploadStartRequest,
+} from '../interfaces/IBlobMultipartUpload.js';
 import type { BlobStorageStrategyBase } from '../strategies/abstracts/BlobStorageStrategyBase.js';
 import { assertBlobExecutionSupport } from '../strategies/assertBlobExecutionSupport.js';
 import { BLOB_STORAGE_STRATEGY_TOKEN } from '../tokens/BlobStorageTokens.js';
 
 // #endregion
+
+type MultipartStrategy = BlobStorageStrategyBase &
+    Required<
+        Pick<
+            BlobStorageStrategyBase,
+            'createMultipartUpload' | 'uploadMultipartPart' | 'completeMultipartUpload' | 'abortMultipartUpload' | 'multipartUploadLimits'
+        >
+    >;
 
 /**
  * Provides a generic abstraction for blob storage operations independent of the underlying provider.
@@ -274,6 +292,130 @@ export class BlobService {
     }
 
     /**
+     * Gets the part limits of the configured provider's multipart uploads.
+     *
+     * @returns The limits, or `undefined` when the provider does not support multipart uploads.
+     * @public
+     */
+    public get multipartUploadLimits(): IBlobMultipartUploadLimits | undefined {
+        return this.supports(BlobOptionalOperation.MultipartUpload) ? this._storageStrategy.multipartUploadLimits : undefined;
+    }
+
+    /**
+     * Starts an upload that is transferred in separately uploaded parts.
+     *
+     * Persist the returned handle and the receipts of uploaded parts to continue the upload in another
+     * process. Nothing is visible under the key before {@link BlobService.completeMultipartUpload}.
+     *
+     * @param request - Target key and the headers of the completed object.
+     * @returns Serializable handle of the started upload.
+     * @public
+     */
+    public async createMultipartUpload(request: IBlobMultipartUploadStartRequest): Promise<IBlobMultipartUpload> {
+        const strategy = this.multipartStrategy('createMultipartUpload', request.key);
+        try {
+            return await strategy.createMultipartUpload(request);
+        } catch (error: unknown) {
+            throw normalizeBlobStorageError(error, strategy.providerId, 'createMultipartUpload', request.key);
+        }
+    }
+
+    /**
+     * Uploads one part of a started multipart upload.
+     *
+     * @param request - Handle, part number and content of the part.
+     * @returns Receipt that completes the upload together with the other parts.
+     * @public
+     */
+    public async uploadMultipartPart(request: IBlobMultipartPartRequest): Promise<IBlobMultipartPart> {
+        const operation = 'uploadMultipartPart';
+        const strategy = this.multipartStrategy(operation, request.upload?.key ?? '');
+        const limits = this.assertMultipartHandle(strategy, request.upload, operation);
+        if (!Number.isSafeInteger(request.partNumber) || request.partNumber < 1 || request.partNumber > limits.maximumParts) {
+            throw this.invalidMultipartRequest(operation, request.upload.key, 'The part number is outside the provider limits.');
+        }
+        if (!Buffer.isBuffer(request.body) || request.body.length < 1 || request.body.length > limits.maximumPartBytes) {
+            throw this.invalidMultipartRequest(operation, request.upload.key, 'The part size is outside the provider limits.');
+        }
+        try {
+            return await strategy.uploadMultipartPart(request);
+        } catch (error: unknown) {
+            throw normalizeBlobStorageError(error, strategy.providerId, operation, request.upload.key);
+        }
+    }
+
+    /**
+     * Joins the uploaded parts in ascending part order and publishes the object under its key.
+     *
+     * Every part except the last must reach the provider's minimum part size. The completed object is
+     * recorded by the registered persistence like an ordinary upload.
+     *
+     * @param request - Handle and the receipts of every part.
+     * @returns Metadata of the completed object.
+     * @public
+     */
+    public async completeMultipartUpload(request: IBlobMultipartCompleteRequest): Promise<IBlobUploadResult> {
+        const operation = 'completeMultipartUpload';
+        const strategy = this.multipartStrategy(operation, request.upload?.key ?? '');
+        const limits = this.assertMultipartHandle(strategy, request.upload, operation);
+        const parts = [...(request.parts ?? [])].sort((left, right) => left.partNumber - right.partNumber);
+        const invalid =
+            parts.length < 1 ||
+            parts.some(
+                (part, index) =>
+                    !Number.isSafeInteger(part.partNumber) ||
+                    part.partNumber < 1 ||
+                    part.partNumber > limits.maximumParts ||
+                    (index > 0 && part.partNumber === parts[index - 1].partNumber) ||
+                    typeof part.token !== 'string' ||
+                    !part.token ||
+                    !Number.isSafeInteger(part.size) ||
+                    part.size < 1 ||
+                    part.size > limits.maximumPartBytes ||
+                    (index < parts.length - 1 && part.size < limits.minimumPartBytes),
+            );
+        if (invalid) {
+            throw this.invalidMultipartRequest(operation, request.upload.key, 'The parts are empty, duplicated or outside the provider limits.');
+        }
+
+        let result: IBlobUploadResult;
+        try {
+            result = await strategy.completeMultipartUpload({ upload: request.upload, parts });
+        } catch (error: unknown) {
+            throw normalizeBlobStorageError(error, strategy.providerId, operation, request.upload.key);
+        }
+
+        if (!this._objectPersistence) {
+            return result;
+        }
+
+        return { ...result, metadataPersisted: await this.persistObjectMetadata(result) };
+    }
+
+    /**
+     * Abandons a multipart upload and releases the parts the provider still holds.
+     *
+     * Aborting an unknown, completed or already aborted upload succeeds without effect and never
+     * removes a completed object.
+     *
+     * @param request - Handle of the upload to abandon.
+     * @public
+     */
+    public async abortMultipartUpload(request: IBlobMultipartAbortRequest): Promise<void> {
+        const operation = 'abortMultipartUpload';
+        const strategy = this.multipartStrategy(operation, request.upload?.key ?? '');
+        this.assertMultipartHandle(strategy, request.upload, operation);
+        try {
+            await strategy.abortMultipartUpload(request);
+        } catch (error: unknown) {
+            const normalized = normalizeBlobStorageError(error, strategy.providerId, operation, request.upload.key);
+            if (!(normalized instanceof BlobObjectNotFoundError)) {
+                throw normalized;
+            }
+        }
+    }
+
+    /**
      * Determines whether the configured provider supports an optional operation.
      *
      * Lets a caller adapt before attempting the operation instead of treating
@@ -398,6 +540,45 @@ export class BlobService {
         } catch {
             this._logger.error({ operation: 'blobObject.deletePersistence', providerId: this._storageStrategy.providerId, result: 'failed' });
         }
+    }
+
+    private multipartStrategy(operation: string, key: string): MultipartStrategy {
+        const strategy = this._storageStrategy;
+        if (
+            typeof strategy.createMultipartUpload !== 'function' ||
+            typeof strategy.uploadMultipartPart !== 'function' ||
+            typeof strategy.completeMultipartUpload !== 'function' ||
+            typeof strategy.abortMultipartUpload !== 'function' ||
+            strategy.multipartUploadLimits === undefined
+        ) {
+            throw new BlobStorageUnsupportedOperationError(strategy.providerId, operation, key);
+        }
+
+        return strategy as MultipartStrategy;
+    }
+
+    private assertMultipartHandle(strategy: MultipartStrategy, upload: IBlobMultipartUpload | undefined, operation: string): IBlobMultipartUploadLimits {
+        if (
+            typeof upload !== 'object' ||
+            upload === null ||
+            upload.provider !== strategy.providerId ||
+            typeof upload.uploadId !== 'string' ||
+            !upload.uploadId ||
+            typeof upload.key !== 'string' ||
+            !upload.key
+        ) {
+            throw this.invalidMultipartRequest(
+                operation,
+                typeof upload?.key === 'string' ? upload.key : '',
+                'The multipart handle does not belong to the configured provider.',
+            );
+        }
+
+        return strategy.multipartUploadLimits;
+    }
+
+    private invalidMultipartRequest(operation: string, key: string, message: string): BlobStorageError {
+        return new BlobStorageError('BLOB_STORAGE_INVALID_REQUEST', message, this._storageStrategy.providerId, operation, key);
     }
 
     private async persistObjectMetadata(result: IBlobUploadResult): Promise<boolean> {
