@@ -97,6 +97,21 @@ names with `IntelligenceValidationError` before a provider request. This keeps
 the SDK-visible tool surface aligned with the application's policy decision
 instead of relying only on the provider's active-tool hint.
 
+Provider-owned tools can join such a boundary per call through `providerTools`,
+keyed by tool name, using the `tool` of a `/tools` factory registration such as
+`createOpenAIWebSearchTool()`. The provider executes them; they never run
+application code. A provider tool name must not repeat a `tools` name, and a
+non-provider definition is rejected; both fail with
+`IntelligenceValidationError` before the provider request. Provider tools take
+part in `activeToolNames` like every other composed tool. Prompt execution
+results return the provider's cited `sources`, so applications can show the web
+evidence of a provider-owned search without reading provider-specific output.
+
+Factories deprecated by the AI SDK stay available but are marked
+`@deprecated`: use `createOpenAIWebSearchTool` instead of
+`createOpenAIWebSearchPreviewTool`, and `createAnthropicTextEditor20250728Tool`
+instead of `createAnthropicTextEditor20250429Tool`.
+
 `deferredToolLoading` is the on-demand alternative for large catalogs. The AI
 SDK receives every composed tool plus a built-in loader tool (`load_tools` by
 default), while the SDK's per-step `activeTools` selection exposes only the
@@ -150,6 +165,10 @@ loops, also expose `stepUsage` with the usage of each call in execution order;
 `usage` is its sum. Providers that price every request on its own, for example
 with long-context rates above an input-token threshold, must be priced per
 entry.
+
+Prompt execution also exposes the `toolCalls` reported by the language result,
+including provider-executed tools. Each call carries its ID and name. Citations
+are available separately as `sources`.
 
 Archipel deliberately does not assign monetary prices or application billing
 units. Consumers persist and price the normalized usage according to their own

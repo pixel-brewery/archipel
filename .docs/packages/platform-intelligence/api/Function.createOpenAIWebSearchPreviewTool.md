@@ -1,16 +1,16 @@
 ---
-title: 'Function: createOpenAIWebSearchPreviewTool()'
+title: '~~Function: createOpenAIWebSearchPreviewTool()~~'
 generated: true
 editUrl: false
 ---
 
-# Function: createOpenAIWebSearchPreviewTool()
+# ~~Function: createOpenAIWebSearchPreviewTool()~~
 
 ```ts
 function createOpenAIWebSearchPreviewTool(options?): Promise<IIntelligenceTool>;
 ```
 
-Defined in: [libs/platform-intelligence/src/providers/openai/tools/createOpenAIWebSearchPreviewTool.ts:19](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/providers/openai/tools/createOpenAIWebSearchPreviewTool.ts#L19)
+Defined in: [libs/platform-intelligence/src/providers/openai/tools/createOpenAIWebSearchPreviewTool.ts:21](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-intelligence/src/providers/openai/tools/createOpenAIWebSearchPreviewTool.ts#L21)
 
 Creates an OpenAI web-search-preview tool registration.
 
@@ -25,3 +25,7 @@ Creates an OpenAI web-search-preview tool registration.
 `Promise`\<[`IIntelligenceTool`](Interface.IIntelligenceTool)\>
 
 Tool registration compatible with the intelligence tool registry.
+
+## Deprecated
+
+The AI SDK deprecates `webSearchPreview`; use `createOpenAIWebSearchTool`.

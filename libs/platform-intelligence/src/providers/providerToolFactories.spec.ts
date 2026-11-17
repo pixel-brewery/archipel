@@ -5,12 +5,16 @@ import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import type { IIntelligenceTool } from '../interfaces/IIntelligenceTool.js';
 import { AnthropicIntelligenceToolNames } from './anthropic/AnthropicIntelligenceToolNames.js';
+import { createAnthropicComputerToolset20260801Tool } from './anthropic/tools/createAnthropicComputerToolset20260801Tool.js';
+import { createAnthropicWebFetch20260318Tool } from './anthropic/tools/createAnthropicWebFetch20260318Tool.js';
 import { createAnthropicWebSearch20260209Tool } from './anthropic/tools/createAnthropicWebSearch20260209Tool.js';
+import { createAnthropicWebSearch20260318Tool } from './anthropic/tools/createAnthropicWebSearch20260318Tool.js';
 import { GoogleIntelligenceToolNames } from './google/GoogleIntelligenceToolNames.js';
 import { createGoogleGoogleSearchTool } from './google/tools/createGoogleGoogleSearchTool.js';
 import { GrokIntelligenceToolNames } from './grok/GrokIntelligenceToolNames.js';
 import { createGrokCodeExecutionTool } from './grok/tools/createGrokCodeExecutionTool.js';
 import { createGrokFileSearchTool } from './grok/tools/createGrokFileSearchTool.js';
+import { createGrokImageGenerationTool } from './grok/tools/createGrokImageGenerationTool.js';
 import { createGrokMcpServerTool } from './grok/tools/createGrokMcpServerTool.js';
 import { createGrokViewImageTool } from './grok/tools/createGrokViewImageTool.js';
 import { createGrokViewXVideoTool } from './grok/tools/createGrokViewXVideoTool.js';
@@ -19,9 +23,11 @@ import { createGrokXSearchTool } from './grok/tools/createGrokXSearchTool.js';
 import { createMimoCustomTool } from './mimo/tools/createMimoCustomTool.js';
 import { OpenAIIntelligenceToolNames } from './openai/OpenAIIntelligenceToolNames.js';
 import { createOpenAICodeInterpreterTool } from './openai/tools/createOpenAICodeInterpreterTool.js';
+import { createOpenAIComputerTool } from './openai/tools/createOpenAIComputerTool.js';
 import { createOpenAICustomTool } from './openai/tools/createOpenAICustomTool.js';
 import { createOpenAIFileSearchTool } from './openai/tools/createOpenAIFileSearchTool.js';
 import { createOpenAIImageGenerationTool } from './openai/tools/createOpenAIImageGenerationTool.js';
+import { createOpenAIProgrammaticToolCallingTool } from './openai/tools/createOpenAIProgrammaticToolCallingTool.js';
 import { createOpenAIToolSearchTool } from './openai/tools/createOpenAIToolSearchTool.js';
 import { createOpenAIWebSearchTool } from './openai/tools/createOpenAIWebSearchTool.js';
 
@@ -92,6 +98,48 @@ describe('Provider Tool Factories', () => {
         // assert
         expect(result.name).toBe('report_query');
         expectProviderTool(result.tool, 'openai.custom');
+    });
+
+    it('should expose OpenAI computer use as an intelligence tool', async () => {
+        // act
+        const result = await createOpenAIComputerTool();
+
+        // assert
+        expect(result.name).toBe(OpenAIIntelligenceToolNames.Computer);
+        expectProviderTool(result.tool, 'openai.computer');
+    });
+
+    it('should expose OpenAI programmatic tool calling as an intelligence tool', async () => {
+        // act
+        const result = await createOpenAIProgrammaticToolCallingTool();
+
+        // assert
+        expect(result.name).toBe(OpenAIIntelligenceToolNames.ProgrammaticToolCalling);
+        expectProviderTool(result.tool, 'openai.programmatic_tool_calling');
+    });
+
+    it('should expose the Anthropic 2026-03-18 web tools and the 2026-08-01 computer toolset', async () => {
+        // act
+        const search = await createAnthropicWebSearch20260318Tool({ maxUses: 2 });
+        const fetch = await createAnthropicWebFetch20260318Tool({ maxUses: 1 });
+        const computer = await createAnthropicComputerToolset20260801Tool();
+
+        // assert
+        expect(search.name).toBe(AnthropicIntelligenceToolNames.WebSearch);
+        expectProviderTool(search.tool, 'anthropic.web_search_20260318');
+        expect(fetch.name).toBe(AnthropicIntelligenceToolNames.WebFetch);
+        expectProviderTool(fetch.tool, 'anthropic.web_fetch_20260318');
+        expect(computer.name).toBe(AnthropicIntelligenceToolNames.Computer);
+        expectProviderTool(computer.tool, 'anthropic.computer_toolset_20260801');
+    });
+
+    it('should expose Grok image generation as an intelligence tool', async () => {
+        // act
+        const result = await createGrokImageGenerationTool();
+
+        // assert
+        expect(result.name).toBe(GrokIntelligenceToolNames.ImageGeneration);
+        expectProviderTool(result.tool, 'xai.image_generation');
     });
 
     it('should expose Google search as an intelligence tool', async () => {

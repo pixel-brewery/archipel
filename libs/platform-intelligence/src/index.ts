@@ -24,6 +24,7 @@ export { IntelligenceReranker } from './IntelligenceReranker.js';
 export { IntelligenceToolRegistry } from './IntelligenceToolRegistry.js';
 export type { IIntelligenceModuleOptions } from './interfaces/IIntelligenceModuleOptions.js';
 export type { IIntelligenceTool } from './interfaces/IIntelligenceTool.js';
+export type { IIntelligenceProviderToolDefinition } from './providers/IIntelligenceProviderToolDefinition.js';
 export type { IIntelligenceToolRegistry } from './interfaces/IIntelligenceToolRegistry.js';
 export { IntelligenceProviderAdapterBase } from './providers/abstracts/IntelligenceProviderAdapterBase.js';
 export type { IIntelligenceProviderLoadRequest } from './providers/IIntelligenceProviderLoadRequest.js';

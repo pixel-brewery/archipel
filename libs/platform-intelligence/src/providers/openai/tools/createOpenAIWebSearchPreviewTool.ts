@@ -14,6 +14,8 @@ import { OpenAIIntelligenceToolNames } from '../OpenAIIntelligenceToolNames.js';
  * @param options - OpenAI web-search-preview tool options.
  * @returns Tool registration compatible with the intelligence tool registry.
  *
+ * @deprecated The AI SDK deprecates `webSearchPreview`; use `createOpenAIWebSearchTool`.
+ *
  * @public
  */
 export const createOpenAIWebSearchPreviewTool = async (options: IntelligenceProviderToolOptions = {}): Promise<IIntelligenceTool> => {

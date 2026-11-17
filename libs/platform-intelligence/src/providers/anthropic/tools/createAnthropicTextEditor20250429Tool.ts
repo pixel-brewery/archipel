@@ -14,6 +14,8 @@ import { AnthropicIntelligenceToolNames } from '../AnthropicIntelligenceToolName
  * @param options - Anthropic text-editor tool options.
  * @returns Tool registration compatible with the intelligence tool registry.
  *
+ * @deprecated The AI SDK deprecates `textEditor_20250429`; use `createAnthropicTextEditor20250728Tool`.
+ *
  * @public
  */
 export const createAnthropicTextEditor20250429Tool = async (options: IntelligenceProviderToolOptions = {}): Promise<IIntelligenceTool> => {

@@ -6,6 +6,7 @@
 export const GrokIntelligenceToolNames = {
     CodeExecution: 'code_execution',
     FileSearch: 'file_search',
+    ImageGeneration: 'image_generation',
     Mcp: 'mcp',
     ViewImage: 'view_image',
     ViewXVideo: 'view_x_video',

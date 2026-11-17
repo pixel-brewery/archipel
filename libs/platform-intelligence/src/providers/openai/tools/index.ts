@@ -1,10 +1,12 @@
 export { createOpenAIApplyPatchTool } from './createOpenAIApplyPatchTool.js';
 export { createOpenAICodeInterpreterTool } from './createOpenAICodeInterpreterTool.js';
+export { createOpenAIComputerTool } from './createOpenAIComputerTool.js';
 export { createOpenAICustomTool } from './createOpenAICustomTool.js';
 export { createOpenAIFileSearchTool } from './createOpenAIFileSearchTool.js';
 export { createOpenAIImageGenerationTool } from './createOpenAIImageGenerationTool.js';
 export { createOpenAILocalShellTool } from './createOpenAILocalShellTool.js';
 export { createOpenAIMcpTool } from './createOpenAIMcpTool.js';
+export { createOpenAIProgrammaticToolCallingTool } from './createOpenAIProgrammaticToolCallingTool.js';
 export { createOpenAIShellTool } from './createOpenAIShellTool.js';
 export { createOpenAIToolSearchTool } from './createOpenAIToolSearchTool.js';
 export { createOpenAIWebSearchPreviewTool } from './createOpenAIWebSearchPreviewTool.js';

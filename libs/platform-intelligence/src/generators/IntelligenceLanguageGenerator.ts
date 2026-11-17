@@ -828,9 +828,19 @@ export class IntelligenceLanguageGenerator {
     }
 
     private resolveToolDefinitions(options: IIntelligenceLanguageGenerationOptions): Record<string, IIntelligenceTool['tool']> {
+        const providerToolNames = Object.keys(options.providerTools ?? {});
+        const duplicateProviderToolNames = providerToolNames.filter((name) => Object.hasOwn(options.tools ?? {}, name));
+        if (duplicateProviderToolNames.length > 0) {
+            throw new IntelligenceValidationError(`Provider tools must not repeat call-local tool names: ${duplicateProviderToolNames.join(', ')}.`);
+        }
+        const invalidProviderToolNames = providerToolNames.filter((name) => !('nativeDefinition' in (options.providerTools?.[name] ?? {})));
+        if (invalidProviderToolNames.length > 0) {
+            throw new IntelligenceValidationError(`Provider tools require a provider-owned definition: ${invalidProviderToolNames.join(', ')}.`);
+        }
         const tools: Record<string, IIntelligenceTool['tool']> = {
             ...(options.includeRegisteredTools === false ? {} : this._toolRegistry.toExecutionToolSet()),
             ...(options.tools ?? {}),
+            ...(options.providerTools ?? {}),
         };
 
         if (options.deferredToolLoading !== undefined && options.activeToolNames !== undefined) {

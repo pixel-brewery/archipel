@@ -1,11 +1,11 @@
 {
-    "total": 1096,
-    "byKind": { "variable": 291, "class": 320, "type-alias": 84, "function": 122, "other": 2, "interface": 276, "namespace": 1 },
+    "total": 1103,
+    "byKind": { "variable": 291, "class": 320, "type-alias": 84, "function": 128, "other": 2, "interface": 277, "namespace": 1 },
     "byPackage": {
         "platform-esigning": 52,
         "platform-intelligence-agents": 34,
         "platform-database": 70,
-        "platform-intelligence": 228,
+        "platform-intelligence": 235,
         "platform-mailing": 63,
         "platform-analytics": 19,
         "platform-authentication": 111,
@@ -1999,6 +1999,17 @@
             "link": "/packages/platform-intelligence/api/Function.createAnthropicComputer20251124Tool"
         },
         {
+            "id": "platform-intelligence:function:createanthropiccomputertoolset20260801tool",
+            "name": "createAnthropicComputerToolset20260801Tool",
+            "kind": "function",
+            "kindLabel": "Function",
+            "packageName": "@pixel-brewery/archipel-platform-intelligence",
+            "packageSlug": "platform-intelligence",
+            "title": "Function: createAnthropicComputerToolset20260801Tool()",
+            "description": "function createAnthropicComputerToolset20260801Tool(options?): Promise<IIntelligenceTool>;",
+            "link": "/packages/platform-intelligence/api/Function.createAnthropicComputerToolset20260801Tool"
+        },
+        {
             "id": "platform-intelligence:function:createanthropicmemory20250818tool",
             "name": "createAnthropicMemory20250818Tool",
             "kind": "function",
@@ -2038,7 +2049,7 @@
             "kindLabel": "Function",
             "packageName": "@pixel-brewery/archipel-platform-intelligence",
             "packageSlug": "platform-intelligence",
-            "title": "Function: createAnthropicTextEditor20250429Tool()",
+            "title": "~~Function: createAnthropicTextEditor20250429Tool()~~",
             "description": "function createAnthropicTextEditor20250429Tool(options?): Promise<IIntelligenceTool>;",
             "link": "/packages/platform-intelligence/api/Function.createAnthropicTextEditor20250429Tool"
         },
@@ -2098,6 +2109,17 @@
             "link": "/packages/platform-intelligence/api/Function.createAnthropicWebFetch20260209Tool"
         },
         {
+            "id": "platform-intelligence:function:createanthropicwebfetch20260318tool",
+            "name": "createAnthropicWebFetch20260318Tool",
+            "kind": "function",
+            "kindLabel": "Function",
+            "packageName": "@pixel-brewery/archipel-platform-intelligence",
+            "packageSlug": "platform-intelligence",
+            "title": "Function: createAnthropicWebFetch20260318Tool()",
+            "description": "function createAnthropicWebFetch20260318Tool(options?): Promise<IIntelligenceTool>;",
+            "link": "/packages/platform-intelligence/api/Function.createAnthropicWebFetch20260318Tool"
+        },
+        {
             "id": "platform-intelligence:function:createanthropicwebsearch20250305tool",
             "name": "createAnthropicWebSearch20250305Tool",
             "kind": "function",
@@ -2118,6 +2140,17 @@
             "title": "Function: createAnthropicWebSearch20260209Tool()",
             "description": "function createAnthropicWebSearch20260209Tool(options?): Promise<IIntelligenceTool>;",
             "link": "/packages/platform-intelligence/api/Function.createAnthropicWebSearch20260209Tool"
+        },
+        {
+            "id": "platform-intelligence:function:createanthropicwebsearch20260318tool",
+            "name": "createAnthropicWebSearch20260318Tool",
+            "kind": "function",
+            "kindLabel": "Function",
+            "packageName": "@pixel-brewery/archipel-platform-intelligence",
+            "packageSlug": "platform-intelligence",
+            "title": "Function: createAnthropicWebSearch20260318Tool()",
+            "description": "function createAnthropicWebSearch20260318Tool(options?): Promise<IIntelligenceTool>;",
+            "link": "/packages/platform-intelligence/api/Function.createAnthropicWebSearch20260318Tool"
         },
         {
             "id": "platform-bootstrap:function:createcompositioncontext",
@@ -2261,6 +2294,17 @@
             "title": "Function: createGrokFileSearchTool()",
             "description": "function createGrokFileSearchTool(options): Promise<IIntelligenceTool>;",
             "link": "/packages/platform-intelligence/api/Function.createGrokFileSearchTool"
+        },
+        {
+            "id": "platform-intelligence:function:creategrokimagegenerationtool",
+            "name": "createGrokImageGenerationTool",
+            "kind": "function",
+            "kindLabel": "Function",
+            "packageName": "@pixel-brewery/archipel-platform-intelligence",
+            "packageSlug": "platform-intelligence",
+            "title": "Function: createGrokImageGenerationTool()",
+            "description": "function createGrokImageGenerationTool(options?): Promise<IIntelligenceTool>;",
+            "link": "/packages/platform-intelligence/api/Function.createGrokImageGenerationTool"
         },
         {
             "id": "platform-intelligence:function:creategrokmcpservertool",
@@ -2428,6 +2472,17 @@
             "link": "/packages/platform-intelligence/api/Function.createOpenAICodeInterpreterTool"
         },
         {
+            "id": "platform-intelligence:function:createopenaicomputertool",
+            "name": "createOpenAIComputerTool",
+            "kind": "function",
+            "kindLabel": "Function",
+            "packageName": "@pixel-brewery/archipel-platform-intelligence",
+            "packageSlug": "platform-intelligence",
+            "title": "Function: createOpenAIComputerTool()",
+            "description": "function createOpenAIComputerTool(options?): Promise<IIntelligenceTool>;",
+            "link": "/packages/platform-intelligence/api/Function.createOpenAIComputerTool"
+        },
+        {
             "id": "platform-intelligence:function:createopenaicustomtool",
             "name": "createOpenAICustomTool",
             "kind": "function",
@@ -2483,6 +2538,17 @@
             "link": "/packages/platform-intelligence/api/Function.createOpenAIMcpTool"
         },
         {
+            "id": "platform-intelligence:function:createopenaiprogrammatictoolcallingtool",
+            "name": "createOpenAIProgrammaticToolCallingTool",
+            "kind": "function",
+            "kindLabel": "Function",
+            "packageName": "@pixel-brewery/archipel-platform-intelligence",
+            "packageSlug": "platform-intelligence",
+            "title": "Function: createOpenAIProgrammaticToolCallingTool()",
+            "description": "function createOpenAIProgrammaticToolCallingTool(): Promise<IIntelligenceTool>;",
+            "link": "/packages/platform-intelligence/api/Function.createOpenAIProgrammaticToolCallingTool"
+        },
+        {
             "id": "platform-intelligence:function:createopenaishelltool",
             "name": "createOpenAIShellTool",
             "kind": "function",
@@ -2511,7 +2577,7 @@
             "kindLabel": "Function",
             "packageName": "@pixel-brewery/archipel-platform-intelligence",
             "packageSlug": "platform-intelligence",
-            "title": "Function: createOpenAIWebSearchPreviewTool()",
+            "title": "~~Function: createOpenAIWebSearchPreviewTool()~~",
             "description": "function createOpenAIWebSearchPreviewTool(options?): Promise<IIntelligenceTool>;",
             "link": "/packages/platform-intelligence/api/Function.createOpenAIWebSearchPreviewTool"
         },
@@ -5275,6 +5341,17 @@
             "title": "Interface: IIntelligenceProviderProbeResult",
             "description": "Provider-neutral result of a bounded provider availability probe.",
             "link": "/packages/platform-intelligence/api/Interface.IIntelligenceProviderProbeResult"
+        },
+        {
+            "id": "platform-intelligence:interface:iintelligenceprovidertooldefinition",
+            "name": "IIntelligenceProviderToolDefinition",
+            "kind": "interface",
+            "kindLabel": "Interface",
+            "packageName": "@pixel-brewery/archipel-platform-intelligence",
+            "packageSlug": "platform-intelligence",
+            "title": "Interface: IIntelligenceProviderToolDefinition",
+            "description": "Opaque provider-native tool created by a provider /tools subpath factory.",
+            "link": "/packages/platform-intelligence/api/Interface.IIntelligenceProviderToolDefinition"
         },
         {
             "id": "platform-intelligence:interface:iintelligenceproviderwebrtcclosure",
