@@ -1,3 +1,13 @@
+## 0.1.53 (2026-11-17)
+
+### 🚀 Features
+
+- **intelligence:** support provider-executed tools and source citations ([#55](https://github.com/pixel-brewery/archipel/pull/55))
+
+### ❤️ Thank You
+
+- André Wehlert @RueDeRennes
+
 ## 0.1.52 (2026-11-16)
 
 This was a version bump only for platform-mapping to align it with other projects, there were no code changes.
