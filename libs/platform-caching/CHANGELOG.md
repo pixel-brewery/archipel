@@ -1,3 +1,7 @@
+## 0.1.55 (2026-11-23)
+
+This was a version bump only for platform-caching to align it with other projects, there were no code changes.
+
 ## 0.1.54 (2026-11-17)
 
 ### 🚀 Features
