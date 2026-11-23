@@ -168,9 +168,9 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.5.0",
-        "@nestjs/core": "12.5.0",
-        "@nestjs/terminus": "12.1.0",
+        "@nestjs/common": "12.6.0",
+        "@nestjs/core": "12.6.0",
+        "@nestjs/terminus": "12.2.0",
         "@sendgrid/mail": "8.1.6",
         "form-data": "4.0.6",
         "mailgun.js": "14.1.1",
