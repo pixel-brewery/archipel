@@ -79,7 +79,7 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.5.0",
+        "@nestjs/common": "12.6.0",
         "@pixel-brewery/archipel-platform-caching": "0.1.55",
         "@types/mime-types": "3.0.1",
         "reflect-metadata": "0.2.2",

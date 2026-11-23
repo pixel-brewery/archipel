@@ -92,7 +92,7 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.5.0",
+        "@nestjs/common": "12.6.0",
         "@pixel-brewery/archipel-platform-configuration": "0.1.55",
         "docxtemplater": "3.71.1",
         "pdf-lib": "1.17.1",

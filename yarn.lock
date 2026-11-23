@@ -299,9 +299,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular-devkit/core@npm:22.2.6"
+"@angular-devkit/core@npm:22.2.7":
+  version: 22.2.7
+  resolution: "@angular-devkit/core@npm:22.2.7"
   dependencies:
     ajv: "npm:8.20.0"
     ajv-formats: "npm:3.0.1"
@@ -314,20 +314,20 @@ __metadata:
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 10c0/bf2e98908780f486644b4d7b9561935c6c90135258c78a1addc2124bf532761751762a19eec4febfb35c33ea73b5d24c2da6d7b82e498b21d209f7715967a3de
+  checksum: 10c0/a9eaa3b84f6226dc4f7ca5a8850797b9b7bdf6b78bdefe1ad04f032f78a42b0f71f278f43e50fd61b2dd426edef40f2d7de05915e06ba221ed545d00d03d06ca
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular-devkit/schematics@npm:22.2.6"
+"@angular-devkit/schematics@npm:22.2.7":
+  version: 22.2.7
+  resolution: "@angular-devkit/schematics@npm:22.2.7"
   dependencies:
-    "@angular-devkit/core": "npm:22.2.6"
+    "@angular-devkit/core": "npm:22.2.7"
     jsonc-parser: "npm:3.3.1"
     magic-string: "npm:1.4.1"
     ora: "npm:9.4.1"
     rxjs: "npm:7.8.2"
-  checksum: 10c0/c83e7c4efddbaa5fc9022d6ae8f14a2f0f47d8b4cd7cbbeaa8ac728c4e0f15fac0f1a8181f402dd71ebf3406db13ab75761da0427216bda26b4292b55e860121
+  checksum: 10c0/3d455e5a3cbe9891ad30e20661355bc588e5bb6b4348aa260faf6bb4de82bb484eedc50eace12065f9d409b0bc5b87c5fbdec5a9beb180478dd13ab0da45a1fa
   languageName: node
   linkType: hard
 
@@ -5204,9 +5204,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:12.5.0":
-  version: 12.5.0
-  resolution: "@nestjs/common@npm:12.5.0"
+"@nestjs/common@npm:12.6.0":
+  version: 12.6.0
+  resolution: "@nestjs/common@npm:12.6.0"
   dependencies:
     "@standard-schema/spec": "npm:1.1.0"
     file-type: "npm:22.3.0"
@@ -5224,13 +5224,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/164779131a0424d8ad587f652b059ed625def6df0de6f2c9566b8f1925bee17d37edb9981b283d6dca2fc8944ed0b4c6fab70499a97d67b3c16d408be0ee503c
+  checksum: 10c0/7cede093e6d88b089366f94248c01c98bc5457fe30f2e4b56d64c4ab108d1ef918967bc70470393ad5e732cded4669292be54bf72586153ee7e26eafc28e71ad
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:12.5.0":
-  version: 12.5.0
-  resolution: "@nestjs/core@npm:12.5.0"
+"@nestjs/core@npm:12.6.0":
+  version: 12.6.0
+  resolution: "@nestjs/core@npm:12.6.0"
   dependencies:
     fast-safe-stringify: "npm:2.1.1"
     iterare: "npm:1.2.1"
@@ -5251,7 +5251,7 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/f8f62a4643b42eab6bdcf088f05daf4a2c2d5a2700fc1b3907b04223826e47b328d8fa73c2cf59d5be26a06c4cb489a6d684a9766905dcab5bf89da25e09d5f1
+  checksum: 10c0/f0a45a02723aaf5572f4568005add90debb380e048c8c397194ad73460d15ff8d73174c4f6df369dd804f33e6e2091dbc8d3959277529aa8e5fcdec9ce16e67a
   languageName: node
   linkType: hard
 
@@ -5294,9 +5294,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:12.5.0":
-  version: 12.5.0
-  resolution: "@nestjs/platform-express@npm:12.5.0"
+"@nestjs/platform-express@npm:12.6.0":
+  version: 12.6.0
+  resolution: "@nestjs/platform-express@npm:12.6.0"
   dependencies:
     cors: "npm:2.8.6"
     express: "npm:5.3.0"
@@ -5307,26 +5307,26 @@ __metadata:
     "@nestjs/common": ^12.0.0
     "@nestjs/core": ^12.0.0
     rxjs: ^7.1.0
-  checksum: 10c0/787a52ffd891006b3bb34d915aeccc9e5bbe5ef081949c9f325f9caf86e127dc17fc7ccb3072240d8a04b84252d0702b1ff5336e21c2b8f306b9e49b402bde70
+  checksum: 10c0/d68ab63ee390dfe905b47619711da114e71e3f6ddf8d2357e3b62c18d9b9e91c22fa479589e471b6a359e6016b86e885f40b692b7385b8008a8fe3dc40a5c02c
   languageName: node
   linkType: hard
 
-"@nestjs/schematics@npm:12.0.13":
-  version: 12.0.13
-  resolution: "@nestjs/schematics@npm:12.0.13"
+"@nestjs/schematics@npm:12.0.16":
+  version: 12.0.16
+  resolution: "@nestjs/schematics@npm:12.0.16"
   dependencies:
-    "@angular-devkit/core": "npm:22.2.6"
-    "@angular-devkit/schematics": "npm:22.2.6"
+    "@angular-devkit/core": "npm:22.2.7"
+    "@angular-devkit/schematics": "npm:22.2.7"
     comment-json: "npm:5.0.0"
     jsonc-parser: "npm:3.3.1"
     pluralize: "npm:8.0.0"
   peerDependencies:
     prettier: ^3.0.0
-    typescript: ">=6.0.0"
+    typescript: ^6.0.0
   peerDependenciesMeta:
     prettier:
       optional: true
-  checksum: 10c0/a5e8a5e7b6df033ebb35d1bf5639b904a558b3e4de44c71b774ab9d21c1ca227094a09e269aa2b9350d7927bb52f78a64b375f5a9f7339f9c800e2582164b051
+  checksum: 10c0/8f6ce583847158efa291d0a635a9814d11e9c2cd4378b311e3cebad9af7d1ecb009b8998c9ca1c664ed6a7bd588d418453731a2de691ecdff29aa27aa59ad60e
   languageName: node
   linkType: hard
 
@@ -5362,9 +5362,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/terminus@npm:12.1.0":
-  version: 12.1.0
-  resolution: "@nestjs/terminus@npm:12.1.0"
+"@nestjs/terminus@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@nestjs/terminus@npm:12.2.0"
   peerDependencies:
     "@grpc/grpc-js": "*"
     "@grpc/proto-loader": "*"
@@ -5413,13 +5413,13 @@ __metadata:
       optional: true
     typeorm:
       optional: true
-  checksum: 10c0/f09c4ed57fdb4481f07108a3de2049e618bc3c6bad0d38bf9688e82bb54fb6e31ece90a2e73c84cf0c0fde20a377742f31dc99a4822640e45b16bba342eb9c55
+  checksum: 10c0/8a4a65e071a42b7a4839e5c391ac696e853300db6d3475f863f726de4e75a66f03226ef9956dd850fa27b13e15121e8752b0b7dcf35affebb125535208e3ed12
   languageName: node
   linkType: hard
 
-"@nestjs/testing@npm:12.5.0":
-  version: 12.5.0
-  resolution: "@nestjs/testing@npm:12.5.0"
+"@nestjs/testing@npm:12.6.0":
+  version: 12.6.0
+  resolution: "@nestjs/testing@npm:12.6.0"
   dependencies:
     tslib: "npm:2.9.1"
   peerDependencies:
@@ -5432,7 +5432,7 @@ __metadata:
       optional: true
     "@nestjs/platform-express":
       optional: true
-  checksum: 10c0/36a44210ffcdbdcbb58951445c10f2b0bf17e2740bb9d70c4c70b63db0e493855cd2e371cea69fba93b0104748e81ef7a2ec3c6c72784edab4d3eac0017b31d0
+  checksum: 10c0/7d590bb9a263548be835352973e0d00102fd54c13470e74bf93f6cb23dfae2f6be9dd1542bafc1200b5855086e305ec17300e330323b4d1de6d77c66bcece44e
   languageName: node
   linkType: hard
 
@@ -7448,8 +7448,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-analytics@workspace:libs/platform-analytics"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@sentry/node": "npm:11.12.0"
     applicationinsights: "npm:3.17.0"
@@ -7484,8 +7484,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-authentication@workspace:libs/platform-authentication"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@nestjs/jwt": "npm:12.0.5"
     "@nestjs/passport": "npm:12.0.2"
     "@nestjs/swagger": "npm:12.1.2"
@@ -7552,10 +7552,10 @@ __metadata:
   resolution: "@pixel-brewery/archipel-platform-blob-storage@workspace:libs/platform-blob-storage"
   dependencies:
     "@nestjs/axios": "npm:12.0.2"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
-    "@nestjs/platform-express": "npm:12.5.0"
-    "@nestjs/terminus": "npm:12.1.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
+    "@nestjs/platform-express": "npm:12.6.0"
+    "@nestjs/terminus": "npm:12.2.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     axios: "npm:1.21.1"
     reflect-metadata: "npm:0.2.2"
@@ -7593,8 +7593,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-bootstrap@workspace:libs/platform-bootstrap"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-core": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-database": "npm:0.1.55"
@@ -7646,8 +7646,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-caching@workspace:libs/platform-caching"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     ioredis: "npm:6.0.0"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -7675,7 +7675,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-configuration@workspace:libs/platform-configuration"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
     dotenv: "npm:18.0.10"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -7695,10 +7695,10 @@ __metadata:
   resolution: "@pixel-brewery/archipel-platform-core@workspace:libs/platform-core"
   dependencies:
     "@nestjs/axios": "npm:12.0.2"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@nestjs/swagger": "npm:12.1.2"
-    "@nestjs/terminus": "npm:12.1.0"
+    "@nestjs/terminus": "npm:12.2.0"
     "@pixel-brewery/archipel-platform-caching": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-health": "npm:0.1.55"
@@ -7741,7 +7741,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-cryptography@workspace:libs/platform-cryptography"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
     "@otplib/core": "npm:13.6.0"
     "@otplib/hotp": "npm:13.6.0"
     "@otplib/totp": "npm:13.6.0"
@@ -7762,9 +7762,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-database@workspace:libs/platform-database"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
-    "@nestjs/terminus": "npm:12.1.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
+    "@nestjs/terminus": "npm:12.2.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@prisma/client": "npm:7.10.1"
     "@prisma/driver-adapter-utils": "npm:7.10.1"
@@ -7795,7 +7795,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-documents@workspace:libs/platform-documents"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-core": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-resources": "npm:0.1.55"
@@ -7830,8 +7830,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-esigning@workspace:libs/platform-esigning"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -7863,8 +7863,8 @@ __metadata:
     "@azure/app-configuration-provider": "npm:2.6.0"
     "@azure/identity": "npm:4.14.1"
     "@microsoft/feature-management": "npm:2.3.1"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@vercel/edge-config": "npm:1.5.1"
     reflect-metadata: "npm:0.2.2"
@@ -7897,9 +7897,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-health@workspace:libs/platform-health"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
-    "@nestjs/terminus": "npm:12.1.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
+    "@nestjs/terminus": "npm:12.2.0"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.9.1"
@@ -7915,8 +7915,8 @@ __metadata:
   resolution: "@pixel-brewery/archipel-platform-intelligence-agents@workspace:libs/platform-intelligence-agents"
   dependencies:
     "@ai-sdk/provider": "npm:4.0.37"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/testing": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/testing": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:^0.1.55"
     "@pixel-brewery/archipel-platform-intelligence": "npm:^0.1.55"
     "@pixel-brewery/archipel-platform-mcp": "npm:^0.1.55"
@@ -7943,8 +7943,8 @@ __metadata:
     "@ai-sdk/openai-compatible": "npm:3.0.90"
     "@ai-sdk/provider": "npm:4.0.37"
     "@ai-sdk/xai": "npm:5.0.43"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@types/ws": "npm:8.18.2"
     ai: "npm:7.0.170"
@@ -8003,7 +8003,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-logging@workspace:libs/platform-logging"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     express: "npm:5.3.0"
     reflect-metadata: "npm:0.2.2"
@@ -8020,9 +8020,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-mailing@workspace:libs/platform-mailing"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
-    "@nestjs/terminus": "npm:12.1.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
+    "@nestjs/terminus": "npm:12.2.0"
     "@pixel-brewery/archipel-platform-blob-storage": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-core": "npm:0.1.55"
@@ -8070,7 +8070,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-mapping@workspace:libs/platform-mapping"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.9.1"
@@ -8085,8 +8085,8 @@ __metadata:
   resolution: "@pixel-brewery/archipel-platform-mcp@workspace:libs/platform-mcp"
   dependencies:
     "@modelcontextprotocol/sdk": "npm:1.32.2"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     express: "npm:5.3.0"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -8113,8 +8113,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-openapi@workspace:libs/platform-openapi"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@nestjs/swagger": "npm:12.1.2"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     "@pixel-brewery/archipel-platform-core": "npm:0.1.55"
@@ -8138,8 +8138,8 @@ __metadata:
   dependencies:
     "@lemonsqueezy/lemonsqueezy.js": "npm:4.0.0"
     "@mollie/api-client": "npm:4.6.0"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@paddle/paddle-node-sdk": "npm:3.11.1"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     reflect-metadata: "npm:0.2.2"
@@ -8177,8 +8177,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-queue@workspace:libs/platform-queue"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-configuration": "npm:0.1.55"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
@@ -8208,7 +8208,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-reporting@workspace:libs/platform-reporting"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
     reflect-metadata: "npm:0.2.2"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.9.1"
@@ -8222,7 +8222,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-resources@workspace:libs/platform-resources"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
     "@pixel-brewery/archipel-platform-caching": "npm:0.1.55"
     "@types/mime-types": "npm:3.0.1"
     glob: "npm:14.0.5"
@@ -8244,8 +8244,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pixel-brewery/archipel-platform-telemetry@workspace:libs/platform-telemetry"
   dependencies:
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
     "@opentelemetry/api": "npm:1.10.0"
     "@opentelemetry/context-async-hooks": "npm:3.1.1"
     "@opentelemetry/core": "npm:3.1.1"
@@ -12089,11 +12089,11 @@ __metadata:
     "@eslint/js": "npm:10.0.1"
     "@lemonsqueezy/lemonsqueezy.js": "npm:4.0.0"
     "@mollie/api-client": "npm:4.6.0"
-    "@nestjs/common": "npm:12.5.0"
-    "@nestjs/core": "npm:12.5.0"
-    "@nestjs/platform-express": "npm:12.5.0"
-    "@nestjs/schematics": "npm:12.0.13"
-    "@nestjs/testing": "npm:12.5.0"
+    "@nestjs/common": "npm:12.6.0"
+    "@nestjs/core": "npm:12.6.0"
+    "@nestjs/platform-express": "npm:12.6.0"
+    "@nestjs/schematics": "npm:12.0.16"
+    "@nestjs/testing": "npm:12.6.0"
     "@nx/eslint": "npm:24.0.6"
     "@nx/eslint-plugin": "npm:24.0.6"
     "@nx/js": "npm:24.0.6"
