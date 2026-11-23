@@ -6227,9 +6227,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/exporter-prometheus@npm:0.301.1":
-  version: 0.301.1
-  resolution: "@opentelemetry/exporter-prometheus@npm:0.301.1"
+"@opentelemetry/exporter-prometheus@npm:0.301.2":
+  version: 0.301.2
+  resolution: "@opentelemetry/exporter-prometheus@npm:0.301.2"
   dependencies:
     "@opentelemetry/core": "npm:3.1.1"
     "@opentelemetry/resources": "npm:3.1.1"
@@ -6237,7 +6237,7 @@ __metadata:
     "@opentelemetry/semantic-conventions": "npm:^1.29.0"
   peerDependencies:
     "@opentelemetry/api": ">=1.10.0 <1.11.0"
-  checksum: 10c0/eb0b084fdd3b2f68a1a485ea97255ddb6d75305901f3eb4a63776ec30116509d30e702b4a1a4332b1f8463cca07f3093eb6ae3f0f01688ae81c9b21ced29d9fa
+  checksum: 10c0/da1484f56af2023849d628d53ed64f7c7e7fb48d51c37ea86059ac43c72ad1f81ca117f642878cead7445d10a53431f6623f02a01259f4df3e31e898f7ab6425
   languageName: node
   linkType: hard
 
@@ -8260,7 +8260,7 @@ __metadata:
     "@opentelemetry/core": "npm:3.1.1"
     "@opentelemetry/exporter-metrics-otlp-grpc": "npm:0.301.2"
     "@opentelemetry/exporter-metrics-otlp-http": "npm:0.301.2"
-    "@opentelemetry/exporter-prometheus": "npm:0.301.1"
+    "@opentelemetry/exporter-prometheus": "npm:0.301.2"
     "@opentelemetry/exporter-trace-otlp-http": "npm:0.301.2"
     "@opentelemetry/instrumentation": "npm:0.301.1"
     "@opentelemetry/instrumentation-express": "npm:0.73.0"
@@ -12118,7 +12118,7 @@ __metadata:
     "@opentelemetry/context-async-hooks": "npm:3.1.1"
     "@opentelemetry/core": "npm:3.1.1"
     "@opentelemetry/exporter-metrics-otlp-grpc": "npm:0.301.2"
-    "@opentelemetry/exporter-prometheus": "npm:0.301.1"
+    "@opentelemetry/exporter-prometheus": "npm:0.301.2"
     "@opentelemetry/instrumentation": "npm:0.301.1"
     "@opentelemetry/sdk-metrics": "npm:3.1.1"
     "@opentelemetry/sdk-trace": "npm:3.1.1"
