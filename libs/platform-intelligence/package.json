@@ -167,7 +167,7 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@ai-sdk/provider": "4.0.37",
+        "@ai-sdk/provider": "4.0.39",
         "@pixel-brewery/archipel-platform-configuration": "0.1.55",
         "ai": "7.0.170",
         "ajv": "8.20.0",
@@ -226,7 +226,7 @@
         "@ai-sdk/google": "4.0.118",
         "@ai-sdk/openai": "4.0.115",
         "@ai-sdk/openai-compatible": "3.0.90",
-        "@ai-sdk/provider": "4.0.37",
+        "@ai-sdk/provider": "4.0.39",
         "@ai-sdk/xai": "5.0.43",
         "@nestjs/common": "12.6.0",
         "@nestjs/core": "12.6.0",
