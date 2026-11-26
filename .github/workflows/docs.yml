@@ -4,6 +4,12 @@ on:
     push:
         branches: [main]
     workflow_dispatch:
+        inputs:
+            expected_head_sha:
+                description: Exact main source requested by trusted dependency automation
+                required: false
+                default: ''
+                type: string
 
 permissions: {}
 
@@ -29,6 +35,11 @@ jobs:
             NX_DAEMON: 'false'
             NX_PARALLEL: '1'
         steps:
+            - name: Require the requested documentation revision
+              if: github.event_name == 'workflow_dispatch' && inputs.expected_head_sha != ''
+              env:
+                  EXPECTED_HEAD_SHA: ${{ inputs.expected_head_sha }}
+              run: test "$GITHUB_SHA" = "$EXPECTED_HEAD_SHA"
             - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
@@ -61,8 +72,18 @@ jobs:
             url: ${{ steps.deployment.outputs.page_url }}
         permissions:
             pages: write
+            contents: read
             id-token: write
         steps:
+            - name: Require the current requested documentation source
+              if: github.event_name == 'workflow_dispatch' && inputs.expected_head_sha != ''
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  EXPECTED_HEAD_SHA: ${{ inputs.expected_head_sha }}
+              run: |
+                  test "$GITHUB_SHA" = "$EXPECTED_HEAD_SHA"
+                  test "$(gh api "repos/$GITHUB_REPOSITORY/branches/main" --jq .commit.sha)" = "$EXPECTED_HEAD_SHA"
+
             - name: Deploy the verified site artifact
               id: deployment
               uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
