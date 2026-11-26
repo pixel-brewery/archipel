@@ -1,7 +1,7 @@
 // #region Imports
 
 import { describe, expect, it, vi } from 'vitest';
-import { requestMergedVerification } from './requestMergedVerification.mjs';
+import { requestMergedWorkflow } from './requestMergedWorkflow.mjs';
 
 // #endregion
 
@@ -26,9 +26,11 @@ function controlled() {
             name: 'Verify',
             state: 'active',
         },
+        files: [{ filename: 'site/index.html', status: 'modified' }],
         runs: { total_count: 0, workflow_runs: [] },
         run: {
             id: 404,
+            run_attempt: 1,
             workflow_id: workflowId,
             path: '.github/workflows/ci.yml',
             head_sha: sourceSha,
@@ -44,11 +46,13 @@ function controlled() {
     const request = vi.fn((method, endpoint) => {
         if (records.failure?.method === method && records.failure?.endpoint === endpoint) throw new Error('Sensitive request output must not be exposed.');
         if (method === 'GET' && endpoint === `repositories/${repositoryId}`) return structuredClone(records.repository);
+        if (method === 'GET' && endpoint === `${repositoryPath}/commits/${sourceSha}?per_page=100&page=1`) return { sha: sourceSha, files: records.files };
         if (method === 'GET' && endpoint === mainPath) {
             mainReads++;
             return structuredClone(mainReads > 1 ? (records.nextMain ?? records.main) : records.main);
         }
-        if (method === 'GET' && endpoint === `${repositoryPath}/actions/workflows/ci.yml`) return structuredClone(records.workflow);
+        if (method === 'GET' && endpoint === `${repositoryPath}/actions/workflows/${records.workflow.path.split('/').at(-1)}`)
+            return structuredClone(records.workflow);
         if (method === 'GET' && endpoint === `${workflowEndpoint}/runs?head_sha=${sourceSha}&per_page=100`) return structuredClone(records.runs);
         if (method === 'POST' && endpoint === `${workflowEndpoint}/dispatches`) {
             if (records.acceptThenFail) {
@@ -72,7 +76,7 @@ describe('Merged source verification request', () => {
         const dependencies = controlled();
 
         // act
-        const result = await requestMergedVerification({ ...context, repositoryId: String(repositoryId) }, dependencies);
+        const result = await requestMergedWorkflow({ ...context, repositoryId: String(repositoryId) }, dependencies);
 
         // assert
         expect(result).toEqual({ status: 'requested', sourceSha });
@@ -87,7 +91,7 @@ describe('Merged source verification request', () => {
             const dependencies = controlled();
 
             // act
-            const result = requestMergedVerification({ ...context, ...override }, dependencies);
+            const result = requestMergedWorkflow({ ...context, ...override }, dependencies);
 
             // assert
             await expect(result).rejects.toThrow('Verification request failed');
@@ -103,7 +107,7 @@ describe('Merged source verification request', () => {
             Object.assign(dependencies.records.repository, override);
 
             // act
-            const result = requestMergedVerification(context, dependencies);
+            const result = requestMergedWorkflow(context, dependencies);
 
             // assert
             await expect(result).rejects.toThrow('Verification request failed');
@@ -119,7 +123,7 @@ describe('Merged source verification request', () => {
             Object.assign(dependencies.records.workflow, override);
 
             // act
-            const result = requestMergedVerification(context, dependencies);
+            const result = requestMergedWorkflow(context, dependencies);
 
             // assert
             await expect(result).rejects.toThrow('Verification request failed');
@@ -135,7 +139,7 @@ describe('Merged source verification request', () => {
         else dependencies.records.nextMain = moved;
 
         // act
-        const result = await requestMergedVerification(context, dependencies);
+        const result = await requestMergedWorkflow(context, dependencies);
 
         // assert
         expect(result).toEqual({ status: 'superseded', sourceSha });
@@ -150,7 +154,7 @@ describe('Merged source verification request', () => {
         dependencies.records.runs = { total_count: 1, workflow_runs: [dependencies.records.run] };
 
         // act
-        const result = await requestMergedVerification(context, dependencies);
+        const result = await requestMergedWorkflow(context, dependencies);
 
         // assert
         expect(result).toEqual({ status: 'already-requested', sourceSha, runId: 404 });
@@ -167,7 +171,7 @@ describe('Merged source verification request', () => {
         dependencies.records.runs = runs;
 
         // act
-        const result = requestMergedVerification(context, dependencies);
+        const result = requestMergedWorkflow(context, dependencies);
 
         // assert
         await expect(result).rejects.toThrow('Verification request failed');
@@ -189,7 +193,7 @@ describe('Merged source verification request', () => {
         dependencies.records.runs = { total_count: 1, workflow_runs: [dependencies.records.run] };
 
         // act
-        const result = requestMergedVerification(context, dependencies);
+        const result = requestMergedWorkflow(context, dependencies);
 
         // assert
         await expect(result).rejects.toThrow('Verification request failed');
@@ -200,13 +204,26 @@ describe('Merged source verification request', () => {
         // arrange
         const dependencies = controlled();
         dependencies.records.acceptThenFail = true;
-        await expect(requestMergedVerification(context, dependencies)).rejects.toThrow('Verification request failed');
+        await expect(requestMergedWorkflow(context, dependencies)).rejects.toThrow('Verification request failed');
 
         // act
-        const result = await requestMergedVerification(context, dependencies);
+        const result = await requestMergedWorkflow(context, dependencies);
 
         // assert
         expect(result).toEqual({ status: 'already-requested', sourceSha, runId: 404 });
         expect(writes(dependencies.request)).toHaveLength(1);
     });
+});
+
+it('preserves documentation publication for every existing main push', async () => {
+    // Arrange
+    const f = controlled();
+    f.records.workflow.path = '.github/workflows/docs.yml';
+    f.records.workflow.name = 'Publish documentation';
+    f.records.run.path = f.records.workflow.path;
+    // Act
+    const result = await requestMergedWorkflow({ ...context, workflow: 'documentation' }, f);
+    // Assert
+    expect(result.status).toBe('requested');
+    expect(writes(f.request)).toEqual([['POST', `${workflowEndpoint}/dispatches`, { ref: 'main', inputs: { expected_head_sha: sourceSha } }]]);
 });

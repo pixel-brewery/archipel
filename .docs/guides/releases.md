@@ -222,3 +222,17 @@ match the exact verified archive integrity before being accepted as complete;
 changed bytes or tag ownership stop recovery. Do not overwrite a published
 version or calculate a new candidate to conceal an incomplete upload. A new
 source revision is a new release request, not recovery of the old one.
+
+## Documentation after a native-token dependency merge
+
+The same private Nx owner continues the existing documentation workflow with
+`expected_head_sha`, independently of main CI and the source-bound release. It
+checks immutable repository/workflow identity, the exact current main source and
+positive run IDs/attempts before treating a request as existing. Successful,
+failed and cancelled attempts are retained; a superseding main revision prevents
+a new dispatch. The documentation job checks its selected source and current main
+immediately before deployment. No package or deployment is manually dispatched by
+this delivery change.
+
+Documentation retains its original trigger for every main push; dependency-only
+merges also refresh the package reference site.
