@@ -49,7 +49,8 @@ The trusted merge helper therefore dispatches the release workflow explicitly
 after a verified merge. It accepts only a native bot PR from this repository,
 the canonical current PR workflow attempt, the unchanged tested head and all
 three successful platform jobs and the successful `Quality Gate`. The merge and
-release-request jobs run trusted code from `main`. Hourly reconciliation also
+release-request jobs run trusted code from `main`. Reconciliation after quality or
+release completion, with an hourly recovery pass, also
 refreshes stale same-repository Dependabot branches using `expected_head_sha`,
 waits for their replacement head and explicitly requests full CI for that exact
 revision. Conflicts and changed PRs block only that update; another dependency
