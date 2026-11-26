@@ -8,6 +8,7 @@ export const verificationPolicy = Object.freeze({
     workflowFile: 'ci.yml',
     workflowPath: '.github/workflows/ci.yml',
     workflowName: 'Verify',
+    releaseWorkflowName: 'Release Archipel packages',
     requiredJobs: ['verify (ubuntu-latest)', 'verify (macos-latest)', 'verify (windows-latest)', 'Quality Gate'],
     requiredChecks: ['verify (ubuntu-latest)', 'verify (macos-latest)', 'verify (windows-latest)', 'Quality Gate'],
 });
