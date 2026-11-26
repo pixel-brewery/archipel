@@ -83,7 +83,7 @@
         "tslib": "2.9.1"
     },
     "devDependencies": {
-        "@ai-sdk/anthropic": "4.0.102",
+        "@ai-sdk/anthropic": "4.0.107",
         "@ai-sdk/gateway": "4.0.143",
         "@ai-sdk/google": "4.0.118",
         "@ai-sdk/openai": "4.0.115",
