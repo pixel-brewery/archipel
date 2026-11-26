@@ -1,7 +1,7 @@
 // #region Imports
 
-import { requestDependabotGitHub } from './requestDependabotGitHub.mjs';
-import { resolveDependabotRepository } from './resolveDependabotRepository.mjs';
+import { requestDependabotGitHub } from '../../infra/nx-plugins/src/lib/github/requestDependabotGitHub.mjs';
+import { resolveDependabotRepository } from '../../infra/nx-plugins/src/lib/github/resolveDependabotRepository.mjs';
 
 // #endregion
 

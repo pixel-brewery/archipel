@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { releaseRepository } from './releaseRepository.mjs';
+import { releaseRepository } from '../../../../../.github/scripts/releaseRepository.mjs';
 import { resolveDependabotRepository } from './resolveDependabotRepository.mjs';
 
 const context = { repositoryId: releaseRepository.id, repository: releaseRepository.fullName, defaultBranch: 'main' };

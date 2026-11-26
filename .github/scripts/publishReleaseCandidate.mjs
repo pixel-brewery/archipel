@@ -5,8 +5,8 @@ import { appendFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
-import { requestDependabotGitHub } from './requestDependabotGitHub.mjs';
-import { resolveDependabotRepository } from './resolveDependabotRepository.mjs';
+import { requestDependabotGitHub } from '../../infra/nx-plugins/src/lib/github/requestDependabotGitHub.mjs';
+import { resolveDependabotRepository } from '../../infra/nx-plugins/src/lib/github/resolveDependabotRepository.mjs';
 import { verifyReleaseCandidate } from './verifyReleaseCandidate.mjs';
 
 // #endregion

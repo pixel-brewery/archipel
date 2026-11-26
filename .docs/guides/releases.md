@@ -49,13 +49,35 @@ The trusted merge helper therefore dispatches the release workflow explicitly
 after a verified merge. It accepts only a native bot PR from this repository,
 the canonical current PR workflow attempt, the unchanged tested head and all
 three successful platform jobs and the successful `Quality Gate`. The merge and
-release-request jobs run trusted code from `main`. Dependabot checks open PRs
-during scheduled updates and when it detects conflicts after a push to the
-target branch.
+release-request jobs run trusted code from `main`. Reconciliation after quality or
+release completion, with an hourly recovery pass, also
+refreshes stale same-repository Dependabot branches using `expected_head_sha`,
+waits for their replacement head and explicitly requests full CI for that exact
+revision. Conflicts and changed PRs block only that update; another dependency
+can continue. The controller never installs packages or executes PR code with
+write permissions.
+
+All dependency update types, including major versions, TypeScript and published
+Pixel Brewery packages, are eligible after the same complete gate. A dispatched
+verification with no direct PR association must resolve to exactly one open bot
+PR with the same repository, branch and current head through GitHub's associated
+commit endpoint. The full PR and current successful attempt are read again before
+the ordinary SHA-guarded merge. Failed current-head verification is retained for
+diagnosis rather than retried blindly.
+
+The canonical implementation is the `dependabot` executor in
+`infra/nx-plugins/src/executors/dependabot`. Its non-cacheable Nx target accepts
+`merge`, `reconcile` and `continue`. Privileged workflows start the same implementation
+with native Node so no workspace dependency installation occurs with a write token;
+this security adaptation does not create a second implementation outside the plugin.
+The neighboring offline tests exercise refresh races, ambiguous association,
+missing or failed required jobs and duplicate or superseded continuation.
 
 The successful merge job retains `merged` and `merge_sha` outputs. A separate
-release-request job uses that exact source, so a failed request can be retried
-without attempting to merge an already merged PR. It verifies the immutable
+release-request job uses that exact source to request full main verification and
+then the release, so a failed request can be retried without attempting to merge
+an already merged PR. Main CI receives `expected_head_sha`; the release retains
+its `source_sha` input. Both retain an existing canonical run for that revision. It verifies the immutable
 public repository, `main`, and the active release workflow's identity. A newer
 main revision supersedes the old request; an existing release attempt for the
 same source is retained regardless of its outcome. Recover a failed release in

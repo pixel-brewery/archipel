@@ -1,0 +1,24 @@
+{
+    "name": "nx-plugins",
+    "targets": {
+        "dependabot": {
+            "executor": "nx-plugins:dependabot",
+            "cache": false,
+            "options": {
+                "mode": "merge"
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "vitest run --config=.github/scripts/vitest.config.mjs infra/nx-plugins/src"
+            }
+        },
+        "ci-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "vitest run --config=.github/scripts/vitest.config.mjs"
+            }
+        }
+    }
+}
