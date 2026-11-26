@@ -6,4 +6,4 @@
  * @throws An Error when the requested operation cannot be verified.
  * @internal
  */
-export declare function runDependabotAutomation(mode: 'merge' | 'reconcile' | 'continue'): Promise<unknown>;
+export declare function runDependabotAutomation(mode: 'merge' | 'reconcile' | 'continue' | 'authorize'): Promise<unknown>;
