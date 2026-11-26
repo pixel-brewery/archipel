@@ -1,3 +1,13 @@
+## 0.1.58 (2026-11-26)
+
+### 🩹 Fixes
+
+- **ci:** authorize current native heads after reconciliation ([#87](https://github.com/pixel-brewery/archipel/pull/87))
+
+### ❤️ Thank You
+
+- André Wehlert @RueDeRennes
+
 ## 0.1.57 (2026-11-26)
 
 ### 🩹 Fixes
