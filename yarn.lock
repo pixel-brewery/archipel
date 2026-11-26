@@ -8042,7 +8042,7 @@ __metadata:
     nodemailer: "npm:10.5.0"
     postmark: "npm:5.1.1"
     reflect-metadata: "npm:0.2.2"
-    resend: "npm:6.38.0"
+    resend: "npm:6.39.0"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.9.1"
     vitest: "npm:5.1.1"
@@ -20039,9 +20039,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resend@npm:6.38.0":
-  version: 6.38.0
-  resolution: "resend@npm:6.38.0"
+"resend@npm:6.39.0":
+  version: 6.39.0
+  resolution: "resend@npm:6.39.0"
   dependencies:
     postal-mime: "npm:2.7.6"
     standardwebhooks: "npm:1.1.1"
@@ -20050,7 +20050,7 @@ __metadata:
   peerDependenciesMeta:
     "@react-email/render":
       optional: true
-  checksum: 10c0/4b7c7b3c8d4274ab1c4d703c8d4a7818c8b86853f5cf7a038c513a774d70669e749151e3993c3574e52db4b7e75cf958387e475c1c740d5410435a3de5e727ca
+  checksum: 10c0/de92c6c6aad5ae128a7c27bfd9aff647cdd18721e873c60ad0dd6b044d6e107513f3e11e174a0e0de437c6e055005e0509c4fe9796f55fae5b3947c77b013426
   languageName: node
   linkType: hard
 
