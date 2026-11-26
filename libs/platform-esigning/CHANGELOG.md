@@ -1,3 +1,14 @@
+## 0.1.57 (2026-11-26)
+
+### 🩹 Fixes
+
+- **ci:** authorize current native dependency checks ([#86](https://github.com/pixel-brewery/archipel/pull/86))
+- **ci:** reconcile and verify every Dependabot update ([#63](https://github.com/pixel-brewery/archipel/pull/63))
+
+### ❤️ Thank You
+
+- André Wehlert @RueDeRennes
+
 ## 0.1.56 (2026-11-23)
 
 This was a version bump only for platform-esigning to align it with other projects, there were no code changes.
