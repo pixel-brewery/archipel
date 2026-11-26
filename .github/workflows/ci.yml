@@ -4,6 +4,12 @@ on:
     pull_request:
     merge_group:
     workflow_dispatch:
+        inputs:
+            expected_head_sha:
+                description: Exact dependency source requested by the trusted controller
+                required: false
+                default: ''
+                type: string
     workflow_call:
         inputs:
             candidate_artifact:
@@ -40,6 +46,11 @@ jobs:
             NX_PARALLEL: '1'
             YARN_NODE_LINKER: node-modules
         steps:
+            - name: Require the requested dependency revision
+              if: github.event_name == 'workflow_dispatch' && inputs.expected_head_sha != ''
+              env:
+                  EXPECTED_HEAD_SHA: ${{ inputs.expected_head_sha }}
+              run: test "$GITHUB_SHA" = "$EXPECTED_HEAD_SHA"
             - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   fetch-depth: 0

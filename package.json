@@ -69,7 +69,7 @@
         "verify:checks": "yarn agents:check && yarn public:check && yarn ci:check && yarn lint && yarn test && yarn spell && yarn build && yarn nx run-many --targets=typecheck,typecheck-tests,typecheck-client-tests --parallel=1 && yarn verify:esm --pack",
         "public:check": "node .github/scripts/findPrivateReferences.mjs",
         "release:major": "gh workflow run release.yml --ref main -f specifier=major",
-        "ci:check": "vitest run --config=.github/scripts/vitest.config.mjs",
+        "ci:check": "nx run nx-plugins:ci-check",
         "packaging:test": "vitest run --config=.github/scripts/vitest.config.mjs tools/verify-esm-packages.spec.mjs tools/verify-published-packages.spec.mjs"
     },
     "dependencies": {
