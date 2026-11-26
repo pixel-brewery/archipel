@@ -117,12 +117,8 @@ jobs:
               run: node infra/nx-plugins/src/executors/dependabot/runDependabotAutomation.mjs
 
     authorize:
-        if: >-
-            ${{ github.repository_id == '1441080766' && github.ref == 'refs/heads/main' &&
-                (github.event_name != 'workflow_run' ||
-                 (github.event.workflow_run.name == 'Verify' && github.event.workflow_run.event == 'pull_request' &&
-                  github.event.workflow_run.conclusion == 'action_required' &&
-                  github.event.workflow_run.head_repository.id == 1441080766)) }}
+        needs: reconcile
+        if: ${{ always() && github.repository_id == '1441080766' && github.ref == 'refs/heads/main' }}
         runs-on: ubuntu-latest
         timeout-minutes: 10
         concurrency:
