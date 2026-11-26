@@ -67,7 +67,7 @@
         "@pixel-brewery/archipel-platform-resources": "0.1.56",
         "@standard-schema/spec": "1.1.0",
         "tslib": "2.9.1",
-        "type-fest": "5.10.0"
+        "type-fest": "6.0.3"
     },
     "peerDependencies": {
         "@nestjs/axios": "^12.0.0",
