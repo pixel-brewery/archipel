@@ -54,22 +54,25 @@ describe('Dependabot GitHub request boundary', () => {
         });
     });
 
-    it('accepts the empty successful workflow-dispatch response', async () => {
-        // arrange
-        vi.stubEnv('GH_TOKEN', 'synthetic-workflow-token');
-        system.execFile.mockImplementation((_command, _arguments, _options, callback) => ({
-            stdin: { on: vi.fn(), end: () => callback(null, '') },
-        }));
+    it.each(['actions/workflows/ci.yml/dispatches', 'actions/runs/20/approve', 'actions/runs/20/rerun-failed-jobs'])(
+        'accepts the empty successful %s response',
+        async (path) => {
+            // arrange
+            vi.stubEnv('GH_TOKEN', 'synthetic-workflow-token');
+            system.execFile.mockImplementation((_command, _arguments, _options, callback) => ({
+                stdin: { on: vi.fn(), end: () => callback(null, '') },
+            }));
 
-        // act
-        const result = await requestDependabotGitHub('POST', 'repos/pixel-brewery/archipel/actions/workflows/ci.yml/dispatches', {
-            ref: 'dependabot/npm_and_yarn/frameworks',
-        });
+            // act
+            const result = await requestDependabotGitHub('POST', `repos/pixel-brewery/archipel/${path}`, {
+                ref: 'dependabot/npm_and_yarn/frameworks',
+            });
 
-        // assert
-        expect(result).toBeUndefined();
-        expect(system.execFile).toHaveBeenCalledTimes(1);
-    });
+            // assert
+            expect(result).toBeUndefined();
+            expect(system.execFile).toHaveBeenCalledTimes(1);
+        },
+    );
 
     it('does not accept an empty response from a metadata read', async () => {
         // arrange
