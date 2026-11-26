@@ -68,7 +68,7 @@
         "@pixel-brewery/archipel-platform-core": "0.1.59",
         "@pixel-brewery/archipel-platform-resources": "0.1.59",
         "tslib": "2.9.1",
-        "type-fest": "5.10.0"
+        "type-fest": "6.0.3"
     },
     "peerDependencies": {
         "@nestjs/common": "^12.0.0",
