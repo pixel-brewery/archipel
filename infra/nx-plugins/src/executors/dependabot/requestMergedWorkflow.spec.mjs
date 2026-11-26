@@ -186,7 +186,7 @@ describe('Merged source verification request', () => {
         { head_branch: 'dev' },
         { repository: {} },
         { head_repository: {} },
-    ])('rejects foreign or malformed existing release identities: %j', async (override) => {
+    ])('retains malformed run records and ignores unrelated valid identities: %j', async (override) => {
         // arrange
         const dependencies = controlled();
         Object.assign(dependencies.records.run, override);
@@ -196,8 +196,13 @@ describe('Merged source verification request', () => {
         const result = requestMergedWorkflow(context, dependencies);
 
         // assert
-        await expect(result).rejects.toThrow('Verification request failed');
-        expect(writes(dependencies.request)).toEqual([]);
+        if (override.id === 0) {
+            await expect(result).rejects.toThrow('Verification request failed');
+            expect(writes(dependencies.request)).toEqual([]);
+        } else {
+            expect((await result).status).toBe('requested');
+            expect(writes(dependencies.request)).toHaveLength(1);
+        }
     });
 
     it('recovers an ambiguous dispatch response by finding the original accepted run', async () => {
@@ -226,4 +231,65 @@ it('preserves documentation publication for every existing main push', async () 
     // Assert
     expect(result.status).toBe('requested');
     expect(writes(f.request)).toEqual([['POST', `${workflowEndpoint}/dispatches`, { ref: 'main', inputs: { expected_head_sha: sourceSha } }]]);
+});
+
+it('retains a malformed existing continuation attempt: missing', async () => {
+    // Arrange
+    const f = controlled();
+    f.records.run.run_attempt = undefined;
+    f.records.runs = { total_count: 1, workflow_runs: [f.records.run] };
+    // Act and Assert
+    await expect(requestMergedWorkflow(context, f)).rejects.toThrow();
+    expect(writes(f.request)).toEqual([]);
+});
+it('retains a malformed existing continuation attempt: zero', async () => {
+    // Arrange
+    const f = controlled();
+    f.records.run.run_attempt = 0;
+    f.records.runs = { total_count: 1, workflow_runs: [f.records.run] };
+    // Act and Assert
+    await expect(requestMergedWorkflow(context, f)).rejects.toThrow();
+    expect(writes(f.request)).toEqual([]);
+});
+it('retains a malformed existing continuation attempt: negative', async () => {
+    // Arrange
+    const f = controlled();
+    f.records.run.run_attempt = -1;
+    f.records.runs = { total_count: 1, workflow_runs: [f.records.run] };
+    // Act and Assert
+    await expect(requestMergedWorkflow(context, f)).rejects.toThrow();
+    expect(writes(f.request)).toEqual([]);
+});
+it('retains an existing actual main push without a duplicate continuation: queued', async () => {
+    // Arrange
+    const f = controlled();
+    Object.assign(f.records.run, { event: 'push', status: 'queued', conclusion: null });
+    f.records.runs = { total_count: 1, workflow_runs: [f.records.run] };
+    // Act
+    const result = await requestMergedWorkflow(context, f);
+    // Assert
+    expect(result.status).toBe('already-requested');
+    expect(writes(f.request)).toEqual([]);
+});
+it('retains an existing actual main push without a duplicate continuation: failure', async () => {
+    // Arrange
+    const f = controlled();
+    Object.assign(f.records.run, { event: 'push', status: 'completed', conclusion: 'failure' });
+    f.records.runs = { total_count: 1, workflow_runs: [f.records.run] };
+    // Act
+    const result = await requestMergedWorkflow(context, f);
+    // Assert
+    expect(result.status).toBe('already-requested');
+    expect(writes(f.request)).toEqual([]);
+});
+it('retains an existing actual main push without a duplicate continuation: cancelled', async () => {
+    // Arrange
+    const f = controlled();
+    Object.assign(f.records.run, { event: 'push', status: 'completed', conclusion: 'cancelled' });
+    f.records.runs = { total_count: 1, workflow_runs: [f.records.run] };
+    // Act
+    const result = await requestMergedWorkflow(context, f);
+    // Assert
+    expect(result.status).toBe('already-requested');
+    expect(writes(f.request)).toEqual([]);
 });

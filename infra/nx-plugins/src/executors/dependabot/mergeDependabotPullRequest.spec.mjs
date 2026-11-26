@@ -1,5 +1,7 @@
 // #region Imports
+import { readFileSync } from 'node:fs';
 
+import { createHash } from 'node:crypto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { releaseRepository } from '../../../../../.github/scripts/releaseRepository.mjs';
 import { mergeDependabotPullRequest } from './mergeDependabotPullRequest.mjs';
@@ -12,6 +14,19 @@ const mainSha = 'a'.repeat(40);
 const headSha = 'b'.repeat(40);
 const mergeSha = 'c'.repeat(40);
 const changedSha = 'd'.repeat(40);
+const testMergeSha = 'e'.repeat(40);
+const treeSha = 'f'.repeat(40);
+const branch = 'dependabot/npm_and_yarn/frameworks';
+const ci = readFileSync('.github/workflows/ci.yml', 'utf8');
+const ciBlob = {
+    type: 'file',
+    encoding: 'base64',
+    content: Buffer.from(ci).toString('base64'),
+    sha: createHash('sha1')
+        .update(`blob ${Buffer.byteLength(ci)}\0`)
+        .update(ci)
+        .digest('hex'),
+};
 const context = {
     eventName: 'workflow_run',
     repository: 'pixel-brewery/archipel',
@@ -30,12 +45,14 @@ function controlled() {
     const jobs = ['verify (ubuntu-latest)', 'verify (macos-latest)', 'verify (windows-latest)', 'Quality Gate'].map((name, index) => ({
         id: index + 1,
         run_id: 202,
+        run_attempt: 2,
+        head_sha: headSha,
         name,
         status: 'completed',
         conclusion: 'success',
     }));
     const records = {
-        workflow: { id: 101, name: 'Verify', path: '.github/workflows/ci.yml' },
+        workflow: { id: 101, name: 'Verify', path: '.github/workflows/ci.yml', state: 'active' },
         run: {
             id: 202,
             run_attempt: 2,
@@ -48,15 +65,20 @@ function controlled() {
             repository,
             head_repository: repository,
             head_sha: headSha,
-            pull_requests: [{ number: 7 }],
+            head_branch: branch,
+            actor: { id: 49699333, login: 'dependabot[bot]', type: 'Bot' },
+            triggering_actor: { id: 49699333, login: 'dependabot[bot]', type: 'Bot' },
+            pull_requests: [{ number: 7, head: { ref: branch, sha: headSha, repo: repository }, base: { ref: 'main', sha: mainSha, repo: repository } }],
         },
         pullRequest: {
             number: 7,
             state: 'open',
             draft: false,
             merged: false,
-            user: { login: 'dependabot[bot]', type: 'Bot' },
-            head: { sha: headSha, repo: repository },
+            user: { id: 49699333, login: 'dependabot[bot]', type: 'Bot' },
+            mergeable: true,
+            merge_commit_sha: testMergeSha,
+            head: { sha: headSha, ref: branch, repo: repository },
             base: { ref: 'main', sha: mainSha, repo: repository },
         },
         main: { name: 'main', commit: { sha: mainSha } },
@@ -66,11 +88,15 @@ function controlled() {
         merge: { merged: true, sha: mergeSha },
     };
     const reads = new Map();
+    let merged = false;
     const request = vi.fn((method, endpoint) => {
         if (records.failure?.method === method && records.failure?.endpoint === endpoint)
             throw new Error('Sensitive upstream output must not reach the caller.');
 
-        if (method === 'PUT' && endpoint === `${pullRequestPath}/merge`) return structuredClone(records.merge);
+        if (method === 'PUT' && endpoint === `${pullRequestPath}/merge`) {
+            merged = records.merge.merged === true;
+            return structuredClone(records.merge);
+        }
 
         if (method !== 'GET') throw new Error('Unexpected test request.');
 
@@ -85,7 +111,40 @@ function controlled() {
 
         if (endpoint === runPath) return structuredClone(count > 1 ? (records.nextRun ?? records.run) : records.run);
 
-        if (endpoint === pullRequestPath) return structuredClone(count > 1 ? (records.nextPullRequest ?? records.pullRequest) : records.pullRequest);
+        if (endpoint === pullRequestPath)
+            return merged
+                ? { ...structuredClone(records.pullRequest), state: 'closed', merged: true, merge_commit_sha: records.merge.sha }
+                : structuredClone(count > 1 ? (records.nextPullRequest ?? records.pullRequest) : records.pullRequest);
+
+        if (endpoint === `${repositoryPath}/actions/workflows/ci.yml/runs?head_sha=${headSha}&per_page=100`) {
+            const runs = [structuredClone(records.inventoryRun ?? records.run), ...(records.extraRuns ?? [])];
+            return { total_count: runs.length, workflow_runs: runs };
+        }
+        if (endpoint === `${repositoryPath}/git/ref/heads/${branch}`) return { object: { type: 'commit', sha: headSha } };
+        if (endpoint === `${repositoryPath}/git/ref/pull/7/merge`) return { object: { type: 'commit', sha: testMergeSha } };
+        if (endpoint === `${repositoryPath}/git/commits/${headSha}`) return { sha: headSha, tree: { sha: treeSha } };
+        if (endpoint === `${repositoryPath}/git/commits/${testMergeSha}`)
+            return { sha: testMergeSha, tree: { sha: treeSha }, parents: [{ sha: mainSha }, { sha: headSha }] };
+        if (
+            endpoint === `${repositoryPath}/contents/.github/workflows/ci.yml?ref=${mainSha}` ||
+            endpoint === `${repositoryPath}/contents/.github/workflows/ci.yml?ref=${headSha}`
+        )
+            return ciBlob;
+        if (endpoint === `${repositoryPath}/commits/${headSha}/pulls?per_page=100`)
+            return [{ ...structuredClone(records.pullRequest), merged: undefined, merged_at: null }];
+        if (endpoint === `${repositoryPath}/rules/branches/main`)
+            return [
+                { type: 'pull_request' },
+                {
+                    type: 'required_status_checks',
+                    parameters: {
+                        strict_required_status_checks_policy: true,
+                        required_status_checks: ['verify (ubuntu-latest)', 'verify (macos-latest)', 'verify (windows-latest)', 'Quality Gate'].map(
+                            (context) => ({ context, integration_id: 15368 }),
+                        ),
+                    },
+                },
+            ];
 
         if (endpoint === mainPath) return structuredClone(count > 1 ? (records.nextMain ?? records.main) : records.main);
 
@@ -109,6 +168,51 @@ afterEach(() => {
 });
 
 describe('Dependabot pull request merge', () => {
+    it.each([
+        { id: 41898282, login: 'github-actions[bot]', type: 'Bot' },
+        { id: 7523247, login: 'RueDeRennes', type: 'User' },
+    ])('accepts a fully verified actual PR run from %j', async (actor) => {
+        // Arrange
+        const fixture = controlled();
+        fixture.records.run.actor = actor;
+        fixture.records.run.triggering_actor = actor;
+        // Act
+        const result = await mergeDependabotPullRequest(context, fixture);
+        // Assert
+        expect(result.status).toBe('merged');
+        expect(writes(fixture.request)).toHaveLength(1);
+    });
+    it('retains the real native run when a newer diagnostic exists', async () => {
+        // Arrange
+        const fixture = controlled();
+        fixture.records.extraRuns = [{ ...fixture.records.run, id: 203, event: 'workflow_dispatch', pull_requests: [] }];
+        // Act
+        const result = await mergeDependabotPullRequest(context, fixture);
+        // Assert
+        expect(result.status).toBe('merged');
+        expect(writes(fixture.request)).toHaveLength(1);
+    });
+    it('blocks an older successful PR run behind a newer native failure', async () => {
+        // Arrange
+        const fixture = controlled();
+        fixture.records.extraRuns = [{ ...fixture.records.run, id: 203, conclusion: 'failure' }];
+        // Act
+        const result = await mergeDependabotPullRequest(context, fixture);
+        // Assert
+        expect(result.status).toBe('skipped');
+        expect(writes(fixture.request)).toEqual([]);
+    });
+    it('loads the actual current attempt when the inventory still lists the previous attempt', async () => {
+        // Arrange
+        const fixture = controlled();
+        fixture.records.inventoryRun = { ...fixture.records.run, run_attempt: 1 };
+        // Act
+        const result = await mergeDependabotPullRequest(context, fixture);
+        // Assert
+        expect(result.status).toBe('merged');
+        expect(writes(fixture.request)).toHaveLength(1);
+    });
+
     it.each(['Bump vitest from 4.0.0 to 5.0.0', 'Bump typescript-eslint from 8.0.0 to 8.1.0', 'Bump a dependency from 1.0.0 to 1.0.1'])(
         'merges an eligible update once at its tested SHA: %s',
         async (title) => {
@@ -123,12 +227,8 @@ describe('Dependabot pull request merge', () => {
             // Assert
             expect(result).toEqual({ status: 'merged', pullRequestNumber: 7, sha: mergeSha, defaultBranch: 'main' });
             expect(writes(dependencies.request)).toEqual([['PUT', `${pullRequestPath}/merge`, { sha: headSha, merge_method: 'squash' }]]);
-            expect(dependencies.request.mock.calls.slice(-4)).toEqual([
-                ['GET', pullRequestPath, undefined],
-                ['GET', runPath, undefined],
-                ['GET', mainPath, undefined],
-                ['PUT', `${pullRequestPath}/merge`, { sha: headSha, merge_method: 'squash' }],
-            ]);
+            expect(dependencies.request.mock.calls.at(-1)).toEqual(['GET', pullRequestPath, undefined]);
+            expect(dependencies.request.mock.calls.filter(([, endpoint]) => endpoint === runPath).length).toBeGreaterThanOrEqual(2);
             expect(dependencies.request).toHaveBeenCalledWith('GET', `${jobsPath}1`, undefined);
         },
     );
@@ -421,7 +521,7 @@ describe('Dependabot pull request merge', () => {
         const result = await mergeDependabotPullRequest(context, dependencies);
 
         // Assert
-        expect(result).toEqual({ status: 'skipped', reason: 'pull-request-changed' });
+        expect(result).toEqual({ status: 'skipped', reason: 'pull-request-or-main-changed' });
         expect(writes(dependencies.request)).toEqual([]);
     });
 
@@ -452,7 +552,7 @@ describe('Dependabot pull request merge', () => {
         const result = await mergeDependabotPullRequest(context, dependencies);
 
         // Assert
-        expect(result).toEqual({ status: 'skipped', reason: 'main-changed' });
+        expect(result).toEqual({ status: 'skipped', reason: 'unproven-readonly-source' });
         expect(writes(dependencies.request)).toEqual([]);
     });
 
@@ -497,7 +597,7 @@ describe('Dependabot pull request merge', () => {
 });
 
 describe('Dependabot refreshed-head verification', () => {
-    it('accepts explicit CI only for the uniquely associated current Dependabot head', async () => {
+    it('rejects diagnostic CI even for the uniquely associated current Dependabot head', async () => {
         // arrange
         const { records, request } = controlled();
         records.run.event = 'workflow_dispatch';
@@ -515,8 +615,8 @@ describe('Dependabot refreshed-head verification', () => {
         const result = await mergeDependabotPullRequest(context, { request });
 
         // assert
-        expect(result.status).toBe('merged');
-        expect(writes(request)).toEqual([['PUT', `${pullRequestPath}/merge`, { sha: headSha, merge_method: 'squash' }]]);
+        expect(result).toEqual({ status: 'skipped', reason: 'ineligible-workflow-run' });
+        expect(writes(request)).toEqual([]);
     });
 
     it('rejects ambiguous dispatched-head associations without a merge', async () => {
@@ -545,7 +645,7 @@ describe('Dependabot refreshed-head verification', () => {
         const result = await mergeDependabotPullRequest(context, { request });
 
         // assert
-        expect(result).toEqual({ status: 'skipped', reason: 'ambiguous-pull-request' });
+        expect(result).toEqual({ status: 'skipped', reason: 'ineligible-workflow-run' });
         expect(writes(request)).toEqual([]);
     });
 
@@ -560,7 +660,29 @@ describe('Dependabot refreshed-head verification', () => {
         const result = await mergeDependabotPullRequest(context, { request });
 
         // assert
-        expect(result).toEqual({ status: 'skipped', reason: 'ambiguous-pull-request' });
+        expect(result).toEqual({ status: 'skipped', reason: 'ineligible-workflow-run' });
         expect(writes(request)).toEqual([]);
     });
+});
+
+describe('Latest eligible native association', () => {
+    it.each(['another PR', 'another base branch', 'another base revision'])(
+        'does not shadow the verified own PR with a newer native run for %s',
+        async (difference) => {
+            // Arrange
+            const fixture = controlled();
+            const unrelated = structuredClone(fixture.records.run);
+            unrelated.id = 203;
+            unrelated.conclusion = 'failure';
+            if (difference === 'another PR') unrelated.pull_requests[0].number = 8;
+            if (difference === 'another base branch') unrelated.pull_requests[0].base.ref = 'dev';
+            if (difference === 'another base revision') unrelated.pull_requests[0].base.sha = changedSha;
+            fixture.records.extraRuns = [unrelated];
+            // Act
+            const result = await mergeDependabotPullRequest(context, fixture);
+            // Assert
+            expect(result.status).toBe('merged');
+            expect(writes(fixture.request)).toHaveLength(1);
+        },
+    );
 });

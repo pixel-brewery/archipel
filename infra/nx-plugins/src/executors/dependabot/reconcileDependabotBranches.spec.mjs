@@ -1,5 +1,7 @@
 // #region Imports
+import { readFileSync } from 'node:fs';
 
+import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { reconcileDependabotBranches } from './reconcileDependabotBranches.mjs';
 
@@ -9,6 +11,19 @@ const root = 'repos/pixel-brewery/archipel';
 const main = 'a'.repeat(40);
 const oldHead = 'b'.repeat(40);
 const newHead = 'c'.repeat(40);
+const testMerge = 'e'.repeat(40),
+    tree = 'f'.repeat(40),
+    squash = '9'.repeat(40);
+const ci = readFileSync('.github/workflows/ci.yml', 'utf8');
+const ciBlob = {
+    type: 'file',
+    encoding: 'base64',
+    content: Buffer.from(ci).toString('base64'),
+    sha: createHash('sha1')
+        .update(`blob ${Buffer.byteLength(ci)}\0`)
+        .update(ci)
+        .digest('hex'),
+};
 const context = {
     eventName: 'schedule',
     repository: 'pixel-brewery/archipel',
@@ -31,7 +46,9 @@ function controlled() {
         state: 'open',
         draft: false,
         merged: false,
-        user: { login: 'dependabot[bot]', type: 'Bot' },
+        user: { id: 49699333, login: 'dependabot[bot]', type: 'Bot' },
+        mergeable: true,
+        merge_commit_sha: testMerge,
         head: { sha: oldHead, ref: 'dependabot/npm_and_yarn/frameworks', repo: repository },
         base: { ref: 'main', sha: main, repo: repository },
     };
@@ -43,7 +60,25 @@ function controlled() {
         changedAt: 99,
         runs: [],
     };
-    let reads = 0;
+    let reads = 0,
+        merged = false;
+    const currentHead = () => (reads >= records.changedAt ? 'd'.repeat(40) : reads >= records.advanceAt ? newHead : oldHead);
+    const currentPull = () => ({ ...structuredClone(records.pull), head: { ...structuredClone(records.pull.head), sha: currentHead() } });
+    const nativeRun = (run) => ({
+        id: 202,
+        run_attempt: 2,
+        workflow_id: 101,
+        name: 'Verify',
+        path: '.github/workflows/ci.yml',
+        head_sha: currentHead(),
+        head_branch: records.pull.head.ref,
+        actor: { id: 41898282, login: 'github-actions[bot]', type: 'Bot' },
+        triggering_actor: { id: 41898282, login: 'github-actions[bot]', type: 'Bot' },
+        repository,
+        head_repository: repository,
+        pull_requests: [{ number: 7, head: currentPull().head, base: records.pull.base }],
+        ...run,
+    });
     const request = vi.fn((method, endpoint) => {
         if (endpoint === 'repositories/1441080766') return structuredClone(repository);
         if (endpoint === `${root}/actions/workflows/ci.yml`)
@@ -56,6 +91,7 @@ function controlled() {
         if (endpoint === `${root}/pulls?state=open&base=main&per_page=100&page=1`) return structuredClone(records.inventory);
         if (endpoint === `${root}/pulls/7`) {
             reads++;
+            if (merged) return { ...currentPull(), state: 'closed', merged: true, merge_commit_sha: squash };
             return {
                 ...structuredClone(records.pull),
                 head: {
@@ -65,9 +101,47 @@ function controlled() {
             };
         }
         if (endpoint === `${root}/branches/main`) return { name: 'main', commit: { sha: main } };
-        if (endpoint.startsWith(`${root}/compare/`)) return { behind_by: records.behind, merge_base_commit: { sha: main } };
+        if (endpoint.startsWith(`${root}/compare/`)) return { behind_by: endpoint.endsWith(newHead) ? 0 : records.behind, merge_base_commit: { sha: main } };
         if (endpoint.endsWith('/update-branch') && method === 'PUT') return { message: 'Updating' };
-        if (endpoint.includes('/actions/workflows/ci.yml/runs?')) return { total_count: records.runs.length, workflow_runs: structuredClone(records.runs) };
+        if (endpoint.includes('/actions/workflows/ci.yml/runs?')) return { total_count: records.runs.length, workflow_runs: records.runs.map(nativeRun) };
+        if (endpoint === `${root}/actions/runs/202`) return nativeRun(records.runs[0]);
+        if (endpoint === `${root}/git/ref/heads/${records.pull.head.ref}`) return { object: { type: 'commit', sha: currentHead() } };
+        if (endpoint === `${root}/git/ref/pull/7/merge`) return { object: { type: 'commit', sha: testMerge } };
+        if (endpoint === `${root}/git/commits/${oldHead}` || endpoint === `${root}/git/commits/${newHead}`) return { sha: currentHead(), tree: { sha: tree } };
+        if (endpoint === `${root}/git/commits/${testMerge}`) return { sha: testMerge, tree: { sha: tree }, parents: [{ sha: main }, { sha: currentHead() }] };
+        if (endpoint.startsWith(`${root}/contents/.github/workflows/ci.yml?ref=`)) return ciBlob;
+        if (endpoint.includes('/commits/') && endpoint.endsWith('/pulls?per_page=100')) return [{ ...currentPull(), merged: undefined, merged_at: null }];
+        if (endpoint === `${root}/rules/branches/main`)
+            return [
+                { type: 'pull_request' },
+                {
+                    type: 'required_status_checks',
+                    parameters: {
+                        strict_required_status_checks_policy: true,
+                        required_status_checks: ['verify (ubuntu-latest)', 'verify (macos-latest)', 'verify (windows-latest)', 'Quality Gate'].map(
+                            (context) => ({ context, integration_id: 15368 }),
+                        ),
+                    },
+                },
+            ];
+        if (endpoint.endsWith('/attempts/2/jobs?per_page=100&page=1'))
+            return {
+                total_count: 4,
+                jobs: ['verify (ubuntu-latest)', 'verify (macos-latest)', 'verify (windows-latest)', 'Quality Gate'].map((name, id) => ({
+                    id: id + 1,
+                    name,
+                    head_sha: currentHead(),
+                    run_id: 202,
+                    run_attempt: 2,
+                    status: 'completed',
+                    conclusion: 'success',
+                })),
+            };
+        if (method === 'PUT' && endpoint === `${root}/pulls/7/merge`) {
+            merged = true;
+            return { merged: true, sha: squash };
+        }
+        if (method === 'POST' && endpoint === `${root}/actions/runs/202/approve`) return undefined;
         if (endpoint.endsWith('/dispatches') && method === 'POST') return undefined;
         throw new Error('Unexpected test request.');
     });
@@ -79,7 +153,7 @@ function writes(request) {
 }
 
 describe('Dependabot branch reconciliation', () => {
-    it('updates only the expected stale head and dispatches verification for its replacement', async () => {
+    it('updates only the expected stale head and waits for its native CI', async () => {
         // arrange
         const fixture = controlled();
 
@@ -87,18 +161,8 @@ describe('Dependabot branch reconciliation', () => {
         const result = await reconcileDependabotBranches(context, fixture);
 
         // assert
-        expect(result).toEqual([{ number: 7, status: 'verification-requested', head: newHead }]);
-        expect(writes(fixture.request)).toEqual([
-            ['PUT', `${root}/pulls/7/update-branch`, { expected_head_sha: oldHead }],
-            [
-                'POST',
-                `${root}/actions/workflows/ci.yml/dispatches`,
-                {
-                    ref: 'dependabot/npm_and_yarn/frameworks',
-                    inputs: { expected_head_sha: newHead },
-                },
-            ],
-        ]);
+        expect(result).toEqual([{ number: 7, status: 'waiting', reason: 'native-ci-not-observed', head: newHead }]);
+        expect(writes(fixture.request)).toEqual([['PUT', `${root}/pulls/7/update-branch`, { expected_head_sha: oldHead }]]);
     });
 
     it('does not touch a contributor pull request', async () => {
@@ -140,19 +204,6 @@ describe('Dependabot branch reconciliation', () => {
         expect(writes(fixture.request)).toEqual([]);
     });
 
-    it('does not dispatch a branch that changes during the final read', async () => {
-        // arrange
-        const fixture = controlled();
-        fixture.records.changedAt = 3;
-
-        // act
-        const result = await reconcileDependabotBranches(context, fixture);
-
-        // assert
-        expect(result).toEqual([{ number: 7, status: 'skipped', reason: 'pull-request-changed' }]);
-        expect(writes(fixture.request)).toEqual([['PUT', `${root}/pulls/7/update-branch`, { expected_head_sha: oldHead }]]);
-    });
-
     it('bounds an asynchronous branch refresh without dispatching the old head', async () => {
         // arrange
         const fixture = controlled();
@@ -167,7 +218,7 @@ describe('Dependabot branch reconciliation', () => {
         expect(writes(fixture.request)).toEqual([['PUT', `${root}/pulls/7/update-branch`, { expected_head_sha: oldHead }]]);
     });
 
-    it('requests read-only CI when the token-triggered PR run requires approval', async () => {
+    it('reports approval-required without performing an Actions write in the branch mutator', async () => {
         // arrange
         const fixture = controlled();
         fixture.records.behind = 0;
@@ -189,17 +240,21 @@ describe('Dependabot branch reconciliation', () => {
         const result = await reconcileDependabotBranches(context, fixture);
 
         // assert
-        expect(result).toEqual([{ number: 7, status: 'verification-requested', head: oldHead }]);
-        expect(writes(fixture.request)).toEqual([
-            [
-                'POST',
-                `${root}/actions/workflows/ci.yml/dispatches`,
-                {
-                    ref: 'dependabot/npm_and_yarn/frameworks',
-                    inputs: { expected_head_sha: oldHead },
-                },
-            ],
-        ]);
+        expect(result).toEqual([{ number: 7, status: 'approval-required', head: oldHead, runId: 202, runAttempt: 2 }]);
+        expect(writes(fixture.request)).toEqual([]);
+    });
+
+    it('resumes a successful ordinary PR through the full strict merger', async () => {
+        // Arrange
+        const fixture = controlled();
+        fixture.records.behind = 0;
+        fixture.records.advanceAt = 99;
+        fixture.records.runs = [{ event: 'pull_request', status: 'completed', conclusion: 'success' }];
+        // Act
+        const result = await reconcileDependabotBranches(context, fixture);
+        // Assert
+        expect(result).toEqual([{ number: 7, status: 'merged', sha: squash, head: oldHead }]);
+        expect(writes(fixture.request)).toEqual([['PUT', `${root}/pulls/7/merge`, { sha: oldHead, merge_method: 'squash' }]]);
     });
 
     it('never selects another repository from an untrusted context', async () => {
