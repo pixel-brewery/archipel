@@ -31,6 +31,7 @@ fesm
 featureflag
 fileset
 Googlebot
+gsub
 guids
 healthcheck
 HOTP
@@ -47,6 +48,7 @@ logtype
 Metadatas
 metaschema
 mimo
+mktemp
 modelcontextprotocol
 Mosaik
 msword
@@ -68,10 +70,12 @@ paramtypes
 passwordhash
 persistable
 PEXPIRE
+pipefail
 pixelbrewery
 pizzip
 prepush
 qrcode
+rawfile
 rawxml
 refreshtoken
 Regen
