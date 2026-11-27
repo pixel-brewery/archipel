@@ -14,11 +14,6 @@
             "implementation": "./src/executors/build-llm-artifacts/executor",
             "schema": "./src/executors/build-llm-artifacts/schema.json",
             "description": "Generates LLM/MCP-compatible artifacts (llms.txt, llms-full.txt, docs-index.json)."
-        },
-        "dependabot": {
-            "implementation": "./src/executors/dependabot/executor",
-            "schema": "./src/executors/dependabot/schema.json",
-            "description": "Reconcile or merge verified dependency updates and continue source-bound verification and release."
         }
     }
 }

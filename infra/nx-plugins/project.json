@@ -1,13 +1,6 @@
 {
     "name": "nx-plugins",
     "targets": {
-        "dependabot": {
-            "executor": "nx-plugins:dependabot",
-            "cache": false,
-            "options": {
-                "mode": "merge"
-            }
-        },
         "test": {
             "executor": "nx:run-commands",
             "options": {
