@@ -7,6 +7,7 @@ import { ProblemDetailException } from '@pixel-brewery/archipel-platform-core';
 import type { BcryptService } from '@pixel-brewery/archipel-platform-cryptography';
 import type { IMfaSubject } from '../contracts/IMfaSubject.js';
 import type { MfaSubjectBase } from '../abstracts/MfaSubjectBase.js';
+import type { MfaReplayPersistenceBase } from '../abstracts/MfaReplayPersistenceBase.js';
 import { InvalidMfaCodeError } from '../errors/InvalidMfaCodeError.js';
 import { MfaCodeRequiredError } from '../errors/MfaCodeRequiredError.js';
 import { MfaMethodAlreadyEnabledError } from '../errors/MfaMethodAlreadyEnabledError.js';
@@ -472,3 +473,36 @@ describe('MfaService', () => {
 });
 
 // #endregion
+
+describe('MfaService atomic backup consumption', () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    it('allows only one of two concurrent uses of the same verified backup code', async () => {
+        let available = true;
+        const replay = {
+            consumeBackupCode: vi.fn(async () => {
+                if (!available) return false;
+                available = false;
+                return true;
+            }),
+            consumeTotpStep: vi.fn(),
+        };
+        const subject = {
+            findById: vi.fn().mockResolvedValue({ id: 'subject', mfaEnabled: true, mfaBackupCodes: ['stored-hash'], mfaChannels: { channels: {} } }),
+            updateMfaState: vi.fn().mockResolvedValue(undefined),
+        };
+        const service = new MfaService(
+            { compare: vi.fn().mockResolvedValue(true) } as unknown as BcryptService,
+            subject as unknown as MfaSubjectBase,
+            {} as MfaEncryptionService,
+            [],
+            replay as unknown as MfaReplayPersistenceBase,
+        );
+
+        const results = await Promise.all([service.verifyChallenge('subject', 'backup', 'one-use'), service.verifyChallenge('subject', 'backup', 'one-use')]);
+
+        expect(results.sort()).toEqual([false, true]);
+        expect(replay.consumeBackupCode).toHaveBeenCalledWith('subject', 'stored-hash');
+        expect(subject.updateMfaState.mock.calls.every(([, update]) => !('mfaBackupCodes' in update))).toBe(true);
+    });
+});

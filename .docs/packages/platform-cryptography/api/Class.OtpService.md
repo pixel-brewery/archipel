@@ -134,7 +134,7 @@ verifyHotp(
 ): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-cryptography/src/otp/OtpService.ts:96](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-cryptography/src/otp/OtpService.ts#L96)
+Defined in: [libs/platform-cryptography/src/otp/OtpService.ts:108](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-cryptography/src/otp/OtpService.ts#L108)
 
 Verifies an HOTP (counter-based) token against the given secret and counter.
 
@@ -155,3 +155,35 @@ Verifies an HOTP (counter-based) token against the given secret and counter.
 #### Implementation of
 
 [`IOtpService`](Interface.IOtpService).[`verifyHotp`](Interface.IOtpService#verifyhotp)
+
+---
+
+### verifyTimeStep()
+
+```ts
+verifyTimeStep(token, secret): number | null;
+```
+
+Defined in: [libs/platform-cryptography/src/otp/OtpService.ts:96](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-cryptography/src/otp/OtpService.ts#L96)
+
+Verifies a TOTP and returns its exact RFC 6238 counter for atomic replay prevention.
+
+This additive optional capability preserves existing providers. A consumer requiring replay protection
+must reject providers that do not implement it; a boolean verification is insufficient for that contract.
+
+#### Parameters
+
+| Parameter | Type     | Description                      |
+| --------- | -------- | -------------------------------- |
+| `token`   | `string` | The one-time password to verify. |
+| `secret`  | `string` | The shared secret.               |
+
+#### Returns
+
+`number` \| `null`
+
+The matched counter or `null` for an invalid token.
+
+#### Implementation of
+
+[`IOtpService`](Interface.IOtpService).[`verifyTimeStep`](Interface.IOtpService#verifytimestep)

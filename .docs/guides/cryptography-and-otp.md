@@ -164,6 +164,12 @@ public verifyToken(token: string, secret: string): boolean {
 
 Verification uses a configurable tolerance window (`TOTP_EPOCH_TOLERANCE`). The default tolerance is **30 seconds** (±1 time step), meaning the current code and the immediately preceding/following codes are accepted. This compensates for minor clock drift between the server and the user's device.
 
+### Verified counters and replay protection
+
+`OtpService.verifyTimeStep(token, secret)` returns the exact matched RFC 6238 time-step counter, or `null` for invalid evidence. It uses the same secret, crypto provider and tolerance configuration as `verify`; a tolerated previous/future code returns its own counter rather than the server's current step. This is an additive optional method on `IOtpService`, so existing custom OTP providers remain source-compatible.
+
+Counter verification alone does not consume a code. A caller requiring one-use authentication must atomically consume the matched counter for the current secret in durable persistence and reject counters less than or equal to the consumed one. The authentication package's optional `MfaReplayPersistenceBase` contract supplies that integration. Providers that do not implement the counter method cannot satisfy that opt-in contract and are rejected rather than silently downgraded.
+
 ### Tolerance Configuration
 
 The `TOTP_EPOCH_TOLERANCE` constant controls the verification window:

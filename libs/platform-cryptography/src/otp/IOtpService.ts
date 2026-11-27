@@ -67,6 +67,19 @@ export interface IOtpService {
     verify(token: string, secret: string): boolean;
 
     /**
+     * Verifies a TOTP and returns its exact RFC 6238 counter for atomic replay prevention.
+     *
+     * This additive optional capability preserves existing providers. A consumer requiring replay protection
+     * must reject providers that do not implement it; a boolean verification is insufficient for that contract.
+     *
+     * @public
+     * @param token - The one-time password to verify.
+     * @param secret - The shared secret.
+     * @returns The matched counter or `null` for an invalid token.
+     */
+    verifyTimeStep?(token: string, secret: string): number | null;
+
+    /**
      * Verifies an HOTP (counter-based) token against the given secret and counter.
      *
      * @public
