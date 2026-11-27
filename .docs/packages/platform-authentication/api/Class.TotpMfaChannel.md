@@ -6,7 +6,7 @@ editUrl: false
 
 # Class: TotpMfaChannel
 
-Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:18](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L18)
+Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:21](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L21)
 
 ## Implements
 
@@ -21,20 +21,22 @@ new TotpMfaChannel(
    mfaSubject,
    configService,
    encryptionService,
-   otpService
+   otpService,
+   replay?
 ): TotpMfaChannel;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:33](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L33)
+Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:37](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L37)
 
 #### Parameters
 
-| Parameter           | Type                                     |
-| ------------------- | ---------------------------------------- |
-| `mfaSubject`        | [`MfaSubjectBase`](Class.MfaSubjectBase) |
-| `configService`     | `ConfigService`                          |
-| `encryptionService` | `MfaEncryptionService`                   |
-| `otpService`        | `IOtpService`                            |
+| Parameter           | Type                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| `mfaSubject`        | [`MfaSubjectBase`](Class.MfaSubjectBase)                     |
+| `configService`     | `ConfigService`                                              |
+| `encryptionService` | [`MfaEncryptionService`](Class.MfaEncryptionService)         |
+| `otpService`        | `IOtpService`                                                |
+| `replay?`           | [`MfaReplayPersistenceBase`](Class.MfaReplayPersistenceBase) |
 
 #### Returns
 
@@ -48,7 +50,7 @@ Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:33]
 readonly method: "totp" = 'totp';
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:21](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L21)
+Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:24](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L24)
 
 Unique identifier of the MFA method (e.g., `totp`, `sms`, `email`).
 
@@ -64,7 +66,7 @@ Unique identifier of the MFA method (e.g., `totp`, `sms`, `email`).
 initSetup(userId, _context?): Promise<IMfaSetup>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:50](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L50)
+Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:56](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L56)
 
 Initializes the setup flow for the channel and persists any channel-specific bootstrap state.
 
@@ -91,7 +93,7 @@ Initializes the setup flow for the channel and persists any channel-specific boo
 verifyChallenge(userId, code): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:109](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L109)
+Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:115](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L115)
 
 Verifies a challenge code during login.
 
@@ -118,7 +120,7 @@ Verifies a challenge code during login.
 verifySetup(userId, code): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:84](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L84)
+Defined in: [libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts:90](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/channels/TotpMfaChannel.ts#L90)
 
 Verifies the first setup code and marks the channel as ready for challenges.
 

@@ -68,7 +68,7 @@ import { AppleConnector } from '@pixel-brewery/archipel-platform-authentication/
 import { GithubConnector } from '@pixel-brewery/archipel-platform-authentication/connectors/github';
 
 // MFA/TOTP
-import { TotpService } from '@pixel-brewery/archipel-platform-authentication/mfa/totp';
+import { TotpMfaChannel } from '@pixel-brewery/archipel-platform-authentication/mfa/totp';
 
 // Health indicator (optional)
 import { AuthenticationHealthIndicator } from '@pixel-brewery/archipel-platform-authentication/health';
@@ -85,6 +85,16 @@ import { AuthenticationHealthIndicator } from '@pixel-brewery/archipel-platform-
 | `ChallengeStoreBase`      | No       | MFA challenge state. Defaults to in-memory store. |
 | `SocialAuthBase`          | No       | OAuth user creation/linking                       |
 | `TokenEnricherBase`       | No       | Custom JWT claim injection                        |
+
+## Atomic MFA replay protection
+
+Replay protection is opt-in through the public `MfaReplayPersistenceBase` DI token. Provide one durable adapter in the same Nest module scope as `MfaService` and `TotpMfaChannel` (for `AuthModule.register`, include it in `additionalProviders`). Existing subject adapters and the boolean `IOtpService.verify` contract remain compatible when no replay adapter is supplied; their legacy verification path does not acquire an atomic one-use guarantee merely by upgrading the package.
+
+The adapter must atomically remove a still-current backup-code hash while MFA remains enabled. It must also accept a TOTP time step only when the persisted encrypted channel secret still has the supplied SHA-256 fingerprint and the matched counter is newer than that secret's consumed counter. Persist the decision in the consuming application's normal database transaction, with row locks or compare-and-set; process-local locks cannot protect multiple instances. A changed/disabled credential, missing subject, consumed hash or old counter returns `false` without accepting the authentication. Credential state and replay state must share the same persistence scope and lifecycle.
+
+`MfaService` continues to verify the backup plaintext with its existing bcrypt owner, then delegates removal to the atomic adapter instead of replacing a stale array. `TotpMfaChannel` obtains the exact RFC 6238 counter through `IOtpService.verifyTimeStep`, including a counter accepted through clock tolerance, and consumes it before accepting setup or login. An opt-in consumer whose OTP provider lacks that capability fails closed with `503 MFA_REPLAY_PROTECTION_UNAVAILABLE`; it never falls back to boolean verification. A normal repeated or concurrent consume returns `false`. Persistence errors propagate and must not become a successful verification.
+
+The application still owns subject/session eligibility, reauthentication, authorization, setup lifecycle and the transaction around each business action. This hook does not issue sessions or introduce application entities into the framework.
 
 ## Error Handling
 

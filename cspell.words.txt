@@ -77,6 +77,7 @@ prepush
 qrcode
 rawfile
 rawxml
+reauthentication
 refreshtoken
 Regen
 rels

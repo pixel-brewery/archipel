@@ -1,10 +1,11 @@
 // #region Imports
 
 import { BcryptService } from '@pixel-brewery/archipel-platform-cryptography';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, Optional, UnauthorizedException } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
 import type { IMfaSubject } from '../contracts/IMfaSubject.js';
 import { MfaSubjectBase } from '../abstracts/MfaSubjectBase.js';
+import { MfaReplayPersistenceBase } from '../abstracts/MfaReplayPersistenceBase.js';
 import { InvalidMfaCodeError } from '../errors/InvalidMfaCodeError.js';
 import { MfaCodeRequiredError } from '../errors/MfaCodeRequiredError.js';
 import { MfaMethodAlreadyEnabledError } from '../errors/MfaMethodAlreadyEnabledError.js';
@@ -34,6 +35,7 @@ export class MfaService {
     private readonly _channels: Map<string, IMfaChannel>;
     private readonly _backupCodeCount: number;
     private readonly _encryptionService: MfaEncryptionService;
+    private readonly _replay: MfaReplayPersistenceBase | undefined;
 
     // #endregion
 
@@ -44,12 +46,14 @@ export class MfaService {
         mfaSubject: MfaSubjectBase,
         encryptionService: MfaEncryptionService,
         @Inject(MFA_CHANNELS) channels: IMfaChannel[],
+        @Optional() replay?: MfaReplayPersistenceBase,
     ) {
         this._bcryptService = bcryptService;
         this._mfaSubject = mfaSubject;
         this._channels = new Map(channels.map((channel) => [channel.method, channel]));
         this._backupCodeCount = 10;
         this._encryptionService = encryptionService;
+        this._replay = replay;
     }
 
     // #endregion
@@ -303,6 +307,9 @@ export class MfaService {
             const isMatch = await this._bcryptService.compare(code, storedBackupCode);
 
             if (isMatch) {
+                if (this._replay) {
+                    return this._replay.consumeBackupCode(user.id, storedBackupCode);
+                }
                 const remainingCodes = storedBackupCodes.filter((value) => value !== storedBackupCode);
 
                 await this._mfaSubject.updateMfaState(user.id, {

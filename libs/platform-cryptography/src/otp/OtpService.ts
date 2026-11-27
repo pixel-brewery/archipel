@@ -93,6 +93,18 @@ export class OtpService implements IOtpService {
     }
 
     /** @inheritdoc */
+    public verifyTimeStep(token: string, secret: string): number | null {
+        const result = verifyTotpSync({
+            token,
+            secret,
+            epochTolerance: this._epochTolerance,
+            crypto: NODE_CRYPTO_PLUGIN,
+            base32: BASE32_PLUGIN,
+        });
+        return result.valid ? result.timeStep : null;
+    }
+
+    /** @inheritdoc */
     public async verifyHotp(token: string, secret: string, counter: number): Promise<boolean> {
         const result = await verifyHotp({ token, secret, counter, crypto: NODE_CRYPTO_PLUGIN, base32: BASE32_PLUGIN });
 

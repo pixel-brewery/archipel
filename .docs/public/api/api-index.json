@@ -1,6 +1,6 @@
 {
-    "total": 1110,
-    "byKind": { "variable": 291, "class": 320, "type-alias": 84, "function": 128, "other": 2, "interface": 284, "namespace": 1 },
+    "total": 1113,
+    "byKind": { "variable": 291, "class": 323, "type-alias": 84, "function": 128, "other": 2, "interface": 284, "namespace": 1 },
     "byPackage": {
         "platform-esigning": 52,
         "platform-intelligence-agents": 34,
@@ -8,7 +8,7 @@
         "platform-intelligence": 235,
         "platform-mailing": 63,
         "platform-analytics": 19,
-        "platform-authentication": 111,
+        "platform-authentication": 114,
         "platform-openapi": 22,
         "platform-bootstrap": 50,
         "platform-logging": 8,
@@ -8995,6 +8995,17 @@
             "link": "/packages/platform-authentication/api/Class.MfaEmailRequiredError"
         },
         {
+            "id": "platform-authentication:class:mfaencryptionservice",
+            "name": "MfaEncryptionService",
+            "kind": "class",
+            "kindLabel": "Class",
+            "packageName": "@pixel-brewery/archipel-platform-authentication",
+            "packageSlug": "platform-authentication",
+            "title": "Class: MfaEncryptionService",
+            "description": "Provides AES-GCM encryption for MFA secrets.",
+            "link": "/packages/platform-authentication/api/Class.MfaEncryptionService"
+        },
+        {
             "id": "platform-authentication:class:mfamethodalreadyenablederror",
             "name": "MfaMethodAlreadyEnabledError",
             "kind": "class",
@@ -9037,6 +9048,28 @@
             "title": "Class: MfaPhoneNumberRequiredError",
             "description": "Error thrown when SMS-based multi-factor authentication has no phone number to send codes to.",
             "link": "/packages/platform-authentication/api/Class.MfaPhoneNumberRequiredError"
+        },
+        {
+            "id": "platform-authentication:class:mfareplaypersistencebase",
+            "name": "MfaReplayPersistenceBase",
+            "kind": "class",
+            "kindLabel": "Class",
+            "packageName": "@pixel-brewery/archipel-platform-authentication",
+            "packageSlug": "platform-authentication",
+            "title": "Abstract Class: MfaReplayPersistenceBase",
+            "description": "Optional atomic persistence for one-use MFA evidence across processes.",
+            "link": "/packages/platform-authentication/api/Class.MfaReplayPersistenceBase"
+        },
+        {
+            "id": "platform-authentication:class:mfareplayprotectionunavailableerror",
+            "name": "MfaReplayProtectionUnavailableError",
+            "kind": "class",
+            "kindLabel": "Class",
+            "packageName": "@pixel-brewery/archipel-platform-authentication",
+            "packageSlug": "platform-authentication",
+            "title": "Class: MfaReplayProtectionUnavailableError",
+            "description": "Fails closed when replay protection is configured but the OTP provider cannot expose its verified counter.",
+            "link": "/packages/platform-authentication/api/Class.MfaReplayProtectionUnavailableError"
         },
         {
             "id": "platform-authentication:class:mfaservice",

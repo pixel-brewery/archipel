@@ -113,4 +113,17 @@ describe('OtpService', () => {
     });
 
     // #endregion
+    describe('verifyTimeStep()', () => {
+        it('returns the matched tolerance-window counter rather than the current server counter', () => {
+            mockedVerifyTotpSync.mockReturnValueOnce({ valid: true, delta: -1, epoch: 3690, timeStep: 123 });
+
+            expect(service.verifyTimeStep('123456', 'secret')).toBe(123);
+        });
+
+        it('returns null for invalid evidence without inventing a counter', () => {
+            mockedVerifyTotpSync.mockReturnValueOnce({ valid: false });
+
+            expect(service.verifyTimeStep('000000', 'secret')).toBeNull();
+        });
+    });
 });

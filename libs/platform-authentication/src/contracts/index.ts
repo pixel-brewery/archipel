@@ -13,3 +13,4 @@ export { SessionPersistenceBase } from '../abstracts/SessionPersistenceBase.js';
 export { SocialAuthBase } from '../abstracts/SocialAuthBase.js';
 export { TokenEnricherBase } from '../abstracts/TokenEnricherBase.js';
 export { VerificationSubjectBase } from '../abstracts/VerificationSubjectBase.js';
+export { MfaReplayPersistenceBase } from '../abstracts/MfaReplayPersistenceBase.js';

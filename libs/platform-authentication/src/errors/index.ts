@@ -13,3 +13,4 @@ export * from './MfaSetupExpiredError.js';
 export * from './MfaSetupNotInitializedError.js';
 export * from './MfaSubjectNotFoundError.js';
 export * from './UnsupportedMfaMethodError.js';
+export * from './MfaReplayProtectionUnavailableError.js';
