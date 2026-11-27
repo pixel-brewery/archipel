@@ -1,3 +1,7 @@
+## 0.1.59 (2026-11-27)
+
+This was a version bump only for platform-esigning to align it with other projects, there were no code changes.
+
 ## 0.1.58 (2026-11-26)
 
 ### 🩹 Fixes
