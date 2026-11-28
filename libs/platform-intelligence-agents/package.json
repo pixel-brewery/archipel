@@ -67,11 +67,11 @@
     },
     "devDependencies": {
         "@ai-sdk/provider": "4.0.39",
-        "@nestjs/common": "12.6.0",
-        "@nestjs/testing": "12.6.0",
+        "@nestjs/common": "12.6.3",
+        "@nestjs/testing": "12.6.3",
         "@pixel-brewery/archipel-platform-configuration": "^0.1.62",
         "@pixel-brewery/archipel-platform-mcp": "^0.1.62",
-        "vitest": "5.1.1",
+        "vitest": "5.1.2",
         "zod": "4.6.7"
     },
     "homepage": "https://pixel-brewery.github.io/archipel/",

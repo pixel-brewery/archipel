@@ -41,10 +41,10 @@
         "@nestjs/common": "^12.0.0"
     },
     "devDependencies": {
-        "@nestjs/common": "12.6.0",
+        "@nestjs/common": "12.6.3",
         "reflect-metadata": "0.2.2",
         "rxjs": "7.8.2",
-        "vitest": "5.1.1"
+        "vitest": "5.1.2"
     },
     "archipel": {
         "category": "Operations"
