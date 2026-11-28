@@ -2,8 +2,11 @@
 
 import { ConfigService } from '@pixel-brewery/archipel-platform-configuration';
 import { IOtpService, OTP_SERVICE_TOKEN } from '@pixel-brewery/archipel-platform-cryptography/otp';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import { MfaSubjectBase } from '../../abstracts/MfaSubjectBase.js';
+import { MfaReplayPersistenceBase } from '../../abstracts/MfaReplayPersistenceBase.js';
+import { MfaReplayProtectionUnavailableError } from '../../errors/MfaReplayProtectionUnavailableError.js';
+import { createHash } from 'node:crypto';
 import { AUTH_MFA_ISSUER } from '../../env.js';
 import { MfaSetupNotInitializedError } from '../../errors/MfaSetupNotInitializedError.js';
 import { MfaSubjectNotFoundError } from '../../errors/MfaSubjectNotFoundError.js';
@@ -25,6 +28,7 @@ export class TotpMfaChannel implements IMfaChannel {
     private readonly _encryptionService: MfaEncryptionService;
     private readonly _otpService: IOtpService;
     private readonly _issuer: string;
+    private readonly _replay: MfaReplayPersistenceBase | undefined;
 
     // #endregion
 
@@ -35,12 +39,14 @@ export class TotpMfaChannel implements IMfaChannel {
         configService: ConfigService,
         encryptionService: MfaEncryptionService,
         @Inject(OTP_SERVICE_TOKEN) otpService: IOtpService,
+        @Optional() replay?: MfaReplayPersistenceBase,
     ) {
         this._mfaSubject = mfaSubject;
         this._configService = configService;
         this._encryptionService = encryptionService;
         this._otpService = otpService;
         this._issuer = this._configService.get<string>(AUTH_MFA_ISSUER.key);
+        this._replay = replay;
     }
 
     // #endregion
@@ -89,7 +95,7 @@ export class TotpMfaChannel implements IMfaChannel {
         }
 
         const secret = this._encryptionService.decrypt(channel.secret);
-        const isValid = this._otpService.verify(code, secret);
+        const isValid = await this.verifyCode(userId, channel.secret, code, secret);
 
         if (isValid) {
             channel.enabled = true;
@@ -115,9 +121,17 @@ export class TotpMfaChannel implements IMfaChannel {
         }
 
         const secret = this._encryptionService.decrypt(channel.secret);
-        const isValid = this._otpService.verify(code, secret);
+        const isValid = await this.verifyCode(userId, channel.secret, code, secret);
 
         return isValid;
+    }
+
+    private async verifyCode(userId: string, encryptedSecret: string, code: string, secret: string): Promise<boolean> {
+        if (!this._replay) return this._otpService.verify(code, secret);
+        if (!this._otpService.verifyTimeStep) throw new MfaReplayProtectionUnavailableError();
+        const timeStep = this._otpService.verifyTimeStep(code, secret);
+        if (timeStep === null || !Number.isSafeInteger(timeStep) || timeStep < 0) return false;
+        return this._replay.consumeTotpStep(userId, createHash('sha256').update(encryptedSecret).digest('hex'), timeStep);
     }
 
     private async loadState(userId: string) {

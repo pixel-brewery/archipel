@@ -6,7 +6,7 @@ editUrl: false
 
 # Class: MfaService
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:29](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L29)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:30](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L30)
 
 Orchestrates MFA channels, backup codes, and user preferences.
 
@@ -19,20 +19,22 @@ new MfaService(
    bcryptService,
    mfaSubject,
    encryptionService,
-   channels
+   channels,
+   replay?
 ): MfaService;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:42](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L42)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:44](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L44)
 
 #### Parameters
 
-| Parameter           | Type                                     |
-| ------------------- | ---------------------------------------- |
-| `bcryptService`     | `BcryptService`                          |
-| `mfaSubject`        | [`MfaSubjectBase`](Class.MfaSubjectBase) |
-| `encryptionService` | `MfaEncryptionService`                   |
-| `channels`          | `IMfaChannel`[]                          |
+| Parameter           | Type                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| `bcryptService`     | `BcryptService`                                              |
+| `mfaSubject`        | [`MfaSubjectBase`](Class.MfaSubjectBase)                     |
+| `encryptionService` | [`MfaEncryptionService`](Class.MfaEncryptionService)         |
+| `channels`          | `IMfaChannel`[]                                              |
+| `replay?`           | [`MfaReplayPersistenceBase`](Class.MfaReplayPersistenceBase) |
 
 #### Returns
 
@@ -48,7 +50,7 @@ Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:42](https://gith
 get registeredMethods(): string[];
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:275](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L275)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:279](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L279)
 
 ##### Returns
 
@@ -62,7 +64,7 @@ Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:275](https://git
 disable(userId): Promise<void>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:263](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L263)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:267](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L267)
 
 Disables MFA for a user and clears channel secrets.
 
@@ -87,7 +89,7 @@ getEnabledMethods(userId): Promise<{
 }>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:166](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L166)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:170](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L170)
 
 Returns enabled methods and preferred method for a user.
 
@@ -120,7 +122,7 @@ initSetup(
 ): Promise<IMfaSetup>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:66](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L66)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:70](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L70)
 
 Initializes setup for a specific MFA method.
 
@@ -156,7 +158,7 @@ With `400` and `MFA_METHOD_ALREADY_ENABLED` when the method is already enabled.
 issueChallenges(userId, methods): Promise<void>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:203](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L203)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:207](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L207)
 
 Issues out-of-band challenge codes for login flows for applicable channels.
 
@@ -179,7 +181,7 @@ Issues out-of-band challenge codes for login flows for applicable channels.
 regenerateBackupCodes(userId): Promise<readonly string[]>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:245](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L245)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:249](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L249)
 
 Regenerates backup codes.
 
@@ -209,7 +211,7 @@ With `400` and `MFA_NOT_ENABLED` when the person has not enabled MFA.
 setPreferredMethod(userId, method): Promise<void>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:222](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L222)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:226](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L226)
 
 Updates the preferred MFA method.
 
@@ -244,7 +246,7 @@ verifyChallenge(
 ): Promise<boolean>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:121](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L121)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:125](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L125)
 
 Verifies a login challenge using the selected method or backup code.
 
@@ -284,7 +286,7 @@ verifySetup(
 ): Promise<IMfaConfirmation>;
 ```
 
-Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:87](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L87)
+Defined in: [libs/platform-authentication/src/mfa/MfaService.ts:91](https://github.com/pixel-brewery/archipel/blob/main/libs/platform-authentication/src/mfa/MfaService.ts#L91)
 
 Verifies the initial code for a method and issues backup codes.
 

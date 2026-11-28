@@ -32,6 +32,12 @@ import { BcryptService, CryptoService } from '@pixel-brewery/archipel-platform-c
 import { OtpService, OTP_SERVICE_TOKEN, OTP_OPTIONS } from '@pixel-brewery/archipel-platform-cryptography/otp';
 ```
 
+### Verified counters and replay protection
+
+`OtpService.verifyTimeStep(token, secret)` returns the exact matched RFC 6238 time-step counter, or `null` for invalid evidence. It uses the same secret, crypto provider and tolerance configuration as `verify`; a tolerated previous/future code returns its own counter rather than the server's current step. This is an additive optional method on `IOtpService`, so existing custom OTP providers remain source-compatible.
+
+Counter verification alone does not consume a code. A caller requiring one-use authentication must atomically consume the matched counter for the current secret in durable persistence and reject counters less than or equal to the consumed one. The authentication package's optional `MfaReplayPersistenceBase` contract supplies that integration. Providers that do not implement the counter method cannot satisfy that opt-in contract and are rejected rather than silently downgraded.
+
 ## Error Handling
 
 | Error Class             | Code                | When Thrown                                  |

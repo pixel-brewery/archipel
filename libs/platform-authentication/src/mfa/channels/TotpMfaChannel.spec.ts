@@ -7,6 +7,8 @@ import { ProblemDetailException } from '@pixel-brewery/archipel-platform-core';
 import type { IOtpService } from '@pixel-brewery/archipel-platform-cryptography/otp';
 import type { IMfaSubject } from '../../contracts/IMfaSubject.js';
 import type { MfaSubjectBase } from '../../abstracts/MfaSubjectBase.js';
+import type { MfaReplayPersistenceBase } from '../../abstracts/MfaReplayPersistenceBase.js';
+import { MfaReplayProtectionUnavailableError } from '../../errors/MfaReplayProtectionUnavailableError.js';
 import { MfaSetupNotInitializedError } from '../../errors/MfaSetupNotInitializedError.js';
 import { MfaSubjectNotFoundError } from '../../errors/MfaSubjectNotFoundError.js';
 import type { MfaEncryptionService } from '../MfaEncryptionService.js';
@@ -316,3 +318,51 @@ describe('TotpMfaChannel', () => {
 });
 
 // #endregion
+
+describe('TotpMfaChannel replay protection', () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    function protectedChannel(counterProvider = true) {
+        let lastStep = -1;
+        const replay = {
+            consumeBackupCode: vi.fn(),
+            consumeTotpStep: vi.fn(async (_id: string, _secret: string, step: number) => {
+                if (step <= lastStep) return false;
+                lastStep = step;
+                return true;
+            }),
+        };
+        const otp = { verify: vi.fn(), ...(counterProvider ? { verifyTimeStep: vi.fn().mockReturnValue(123) } : {}) };
+        const subject = {
+            findById: vi.fn().mockResolvedValue({ id: 'subject', mfaChannels: { channels: { totp: { enabled: true, secret: 'encrypted' } } } }),
+            updateMfaState: vi.fn(),
+        };
+        const channel = new TotpMfaChannel(
+            subject as unknown as MfaSubjectBase,
+            { get: () => 'Tests' } as unknown as ConfigService,
+            { decrypt: () => 'secret' } as unknown as MfaEncryptionService,
+            otp as unknown as IOtpService,
+            replay as unknown as MfaReplayPersistenceBase,
+        );
+        return { channel, replay, otp };
+    }
+
+    it('consumes the exact matched counter so concurrent and later replay fail', async () => {
+        const { channel, replay } = protectedChannel();
+
+        const results = await Promise.all([channel.verifyChallenge('subject', '123456'), channel.verifyChallenge('subject', '123456')]);
+
+        expect(results.sort()).toEqual([false, true]);
+        expect(replay.consumeTotpStep).toHaveBeenCalledWith('subject', expect.stringMatching(/^[a-f0-9]{64}$/), 123);
+        await expect(channel.verifyChallenge('subject', '123456')).resolves.toBe(false);
+    });
+
+    it('fails closed when replay was requested but a legacy OTP provider exposes only a boolean', async () => {
+        const { channel, replay, otp } = protectedChannel(false);
+
+        await expect(channel.verifyChallenge('subject', '123456')).rejects.toBeInstanceOf(MfaReplayProtectionUnavailableError);
+
+        expect(otp.verify).not.toHaveBeenCalled();
+        expect(replay.consumeTotpStep).not.toHaveBeenCalled();
+    });
+});

@@ -1,3 +1,21 @@
+## 0.1.61 (2026-11-27)
+
+### 🚀 Features
+
+- **authentication:** implement MFA replay protection and encryption services ([#94](https://github.com/pixel-brewery/archipel/pull/94))
+
+### ❤️ Thank You
+
+- André Wehlert @RueDeRennes
+
+## 0.1.60 (2026-11-27)
+
+This was a version bump only for platform-core to align it with other projects, there were no code changes.
+
+## 0.1.59 (2026-11-27)
+
+This was a version bump only for platform-core to align it with other projects, there were no code changes.
+
 ## 0.1.58 (2026-11-26)
 
 ### 🩹 Fixes

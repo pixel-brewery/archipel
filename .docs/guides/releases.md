@@ -46,73 +46,14 @@ workflow explicitly because the metadata commit contains `[skip ci]`.
 
 All npm and GitHub Actions update types, including major versions, TypeScript
 and published Pixel Brewery packages, use the full existing protected gate:
-three successful platform jobs and `Quality Gate`. The canonical owner is
-`infra/nx-plugins/src/executors/dependabot`, with shared proof in its private
-`lib/github` modules. Trusted native Node bootstraps that same owner without an
-installation, preserving the private Nx architecture.
-
-The privileged controller executes only the trusted default-branch Nx owner,
-without installing workspace dependencies or executing PR code or PR artifacts.
-Its `merge`, `reconcile`, `authorize` and `continue` operations are non-cacheable.
-Branch refresh and merge have Contents/PR write with Actions read. A separate
-`authorize` job has only Contents read, PR read and Actions write. It approves
-workflow execution through GitHub's native run-approval endpoint; it creates no
-PR review, status, check or branch-rule exemption.
-
-Reconciliation after verification/release completion and hourly checks bounded
-same-repository bot inventories. A stale branch uses `expected_head_sha` and waits
-for the replacement. Only real `pull_request` CI is merge proof. If it is waiting
-for execution approval, the isolated authorizer verifies the exact Dependabot or
-GitHub Actions service identity of both run actors before one approval request.
-A missing native run remains pending. Manual diagnostic `workflow_dispatch` runs
-remain available but cannot satisfy protected PR checks or shadow a native run.
-Conflicts, real failures and rejected approvals retain the affected PR and attempt.
-
-The isolated authorization job waits for branch reconciliation before reading the
-complete bounded current open bot inventory. Every permitted maintenance trigger,
-including completed own CI and release runs, inspects those current candidates;
-the triggering run's old head, conclusion or attempt does not replace any
-candidate's source and native-attempt proof. Approval after a refresh therefore
-does not depend on another workflow notification. The hourly pass remains a
-fallback for an interrupted event or a not-yet-visible native run.
-
-For every approval and merge, M is current protected main, B the unchanged bot
-head, and C GitHub's actual `refs/pull/<number>/merge` commit. The owner checks
-unique own-repository PR association, M as ancestor of B, C's ordered parents
-[M, B] and C's tree equal to B. Source blobs are verified by Git object digest.
-Only the fixed reviewed read-only CI baseline in trusted-main
-`verificationPolicy.reviewedCiSha256` authorizes execution: its normalized main
-SHA-256 must match that constant, and normalized PR CI must equal normalized main.
-Normalization changes only full 40-character action pins with the same action
-owner/path and optional SemVer comments. CI logic, scopes, secrets or syntax edits
-require a conscious read-only review and explicit policy-digest update; no runtime
-or PR input learns a new baseline. This positive review proof does not rely on a
-partial YAML parser.
-
-The latest eligible native run is selected independently of diagnostics and its
-actual current `run_attempt` is reloaded. All actual jobs must succeed. Ordinary
-maintainer-triggered native CI on the bot PR is valid after the same complete
-source proof. A later reconciliation re-enters the full merger after a transient
-skip, never a reduced path. Workflow/run/PR/M/B/C/protection are re-read immediately
-before the ordinary SHA-guarded squash request. GitHub's strict required checks
-remain the final merge authority; the actual closed, merged PR is then confirmed.
-
-Confirmed merge outputs from either reconciliation or the CI event reach a
-separate continuation job. Recovery resolves the current main commit association
-and reads the full PR with `merged: true`; missing confirmation starts nothing.
-Main verification receives `expected_head_sha`, and the existing patch release
-retains `source_sha`. Existing exact-source main `push` or `workflow_dispatch` runs
-are retained in every state, including queued, failed and cancelled. Diagnostic
-branch runs do not suppress them. Every new request rechecks current main; a
-superseding revision stops it. Interrupted requests can therefore be retried
-without merging twice or preparing a duplicate release. Failed releases retain
-their original source and artifact instead of receiving a blind new dispatch.
-
-The separate continuation also preserves the existing all-main-push documentation
-workflow with `expected_head_sha`. Release requests select `release.yml`,
-`specifier: patch` and the confirmed merge as `source_sha`; release preflight
-rejects another selected revision. The existing release App remains exclusive to
-verified metadata publication. Human merges retain their ordinary main-push path.
+three successful platform jobs and `Quality Gate`. A Dependabot pull request
+whose required checks are green is squash-merged by
+`.github/workflows/dependabot-merge.yml`, which runs after each successful
+`Verify` run and hourly; the main ruleset still enforces every required check on
+that merge. Because a `GITHUB_TOKEN` merge starts no `push` workflows, the
+workflow then dispatches `release.yml` with the merge commit as `source_sha` (a
+`patch` release by default) and `docs.yml` with it as `expected_head_sha`, and
+both reject any other revision. Human merges retain their ordinary main-push path.
 
 The documentation MCP server reports its own installed package version in the
 MCP initialization response. It reads the adjacent package manifest in source,
@@ -136,7 +77,7 @@ This credential authenticates CI; it is independent of a maintainer's browser
 login and never belongs in source, an issue or a chat.
 
 The checked-in main PR rule specifies resolved conversations and these exact checks from
-GitHub Actions integration `15368`, with strict current-base checking:
+GitHub Actions integration `15368`, without requiring branches to be up to date:
 
 - `verify (ubuntu-latest)`
 - `verify (macos-latest)`
@@ -210,8 +151,8 @@ live settings before allowing normal publication:
    both tags and GitHub Releases, all public package archives and the Pages site.
 
 Source configuration alone is not proof of those external grants or a completed
-public release. While the repository remains private, publication and privileged
-bot automation deliberately remain inactive.
+public release. While the repository remains private, publication deliberately
+remains inactive.
 
 ## Verification and recovery
 
@@ -245,17 +186,3 @@ match the exact verified archive integrity before being accepted as complete;
 changed bytes or tag ownership stop recovery. Do not overwrite a published
 version or calculate a new candidate to conceal an incomplete upload. A new
 source revision is a new release request, not recovery of the old one.
-
-## Documentation after a native-token dependency merge
-
-The same private Nx owner continues the existing documentation workflow with
-`expected_head_sha`, independently of main CI and the source-bound release. It
-checks immutable repository/workflow identity, the exact current main source and
-positive run IDs/attempts before treating a request as existing. Successful,
-failed and cancelled attempts are retained; a superseding main revision prevents
-a new dispatch. The documentation job checks its selected source and current main
-immediately before deployment. No package or deployment is manually dispatched by
-this delivery change.
-
-Documentation retains its original trigger for every main push; dependency-only
-merges also refresh the package reference site.
