@@ -79,12 +79,12 @@
         }
     },
     "devDependencies": {
-        "@nestjs/common": "12.6.0",
+        "@nestjs/common": "12.6.3",
         "@pixel-brewery/archipel-platform-caching": "0.1.62",
         "@types/mime-types": "3.0.1",
         "reflect-metadata": "0.2.2",
         "rxjs": "7.8.2",
-        "vitest": "5.1.1"
+        "vitest": "5.1.2"
     },
     "archipel": {
         "category": "Infrastructure"
